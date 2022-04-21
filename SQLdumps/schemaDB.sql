@@ -1,8 +1,8 @@
 CREATE DATABASE  IF NOT EXISTS `progettotiw` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `progettotiw`;
--- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.28, for macos11 (x86_64)
 --
--- Host: 127.0.0.1    Database: progettotiw
+-- Host: localhost    Database: progettotiw
 -- ------------------------------------------------------
 -- Server version	8.0.28
 
@@ -41,6 +41,7 @@ CREATE TABLE `album` (
 
 LOCK TABLES `album` WRITE;
 /*!40000 ALTER TABLE `album` DISABLE KEYS */;
+INSERT INTO `album` VALUES (1,'2021-04-20','paesaggi',1),(2,'2020-08-10','statue',3),(3,'1990-04-23','Picasso',2);
 /*!40000 ALTER TABLE `album` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +58,7 @@ CREATE TABLE `comment` (
   `imageID` int NOT NULL,
   `text` varchar(280) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,6 +67,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
+INSERT INTO `comment` VALUES (1,1,3,'i like it!');
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +88,7 @@ CREATE TABLE `image` (
   PRIMARY KEY (`ID`),
   KEY `uploaderID_idx` (`uploaderID`),
   CONSTRAINT `uploaderID` FOREIGN KEY (`uploaderID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,6 +97,7 @@ CREATE TABLE `image` (
 
 LOCK TABLES `image` WRITE;
 /*!40000 ALTER TABLE `image` DISABLE KEYS */;
+INSERT INTO `image` VALUES (1,1,'Girasoli','/git/img/girasoli.jpeg','2021-04-18','girasoli al tramonto'),(2,3,'Autoritratto di Picasso','/git/img/autopicasso.jpeg','1980-04-18','Autoritratto del pittore Pablo Picasso'),(3,2,'facciata teatro la scala','/git/img/lascala.jpeg','1980-04-18','Facciata del teatro la scala di sera');
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,12 +110,12 @@ DROP TABLE IF EXISTS `image_to_album`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `image_to_album` (
   `imageID` int NOT NULL,
-  `userID` int NOT NULL,
-  PRIMARY KEY (`imageID`,`userID`),
-  KEY `userID_idx` (`userID`),
-  KEY `userID_idx1` (`userID`),
-  KEY `userID_iddx` (`userID`),
-  CONSTRAINT `creatorID` FOREIGN KEY (`userID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  `albumID` int NOT NULL,
+  PRIMARY KEY (`imageID`,`albumID`),
+  KEY `userID_idx` (`albumID`),
+  KEY `userID_idx1` (`albumID`),
+  KEY `userID_iddx` (`albumID`),
+  CONSTRAINT `creatorID` FOREIGN KEY (`albumID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `imageID` FOREIGN KEY (`imageID`) REFERENCES `album` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -123,6 +126,7 @@ CREATE TABLE `image_to_album` (
 
 LOCK TABLES `image_to_album` WRITE;
 /*!40000 ALTER TABLE `image_to_album` DISABLE KEYS */;
+INSERT INTO `image_to_album` VALUES (3,1),(1,2),(2,3);
 /*!40000 ALTER TABLE `image_to_album` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,4 +170,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-15 16:31:47
+-- Dump completed on 2022-04-21 10:13:17
