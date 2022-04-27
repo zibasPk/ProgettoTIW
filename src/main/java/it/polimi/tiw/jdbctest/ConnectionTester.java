@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ConnectionTester extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		final String DB_URL = "jdbc:mysql://localhost:3306/progettoTIW?serverTimezone=UTC";
