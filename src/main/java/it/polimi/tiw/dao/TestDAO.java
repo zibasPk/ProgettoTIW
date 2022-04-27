@@ -1,4 +1,4 @@
-package it.polimi.tiw.DAOs;
+package it.polimi.tiw.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

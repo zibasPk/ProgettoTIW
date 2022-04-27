@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.tinylog.Logger;
 
-import it.polimi.tiw.DAOs.TestDAO;
 import it.polimi.tiw.beans.Image;
+import it.polimi.tiw.dao.TestDAO;
 
 public class DAOTester extends HttpServlet {
 	private static final long serialVersionUID = 1L;
