@@ -18,9 +18,6 @@ public class ImageDAO {
 	
 	/**
 	 * finds images from a certain album
-	 * @param albumID
-	 * @return
-	 * @throws SQLException
 	 */
 	public List<Image> findImagesFromAlbum(int albumID) throws SQLException{
 		List<Image> images = new ArrayList<>();
