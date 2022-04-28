@@ -36,4 +36,7 @@ public class Comment implements Serializable{
 		this.text = text;
 	}
 	
+	public String toString() {
+		return "\ncomment: " + id + "text: " + text;
+	}
 }

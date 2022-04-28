@@ -35,4 +35,7 @@ public class Album implements Serializable {
 		this.creationDate = creationDate;
 	}
 	
+	public String toString() {
+		return "\nid: " + id + "title: " + title + "creation date: " + creationDate;
+	}
 }
