@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
 <meta charset="ISO-8859-1">
 <title>Welcome to the login page!</title>
@@ -11,7 +11,7 @@
 	<h1>Let's get you started</h1>
 
 	<div  class="formdiv">
-		<p>Login</p>
+		<p>Log into your account</p>
 		<form action="#" method="POST">
 			<fieldset>
 				<p>
@@ -20,12 +20,12 @@
 				<p>
 					password: <input type="text" name="password" required />
 				</p>
-				<input type="submit" name="user login">
+				<input type="submit" value="user login">
 			</fieldset>
 		</form>
 	</div>
 		<div class="formdiv">
-		<p>Sign up</p>
+		<p>Create a new account</p>
 		<form action="#" method="POST">
 			<fieldset>
 				<p>
@@ -39,6 +39,9 @@
 				</p>
 				<p>
 					Confirm passowrd<input type="text" name="password2" required />
+				</p>
+				<p>
+				<input type="submit" value="register as a new user">
 				</p>
 			</fieldset>
 		</form>
