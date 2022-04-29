@@ -14,8 +14,8 @@ public class UserDAO {
 	}
 	
 	/**
-	 * checks if a user is registered 
-	 * -	if he isn't returns null
+	 * checks if a user is registered<br>
+	 * -	if he isn't returns null<br>
 	 * -  if he is returns User bean
 	 */
 	public User checkCredentials(String email, String password) throws SQLException {
