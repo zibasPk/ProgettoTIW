@@ -46,6 +46,9 @@ local.properties
 # Compiled class file
 *.class
 
+#build path
+build/
+
 # Code Recommenders
 .recommenders/
 
