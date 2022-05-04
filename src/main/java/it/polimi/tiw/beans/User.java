@@ -36,6 +36,6 @@ public class User implements Serializable{
 	}
 	
 	public String toString(){
-		return "\nid: " + id + "name: " + name + "surname:" + surname + "email: " + email;
+		return "\nid: " + id + " name: " + name + " surname:" + surname + " email: " + email;
 	}
 }

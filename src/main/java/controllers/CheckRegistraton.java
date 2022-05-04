@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
 
-@WebServlet("/CheckLogin")
-public class CheckLogin extends HttpServlet{
+@WebServlet("/CheckRegistration")
+public class CheckRegistraton extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	
@@ -38,7 +38,7 @@ public class CheckLogin extends HttpServlet{
 			throw new UnavailableException("Couldn't get db connection");
 		}
 	}
-
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -46,10 +46,13 @@ public class CheckLogin extends HttpServlet{
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String name = request.getParameter("name");
+		String surname = request.getParameter("email");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		
-		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+		if (email == null || email.isEmpty() || password == null || password.isEmpty() || 
+				name == null || name.isEmpty() || surname == null || surname.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
 			return;
 		}
@@ -65,11 +68,19 @@ public class CheckLogin extends HttpServlet{
 		
 		String path = "";
 		if (user == null) {
-			path = getServletContext().getContextPath() + "/index.html";
-		} else {
+			try {
+				userService.createCredentials(email, name, surname, password);
+				user = userService.checkCredentials(email, password);
+			} catch (SQLException e){
+				response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database credential creation");
+				return;
+			}
+			path = path + "/GotoHomePage";
 			request.getSession().setAttribute("user", user);
-			path = path + "/GotoHomePage"; 
+		} else {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User already registered"); 
 		}
+		
 		response.sendRedirect(path);
 	}
 	
@@ -81,4 +92,7 @@ public class CheckLogin extends HttpServlet{
 		} catch (SQLException sqle) {
 		}
 	}
+	
+	
+	
 }

@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.tinylog.Logger;
+
 import it.polimi.tiw.beans.User;
 
 public class UserDAO {
@@ -19,7 +22,7 @@ public class UserDAO {
 	 * -  if he is returns User bean
 	 */
 	public User checkCredentials(String email, String password) throws SQLException {
-		String query = "SELECT ID, email, name, surname FROM progettotiw.user" + "WHERE password = ? and email = ?";
+		String query = "SELECT ID, email, name, surname FROM progettotiw.user  WHERE email = ? AND password = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, email);
 			pstatement.setString(2, password);
@@ -27,6 +30,7 @@ public class UserDAO {
 				if(!result.isBeforeFirst())// no result check credentials failed
 					return null;
 				else {
+					Logger.debug("in else");
 					result.next();
 					User user = new User();
 					user.setId(result.getInt("ID"));
@@ -42,7 +46,7 @@ public class UserDAO {
 	 * adds credentials to database
 	 */
 	public void createCredentials(String email, String name, String surname, String password) throws SQLException {
-		String query = "INSERT INTO progettotiw.user (email, name, surname, password) VALUES (?, ?, ?)";
+		String query = "INSERT INTO progettotiw.user (email, name, surname, password) VALUES (?, ?, ?, ?)";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, email);
 			pstatement.setString(2, name);
