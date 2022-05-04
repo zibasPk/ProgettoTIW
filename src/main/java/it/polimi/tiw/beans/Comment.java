@@ -5,10 +5,10 @@ import java.io.Serializable;
 public class Comment implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	int id;
-	int userID;
-	int imageID;
-	String text;
+	private int id;
+	private int userID;
+	private int imageID;
+	private String text;
 	
 	
 	public int getID() {

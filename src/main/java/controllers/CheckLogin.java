@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.tinylog.Logger;
+
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
 
@@ -47,6 +49,7 @@ public class CheckLogin extends HttpServlet{
 			throws ServletException, IOException {
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
+		Logger.debug("hola");
 		
 		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
