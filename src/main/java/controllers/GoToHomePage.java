@@ -14,15 +14,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.dao.*;
-import it.polimi.tiw.beans.*;
+import it.polimi.tiw.beans.Album;
+import it.polimi.tiw.beans.User;
+import it.polimi.tiw.dao.AlbumDAO;
+
 
 @WebServlet("/GoToHomePage")
-	public class GoToHomePage extends HttpServlet{
+public class GoToHomePage extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-	
+	private TemplateEngine templateEngine;
 	public void init() throws ServletException {
 		try {
 			ServletContext context = getServletContext();
@@ -38,12 +44,25 @@ import it.polimi.tiw.beans.*;
 		} catch (SQLException e) {
 			throw new UnavailableException("Couldn't get db connection");
 		}
+		
+		ServletContext servletContext = getServletContext();
+		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
+		templateResolver.setTemplateMode(TemplateMode.HTML);
+		this.templateEngine = new TemplateEngine();
+		this.templateEngine.setTemplateResolver(templateResolver);
+		templateResolver.setSuffix(".html");
 	}
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
+		String path = "/WEB-INF/home.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		templateEngine.process(path, ctx, response.getWriter());
+		
+		/*
 		List<Album> ownedAlbums = null;
 		List<Album> notOwnedAlbums = null;
 		
@@ -63,11 +82,13 @@ import it.polimi.tiw.beans.*;
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in retrieving albums from the database");
 			return;
+			
 		}
+		*/
 	}
 	
 	
-	
+
 	
 	
 	
