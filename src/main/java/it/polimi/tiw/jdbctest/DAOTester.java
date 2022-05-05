@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 //import javax.servlet.annotation.WebServlet;
@@ -14,9 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.tinylog.Logger;
 
-import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.beans.User;
-import it.polimi.tiw.dao.TestDAO;
 import it.polimi.tiw.dao.UserDAO;
 
 public class DAOTester extends HttpServlet {
