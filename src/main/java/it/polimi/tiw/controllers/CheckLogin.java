@@ -1,4 +1,4 @@
-package controllers;
+package it.polimi.tiw.controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -63,7 +63,7 @@ public class CheckLogin extends HttpServlet{
 			return;
 		}
 		
-		String path = "";
+		String path = getServletContext().getContextPath();
 		if (user == null) {
 			path = getServletContext().getContextPath() + "/index.html";
 		} else {

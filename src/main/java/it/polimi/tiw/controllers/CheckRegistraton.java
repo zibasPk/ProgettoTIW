@@ -1,4 +1,4 @@
-package controllers;
+package it.polimi.tiw.controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -66,7 +66,7 @@ public class CheckRegistraton extends HttpServlet {
 			return;
 		}
 		
-		String path = "";
+		String path = getServletContext().getContextPath();
 		if (user == null) {
 			try {
 				userService.createCredentials(email, name, surname, password);
@@ -75,7 +75,7 @@ public class CheckRegistraton extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database credential creation");
 				return;
 			}
-			path = path + "/GotoHomePage";
+			path = path + "/GotoHomePage"; 
 			request.getSession().setAttribute("user", user);
 		} else {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User already registered"); 
@@ -92,7 +92,5 @@ public class CheckRegistraton extends HttpServlet {
 		} catch (SQLException sqle) {
 		}
 	}
-	
-	
 	
 }
