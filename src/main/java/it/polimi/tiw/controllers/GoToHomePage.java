@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 //import java.util.List;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -31,6 +32,10 @@ public class GoToHomePage extends HttpServlet{
 	private TemplateEngine templateEngine;
 	private Connection connection = null;
 	
+	public GoToHomePage() {
+		super();
+	}
+	
 	public void init() throws ServletException {
 		try {
 			ServletContext context = getServletContext();
@@ -46,26 +51,18 @@ public class GoToHomePage extends HttpServlet{
 			throw new UnavailableException("Couldn't get db connection");
 		}
 		ServletContext servletContext = getServletContext();
+		Logger.debug(servletContext.getContextPath());
+		
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		Logger.debug("ciao");
 		templateResolver.setTemplateMode(TemplateMode.HTML);
-		Logger.debug("ciao");
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
-		Logger.debug("ciao");
 		templateResolver.setSuffix(".html");
 	}
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
-		String path = "/WEB-INF/home.html";
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		templateEngine.process(path, ctx, response.getWriter());
-		
-		/*
+			throws ServletException, IOException {	
 		List<Album> ownedAlbums = null;
 		List<Album> notOwnedAlbums = null;
 		
@@ -85,15 +82,20 @@ public class GoToHomePage extends HttpServlet{
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in retrieving albums from the database");
 			return;
-			
 		}
-		String path = "/WEB-INF/Home.html";
+		
+		String path = "/WEB-INF/home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("owned_albums", ownedAlbums);
 		ctx.setVariable("not_owned_albums", notOwnedAlbums);
 		templateEngine.process(path, ctx, response.getWriter());
-        */
+		
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doGet(request, response);
 	}
 	
 	
