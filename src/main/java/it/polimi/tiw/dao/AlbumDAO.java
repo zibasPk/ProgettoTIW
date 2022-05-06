@@ -20,12 +20,10 @@ public class AlbumDAO {
 	 */
 	public List<Album> findOwnedAlbums(int userID) throws SQLException{
 		List<Album> albums = new ArrayList<>();
-		String query = "SELECT * FROM progettotiw.album" + "WHERE userID = ?";
+		String query = "SELECT * FROM progettotiw.album WHERE ownerID = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			try (ResultSet result = pstatement.executeQuery();){
-				pstatement.setInt(1, userID);
-				pstatement.executeUpdate();
-				
+			pstatement.setInt(1, userID);
+			try (ResultSet result = pstatement.executeQuery();){				
 				while (result.next()) {
 					Album album = new Album();
 					album.setID(result.getInt("ID"));
@@ -43,12 +41,10 @@ public class AlbumDAO {
 	 */
 	public List<Album> findNotOwnedAlbums(int userID) throws SQLException{
 		List<Album> albums = new ArrayList<>();
-		String query = "SELECT * FROM progettotiw.album" + "WHERE userID != ?";
+		String query = "SELECT * FROM progettotiw.album WHERE ownerID != ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, userID);
 			try (ResultSet result = pstatement.executeQuery();){
-				pstatement.setInt(1, userID);
-				pstatement.executeUpdate();
-				
 				while (result.next()) {
 					Album album = new Album();
 					album.setID(result.getInt("ID"));

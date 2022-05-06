@@ -75,7 +75,7 @@ public class CheckRegistraton extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database credential creation");
 				return;
 			}
-			path = path + "/GotoHomePage"; 
+			path = path + "/GoToHomePage"; 
 			request.getSession().setAttribute("user", user);
 		} else {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User already registered"); 
