@@ -20,6 +20,14 @@
             <td><span th:text="${ablum.getTitle}">ablum_name</span></td>
             <td><span th:text="${ablum.getCreationDate}">ablum_date</span></td>
           </tr>
+          <tr>
+            <th>Other Albums</th>
+            <th>Creation Date</th>
+          </tr>
+          <tr th:each="ablum : ${not_owned_albums}">
+            <td><span th:text="${ablum.getTitle}">ablum_name</span></td>
+            <td><span th:text="${ablum.getCreationDate}">ablum_date</span></td>
+          </tr>
         </tbody>
       </table>
     </th:block>
