@@ -23,9 +23,8 @@ public class ImageDAO {
 		List<Image> images = new ArrayList<>();
 		String query = "SELECT * FROM progettotiw.image join progettotiw.image_to_album " + "ON ID = imageID WHERE albumID = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, albumID);
 			try (ResultSet result = pstatement.executeQuery();){
-				pstatement.setInt(1, albumID);
-				pstatement.executeUpdate();
 				while (result.next()) {
 					Image image = new Image();
 					image.setId(result.getInt("ID"));

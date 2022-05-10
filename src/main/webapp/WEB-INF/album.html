@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="ISO-8859-1">
+  <title th:text>album</title>
+  <!-- <link rel="stylesheet" type="text/css" media="all" /> -->
+</head>
+<body>
+  <th:block xmlns:th="http://www.thymeleaf.org">
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>images</th>
+        </tr>
+        <tr th:each="image:${images}">
+          <td><span th:text="${image.getPath}">album_path</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </th:block>
+</body>
+</html>
