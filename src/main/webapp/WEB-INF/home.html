@@ -23,7 +23,7 @@
           <td><span th:text="${album.getCreationDate}">ablum_date</span></td>
           <td><span th:text="${album.getID}">ablum_id</span></td>
           <td>
-            <a href="album.html" th:href="@{/album(id=${album.getID})}">
+            <a href="album.html" th:href="@{/album(id=${album.getID},page = 1)}">
               Open
             </a>
           </td>

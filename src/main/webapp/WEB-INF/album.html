@@ -15,16 +15,21 @@
           <th>images</th>
         </tr>
         <tr th:each="image,iter : ${images}">
-          <span th:if="${iter.count <= 5}">
             <td>
               <img style="max-height:200px; max-width:200px; overflow: hidden" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
             </td>
-          </span>
         </tr>
       </tbody>
     </table>
-    <span th:if="${images.size > 5}">
-      <button type="button_next">next images</button>
+    <span th:if="${param.page < pages}">
+      <form th:action="@{album(id=${param.id}, page=${nextPage})}" method="post">
+        <input type="submit" value="next images">
+      </form>
+    </span>
+    <span th:if="${param.page > 1}">
+      <form th:action="@{album(id=${param.id}, page=${prevPage})}" method="post">
+        <input type="submit" value="previous images">
+      </form>
     </span>
   </th:block>
 </body>
