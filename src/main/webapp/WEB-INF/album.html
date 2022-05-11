@@ -6,6 +6,7 @@
   <title th:text>album</title>
   <!-- <link rel="stylesheet" type="text/css" media="all" /> -->
 </head>
+
 <body>
   <th:block xmlns:th="http://www.thymeleaf.org">
     <table border="1">
@@ -13,11 +14,19 @@
         <tr>
           <th>images</th>
         </tr>
-        <tr th:each="image:${images}">
-          <td><span th:text="${image.getPath}">album_path</span></td>
+        <tr th:each="image,iter : ${images}">
+          <span th:if="${iter.count <= 5}">
+            <td>
+              <img style="max-height:200px; max-width:200px; overflow: hidden" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
+            </td>
+          </span>
         </tr>
       </tbody>
     </table>
+    <span th:if="${images.size > 5}">
+      <button type="button_next">next images</button>
+    </span>
   </th:block>
 </body>
+
 </html>
