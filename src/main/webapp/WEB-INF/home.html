@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <link rel="stylesheet" type="text/css" media="all" href="css/homestyle.css" />
   <meta charset="ISO-8859-1">
@@ -13,7 +12,7 @@
     <span class="welcome" th:text="'Welcome to your home page ' + ${session.user.getName}">
       Welcome to your home page
     </span>
-    <span th:if="${owned_albums.size > 0}">
+    <div th:if="${owned_albums.size > 0}">
       <table class="myalbums">
         <tbody>
           <tr>
@@ -31,10 +30,10 @@
           </tr>
         </tbody>
       </table>
-    </span>
-    <span th:unless="${owned_albums.size > 0}">
+    </div>
+    <div th:unless="${owned_albums.size > 0}">
       <p class="noalbum">No albums to your name</p>
-    </span>
+    </div>
     <table class="otheralbums">
       <tbody>
         <tr>
@@ -52,7 +51,6 @@
         </tr>
       </tbody>
     </table>
-
   </th:block>
 </body>
 

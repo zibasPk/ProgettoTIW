@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="ISO-8859-1">
-  <title th:text>album</title>
+  <title>album</title>
   <!-- <link rel="stylesheet" type="text/css" media="all" /> -->
 </head>
 
@@ -21,16 +21,16 @@
         </tr>
       </tbody>
     </table>
-    <span th:if="${param.page < pages}">
+    <div th:if="${param.page < pages}">
       <form th:action="@{album(id=${param.id}, page=${nextPage})}" method="post">
         <input type="submit" value="next images">
       </form>
-    </span>
-    <span th:if="${param.page > 1}">
+    </div>
+    <div th:if="${param.page > 1}">
       <form th:action="@{album(id=${param.id}, page=${prevPage})}" method="post">
         <input type="submit" value="previous images">
       </form>
-    </span>
+    </div>
   </th:block>
 </body>
 
