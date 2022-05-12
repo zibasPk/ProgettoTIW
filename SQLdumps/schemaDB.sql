@@ -88,7 +88,7 @@ CREATE TABLE `image` (
   PRIMARY KEY (`ID`),
   KEY `uploaderID_idx` (`uploaderID`),
   CONSTRAINT `uploaderID` FOREIGN KEY (`uploaderID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +97,7 @@ CREATE TABLE `image` (
 
 LOCK TABLES `image` WRITE;
 /*!40000 ALTER TABLE `image` DISABLE KEYS */;
-INSERT INTO `image` VALUES (1,1,'Girasoli','/img/girasoli.jpg','2021-04-18','girasoli al tramonto'),(2,3,'Autoritratto di Picasso','/img/autopicasso.jpg','1980-04-18','Autoritratto del pittore Pablo Picasso'),(3,2,'facciata teatro la scala','/img/lascala.jpg','1980-04-18','Facciata del teatro la scala di sera'),(4,1,'foto famiglia 1','/img/famiglia.jpg','2022-05-11','una foto famiglia'),(5,1,'foto famiglia 2','/img/famiglia2.jpg','2022-05-11','una foto famiglia'),(6,1,'foto famiglia 3','/img/famiglia3.jpg','2022-05-11','una foto famiglia'),(7,1,'foto famiglia 4','/img/famiglia4.jpg','2022-05-11','una foto famiglia'),(8,1,'foto famiglia 5','/img/famiglia5.jpg','2022-05-11','una foto famiglia'),(9,1,'foto famiglia 6','/img/famiglia6.jpg','2022-05-11','una foto famiglia');
+INSERT INTO `image` VALUES (1,1,'Girasoli','/img/girasoli.jpg','2021-04-18','girasoli al tramonto'),(2,3,'Autoritratto di Picasso','/img/autopicasso.jpg','1980-04-18','Autoritratto del pittore Pablo Picasso'),(3,2,'facciata teatro la scala','/img/lascala.jpg','1980-04-18','Facciata del teatro la scala di sera'),(4,1,'foto famiglia 1','/img/famiglia.jpg','2022-05-11','una foto famiglia'),(5,1,'foto famiglia 2','/img/famiglia2.jpg','2022-05-11','una foto famiglia'),(6,1,'foto famiglia 3','/img/famiglia3.jpg','2022-05-11','una foto famiglia'),(7,1,'foto famiglia 4','/img/famiglia4.jpg','2022-05-11','una foto famiglia'),(8,1,'foto famiglia 5','/img/famiglia5.jpg','2022-05-11','una foto famiglia'),(9,1,'foto famiglia 6','/img/famiglia6.jpg','2022-05-11','una foto famiglia'),(10,1,'islanda','/img/islanda.jpg','2005-03-23','il paesaggio islandese primaverile'),(11,1,'umbria','/img/umbria.jpg','2013-04-11','il paesaggio umbro estivo'),(12,1,'dolomiti','/img/dolomiti.jpg','2019-04-11','le dolomiti d\'estate'),(13,1,'canarie','/img/canarie.jpg','2015-04-13','le fantastiche canarie'),(14,1,'canada','/img/canada.jpg','2018-03-23','un paesaggio molto freddo');
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +125,7 @@ CREATE TABLE `image_to_album` (
 
 LOCK TABLES `image_to_album` WRITE;
 /*!40000 ALTER TABLE `image_to_album` DISABLE KEYS */;
-INSERT INTO `image_to_album` VALUES (3,1),(4,1),(5,1),(6,1),(7,1),(8,1),(9,1),(1,2),(2,3);
+INSERT INTO `image_to_album` VALUES (3,1),(4,1),(5,1),(6,1),(7,1),(8,1),(9,1),(10,1),(11,1),(12,1),(13,1),(14,1),(1,2),(2,3);
 /*!40000 ALTER TABLE `image_to_album` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -169,4 +169,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-11 13:26:34
+-- Dump completed on 2022-05-12 14:28:45
