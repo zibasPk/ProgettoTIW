@@ -95,6 +95,12 @@ public class GoToAlbumPage extends HttpServlet{
 			return;
 		}
 		
+		if (currPage * 5 > images.size() + 5) {
+			response.sendError(400, "invalid parameters");
+			return;
+		}
+			
+		
 		if (error != null) {
 			response.sendError(505, error);
 		} else {
