@@ -22,8 +22,8 @@ public class CommentDAO {
 	public void createComment(int imageID, int userID, String text) throws SQLException {
 		String query = "INSERT INTO progettotiw.comment (userID, imageID, text) VALUES (?, ?, ?)";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			pstatement.setInt(1, imageID);
-			pstatement.setInt(2, userID);
+			pstatement.setInt(1, userID);
+			pstatement.setInt(2, imageID);
 			pstatement.setString(3, text);
 			pstatement.executeUpdate();
 		}
@@ -38,7 +38,6 @@ public class CommentDAO {
 		
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, imageID);
-			pstatement.executeUpdate();
 			
 			try (ResultSet result = pstatement.executeQuery();){
 				while(result.next()) {

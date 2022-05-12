@@ -56,4 +56,25 @@ public class UserDAO {
 		}
 	}
 	
+	public User getUserFromID(int userID) throws SQLException {
+		String query = "SELECT ID, email, name, surname FROM progettotiw.user  WHERE ID = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, userID);
+			try (ResultSet result = pstatement.executeQuery();){
+				if(!result.isBeforeFirst())// no result check credentials failed
+					return null;
+				else {
+					Logger.debug("in else");
+					result.next();
+					User user = new User();
+					user.setId(result.getInt("ID"));
+					user.setEmail(result.getString("email"));
+					user.setName(result.getString("name"));
+					user.setSurname(result.getString("surname"));
+					return user;
+				}
+			}
+		}
+	}
+	
 }
