@@ -9,7 +9,14 @@
 
 <body>
   <th:block xmlns:th="http://www.thymeleaf.org">
-    <table border="1">
+    <div class="images">
+      <div th:each="image,iter : ${images}">
+        <div class="image">
+          <img style="max-height:200px; max-width:200px; overflow: hidden" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
+        </div>
+      </div>
+    </div>
+    <!-- <table border="1">
       <tbody>
         <tr>
           <th>images</th>
@@ -20,7 +27,7 @@
             </td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
     <div th:if="${param.page < pages}">
       <form th:action="@{album(id=${param.id}, page=${nextPage})}" method="post">
         <input type="submit" value="next images">
