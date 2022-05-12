@@ -1,0 +1,26 @@
+img.thumbnail {
+	max-height:200px; 
+	max-width:200px; 
+	overflow: hidden;
+}
+
+div.images {
+	background-color: #eaeaea;
+	padding: 25px;
+}
+
+div.image {
+  margin-bottom: 10px;
+}
+
+#align-middle img {
+  vertical-align: middle;
+}
+
+#align-base img {
+  vertical-align: bottom;
+}
+
+#display img {
+  display: block;
+}

@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <link rel="stylesheet" type="text/css" media="all" href="css/albumstyle.css" />
   <meta charset="ISO-8859-1">
   <title>album</title>
   <!-- <link rel="stylesheet" type="text/css" media="all" /> -->
@@ -12,9 +13,29 @@
     <div class="images">
       <div th:each="image,iter : ${images}">
         <div class="image">
-          <img style="max-height:200px; max-width:200px; overflow: hidden" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
+          <img class="thumbnail" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
         </div>
+
       </div>
+      <table class="form">
+        <tr>
+          <td>
+            <div th:if="${param.page > 1}">
+              <form th:action="@{album(id=${param.id}, page=${prevPage})}" method="post">
+                <input type="submit" value="previous images">
+              </form>
+
+          </td>
+          <td>
+    </div>
+    <div th:if="${param.page < pages}">
+      <form th:action="@{album(id=${param.id}, page=${nextPage})}" method="post">
+        <input type="submit" value="next images">
+      </form>
+    </div>
+    </td>
+    </tr>
+    </table>
     </div>
     <!-- <table border="1">
       <tbody>
@@ -28,16 +49,7 @@
         </tr>
       </tbody>
     </table> -->
-    <div th:if="${param.page < pages}">
-      <form th:action="@{album(id=${param.id}, page=${nextPage})}" method="post">
-        <input type="submit" value="next images">
-      </form>
-    </div>
-    <div th:if="${param.page > 1}">
-      <form th:action="@{album(id=${param.id}, page=${prevPage})}" method="post">
-        <input type="submit" value="previous images">
-      </form>
-    </div>
+
   </th:block>
 </body>
 
