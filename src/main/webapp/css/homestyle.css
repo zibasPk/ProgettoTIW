@@ -30,3 +30,12 @@ tbody td:nth-child(odd) {
 tbody td:nth-child(even) {
   background-color: #eee;
 }
+
+p.noalbum {
+	font-style: italic;
+}
+
+span.welcome {
+	font-size: 35px;
+	font-weight: bold;
+}

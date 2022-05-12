@@ -10,11 +10,11 @@
 
 <body>
   <th:block xmlns:th="http://www.thymeleaf.org">
-    <span th:text="'Welcome to your home page ' + ${session.user.getName}">
+    <span class="welcome" th:text="'Welcome to your home page ' + ${session.user.getName}">
       Welcome to your home page
     </span>
     <span th:if="${owned_albums.size > 0}">
-      <table>
+      <table class="myalbums">
         <tbody>
           <tr>
             <th>Your Albums</th>
@@ -33,9 +33,9 @@
       </table>
     </span>
     <span th:unless="${owned_albums.size > 0}">
-      <p>No albums to your name</p>
+      <p class="noalbum">No albums to your name</p>
     </span>
-    <table>
+    <table class="otheralbums">
       <tbody>
         <tr>
           <th>Other Albums</th>
