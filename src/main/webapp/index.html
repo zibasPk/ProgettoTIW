@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" media="all" href ="/css/indexstyle.css"/>
 <meta charset="ISO-8859-1">
 <title>Welcome to the login page!</title>
-<link rel="stylesheet" type="text/css" media="all" />
 </head>
 <body>
 	<h1>Let's get you started</h1>
 	<div  class="formdiv">
-		<p>Log into your account</p>
+		<h2>Log into your account</h2>
 		<form action="CheckLogin" method="POST">
 			<fieldset>
 				<p>
-					email: <input type="text" name="email" required />
+					email: <input type="text" placeholder="email goes here" name="email" required />
 				</p>
 				<p>
-					password: <input type="password" name="password" required />
+					password: <input type="password" placeholder="password goes here" name="password" required />
 				</p>
 				<input type="submit" value="user login">
 			</fieldset>
 		</form>
 	</div>
 	<div class="formdiv">
-		<p>Create a new account</p>
+		<h2>Create a new account</h2>
 		<form action="CheckRegistration" method="POST">
 			<fieldset>
 				<p>
-					nome: <input type="text" name="name" required />
+					name: <input type="text" placeholder="name goes here" name="name" required />
 				</p>
 				<p>
-					cognome: <input type="text" name="surname" required />
+					surname: <input type="text" placeholder="last name goes here" name="surname" required />
 				</p>
 				<p>
-					email: <input type="text" name="email" required />
+					email: <input type="text" placeholder="email goes here" name="email" required />
 				</p>
 				<p>
-					password: <input type="password" name="password" required />
+					password: <input type="password" placeholder="password goes here" name="password" required />
 				</p>
 				<p>
 				<input type="submit" value="register as a new user">

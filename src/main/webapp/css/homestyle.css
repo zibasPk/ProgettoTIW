@@ -1,0 +1,32 @@
+body {
+  font-family: sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+thead th {
+  width: 25%;
+}
+
+thead {
+  background-color: #333;
+  color: white;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 2%;
+}
+
+tbody td:nth-child(odd) {
+  background-color: #fff;
+}
+
+tbody td:nth-child(even) {
+  background-color: #eee;
+}
