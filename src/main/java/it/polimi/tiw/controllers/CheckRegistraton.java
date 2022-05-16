@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.validator.routines.EmailValidator;
 
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
@@ -54,28 +55,11 @@ public class CheckRegistraton extends HttpServlet {
 		String surname = request.getParameter("email");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		
-		//controlli sui dati inseriti nel form
-		if (email == null || email.isEmpty() || password == null || password.isEmpty() || 
-				name == null || name.isEmpty() || surname == null || surname.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
-			return;
-		}
-		//todo mettere i limiti in html
-		if (email.length() > MAX_EMAIL_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Email is too long");
-			return;
-		}
-		if (name.length() > MAX_NAME_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Name is too long");
-			return;
-		}
-		if (surname.length() > MAX_SURNAME_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Surname is too long");
-			return;
-		}
-		if (password.length() > MAX_PASSWORD_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Password is too long");
+		//todo far ripetere la password
+		//controlli sui dati inseriti nel form lato html?
+		String errorMsg = validateParams(email, name, surname, password);
+		if (errorMsg != null) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + errorMsg);
 			return;
 		}
 		
@@ -103,10 +87,44 @@ public class CheckRegistraton extends HttpServlet {
 			path = path + "/GoToHomePage"; 
 			request.getSession().setAttribute("user", user);
 		} else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User already registered"); 
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User already registered");
+			return;
 		}
 		
 		response.sendRedirect(path);
+	}
+	
+	private String validateParams(String email, String name, String surname, String password) {
+		if (email == null || email.isEmpty() || password == null || password.isEmpty() || 
+				name == null || name.isEmpty() || surname == null || surname.isEmpty()) {
+			return "Missing parameters";
+		}
+		//todo mettere i limiti in html
+		if (email.length() > MAX_EMAIL_LENGHT) {
+			return "The email is too long";
+		}
+		if (!EmailValidator.getInstance().isValid(email)) {
+			return "The email format is invalid";
+		}
+		if (name.length() > MAX_NAME_LENGHT) {
+			return "Name is too long";
+		}
+		if(!name.matches("\\S+")) {
+			return "Name contains an empty space";
+		}
+		if (surname.length() > MAX_SURNAME_LENGHT) {
+			return "Surname is too long";
+		}
+		if(!surname.matches("\\S+")) {
+			return "Surname contains an empty spaces";
+		}
+		if (password.length() > MAX_PASSWORD_LENGHT) {
+			return "Password is too long";
+		}
+		if(!password.matches("\\S+")) {
+			return "Password contains an empty spaces";
+		}
+		return null;
 	}
 	
 	public void destroy() {
@@ -117,5 +135,5 @@ public class CheckRegistraton extends HttpServlet {
 		} catch (SQLException sqle) {
 		}
 	}
-	
+		
 }

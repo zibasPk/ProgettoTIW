@@ -15,8 +15,10 @@ public class AlbumDAO {
 	public AlbumDAO(Connection connection) {
 			this.connection = connection;
 	}
-	/*
-	 * returns albums owned by user
+	/**
+	 * @param userID
+	 * @return albums owned by user
+	 * @throws SQLException
 	 */
 	public List<Album> findOwnedAlbums(int userID) throws SQLException{
 		List<Album> albums = new ArrayList<>();
@@ -36,8 +38,10 @@ public class AlbumDAO {
 		}
 		return albums;
 	}
-	/*
-	 * returns albums not owned by user
+	/**
+	 * @param userID
+	 * @return albums not owned by user
+	 * @throws SQLException
 	 */
 	public List<Album> findNotOwnedAlbums(int userID) throws SQLException{
 		List<Album> albums = new ArrayList<>();
@@ -56,6 +60,21 @@ public class AlbumDAO {
 			}
 		}
 		return albums;
+	}
+	/**
+	 * 
+	 * @return true if album with albumID exists in database
+	 */
+	public boolean validAlbum(int albumID) throws SQLException{
+		String query = "SELECT * FROM progettotiw.album WHERE ID = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, albumID);
+			try (ResultSet result = pstatement.executeQuery();){
+				if(!result.isBeforeFirst())// no results
+					return false;
+				return true;
+			}
+		}
 	}
 		
 }

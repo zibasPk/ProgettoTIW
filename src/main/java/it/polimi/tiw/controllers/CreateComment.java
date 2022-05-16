@@ -89,6 +89,14 @@ public class CreateComment extends HttpServlet {
 		String path = getServletContext().getContextPath();
 		path += "/album?id=" + albumId + "&page=" + pageNumber + "&img=" + imageId;
 		response.sendRedirect(path);
-	} 	
-
+	}
+	
+	public void destroy() {
+		try {
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (SQLException sqle) {
+		}
+	}
 }

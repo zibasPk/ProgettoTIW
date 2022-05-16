@@ -21,9 +21,11 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 //import org.tinylog.Logger;
+import org.tinylog.Logger;
 
 //import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.Image;
+import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.dao.CommentDAO;
 import it.polimi.tiw.dao.ImageDAO;
 import it.polimi.tiw.dao.UserDAO;
@@ -59,7 +61,7 @@ public class GoToAlbumPage extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-	private List<Image> sliceImages(List<Image> images, int page) {
+	private List<Image> sliceImageList(List<Image> images, int page) {
 		int from = page * 5 - 5;
 		int to = images.size() > page * 5 - 1 ? page * 5 : images.size();
 
@@ -70,11 +72,16 @@ public class GoToAlbumPage extends HttpServlet {
 			throws ServletException, IOException {
 		if (request.getParameterMap().containsKey("img")) {
 			String imgTxt = request.getParameter("img");
+			if (imgTxt == null || imgTxt.isEmpty()) {
+				Logger.debug("\nimg parameter incomplete redirecting to homepage");
+				response.sendRedirect(request.getServletContext().getContextPath() + "/GoToHomePage");
+			}
 			int img = 0;
 			try {
 				img = Integer.parseInt(imgTxt);
 			} catch (NumberFormatException e2) {
-				response.sendError(505, "Bad post ID input");
+				Logger.debug("\nimg parameter invalid redirecting to homepage");
+				response.sendRedirect(request.getServletContext().getContextPath() + "/GoToHomePage");
 			}
 			return img;
 		}
@@ -86,68 +93,91 @@ public class GoToAlbumPage extends HttpServlet {
 		Map<String, String> commentToAuthor = new HashMap<>();
 		int neededPages = 1;
 
-		String albumIDStr = request.getParameter("id");
+		String albumIdStr = request.getParameter("id");
 		String pageStr = request.getParameter("page");
-
-		if (albumIDStr == null || albumIDStr.isEmpty() || pageStr == null || pageStr.isEmpty()) {
-			response.sendError(505, "Parameters incomplete");
+		String path = getServletContext().getContextPath();
+			
+		//checking if params are empty
+		if (pageStr == null || pageStr.isEmpty() || albumIdStr == null || albumIdStr.isEmpty()) {
+			Logger.debug("\nparameters incomplete redirecting to homepage");
+			Logger.debug("non ha senso");
+			
+			response.sendRedirect(path + "/GoToHomePage");
 			return;
 		}
 
 		ImageDAO imgService = new ImageDAO(connection);
 		CommentDAO commentService = new CommentDAO(connection);
 		UserDAO userService = new UserDAO(connection);
-		int albumID = 0;
+		AlbumDAO albumService = new AlbumDAO(connection);
+		int albumId = 0;
 		int currPage = 0;
-		String error = null;
+		
+		//checking if params are parsable
 		try {
-			albumID = Integer.parseInt(albumIDStr);
+			albumId = Integer.parseInt(albumIdStr);
 			currPage = Integer.parseInt(pageStr);
 		} catch (NumberFormatException e2) {
-			error = "Bad post ID input";
+			Logger.debug("\nparameters invalid redirecting to homepage");
+			response.sendRedirect(path += "/GoToHomePage");
+			return;
 		}
 		Integer imageIndex = returnImageIndex(request, response);
-
+		
+		
 		try {
-			images = imgService.findImagesFromAlbum(albumID);
+			images = imgService.findImagesFromAlbum(albumId);
 			if (imageIndex != null) {
-				commentService.findCommentsForImage(imageIndex)
-				.forEach(comment -> {
+				if(!imgService.validImage(imageIndex)) {
+					Logger.debug("\nimg id is invalid redirecting to homepage");
+					response.sendRedirect(path += "/GoToHomePage");
+					return;
+				}
+				commentService.findCommentsForImage(imageIndex).forEach(comment -> {
 					try {
 						commentToAuthor.put(comment.getText(), userService.getUserFromID(comment.getUserID()).getFullName());
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-				});;
+				});	
 			}
-			
 			neededPages = (int) Math.ceil(((double) images.size()) / 5);
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retrieving comments from the database");
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in retrieving comments from the database");
 			return;
 		}
-
-		if (currPage * 5 > images.size() + 5) {
-			response.sendError(400, "invalid parameters");
-			return;
-		}
-
-		if (error != null) {
-			response.sendError(505, error);
-		} else {
-			String path = "/WEB-INF/album.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			if (imageIndex != null) {
-				ctx.setVariable("comments", commentToAuthor);
+		
+		//checking if params values are valid
+		try {
+			if(!albumService.validAlbum(albumId)) {
+				Logger.debug("album id isn't valid redirectiong to homepage");
+				response.sendRedirect(path + "/GoToHomePage");
+				return;
 			}
-			ctx.setVariable("images", sliceImages(images, currPage));
-			ctx.setVariable("pages", neededPages);
-			ctx.setVariable("nextPage", currPage + 1);
-			ctx.setVariable("prevPage", currPage - 1);
-			templateEngine.process(path, ctx, response.getWriter());
+			Logger.debug("album id is valid");
+		} catch(SQLException e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in check id param from the database");
+			return;
 		}
+		if (currPage * 5 > images.size() + 5 || currPage < 0) {
+			response.sendRedirect(path + "/album?id=" + albumId +"&page=1");
+			return;
+		}
+		
+		//using template resolver to generate html page
+		path = "/WEB-INF/album.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		if (imageIndex != null) {
+			ctx.setVariable("comments", commentToAuthor);
+		}
+		ctx.setVariable("images", sliceImageList(images, currPage));
+		ctx.setVariable("pages", neededPages);
+		ctx.setVariable("nextPage", currPage + 1);
+		ctx.setVariable("prevPage", currPage - 1);
+		templateEngine.process(path, ctx, response.getWriter());
 
 	}
 

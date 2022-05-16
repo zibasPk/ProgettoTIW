@@ -51,16 +51,9 @@ public class CheckLogin extends HttpServlet{
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		
-		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
-			return;
-		}
-		if (password.length() > MAX_PASSWORD_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Password is too long");
-			return;
-		}
-		if (email.length() > MAX_EMAIL_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Email is too long");
+		String errorMsg = validateParams(email, password);
+		if(errorMsg != null) {
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Login failed: " + errorMsg);
 			return;
 		}
 		
@@ -81,6 +74,19 @@ public class CheckLogin extends HttpServlet{
 			path += "/GoToHomePage";
 		}
 		response.sendRedirect(path);
+	}
+	
+	private String validateParams(String email, String password) {
+		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+			return "Missing parameters";
+		}
+		if (password.length() > MAX_PASSWORD_LENGHT) {
+			return "Password is too long";
+		}
+		if (email.length() > MAX_EMAIL_LENGHT) {
+			return "Email is too long";
+		}
+		return null;
 	}
 	
 	public void destroy() {

@@ -39,4 +39,15 @@ public class ImageDAO {
 		return images;
 	}
 	
+	public boolean validImage(int imageID) throws SQLException{
+		String query = "SELECT * FROM progettotiw.image WHERE ID = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, imageID);
+			try (ResultSet result = pstatement.executeQuery();){
+				if(!result.isBeforeFirst())// no results
+					return false;
+				return true;
+			}
+		}
+	}
 }
