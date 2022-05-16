@@ -21,6 +21,8 @@ import it.polimi.tiw.dao.UserDAO;
 public class CheckLogin extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
+	private final int MAX_EMAIL_LENGHT = 320;
+	private final int MAX_PASSWORD_LENGHT = 45;
 	
 	public void init() throws ServletException {
 		try {
@@ -51,6 +53,14 @@ public class CheckLogin extends HttpServlet{
 		
 		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
+			return;
+		}
+		if (password.length() > MAX_PASSWORD_LENGHT) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Password is too long");
+			return;
+		}
+		if (email.length() > MAX_EMAIL_LENGHT) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Email is too long");
 			return;
 		}
 		

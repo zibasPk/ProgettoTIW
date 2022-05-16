@@ -42,6 +42,20 @@ public class UserDAO {
 			}
 		}
 	}
+	public boolean checkDuplicateEmail(String email) throws SQLException {
+		String query = "SELECT ID FROM progettotiw.user  WHERE email = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, email);
+			try (ResultSet result = pstatement.executeQuery();){
+				if(!result.isBeforeFirst())// no result check credentials failed
+					return false;
+				else {
+					return true;
+				}
+			}
+		}
+	}
+	
 	/**
 	 * adds credentials to database
 	 */
@@ -64,7 +78,6 @@ public class UserDAO {
 				if(!result.isBeforeFirst())// no result check credentials failed
 					return null;
 				else {
-					Logger.debug("in else");
 					result.next();
 					User user = new User();
 					user.setId(result.getInt("ID"));

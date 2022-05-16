@@ -79,7 +79,7 @@ public class GoToHomePage extends HttpServlet{
 			notOwnedAlbums = bService.findNotOwnedAlbums(user.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY,
 					"Error in retrieving albums from the database");
 			return;
 		}

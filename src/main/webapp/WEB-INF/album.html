@@ -12,7 +12,7 @@
 <body>
   <th:block xmlns:th="http://www.thymeleaf.org">
     <div class="homebutton">
-      <form action="/GoToHomePage" method="post">
+      <form th:action="@{/GoToHomePage}" method="post">
         <input type="submit" value="back to homepage">
       </form>
     </div>
@@ -31,9 +31,9 @@
               </form>
               <div class="comments">
                 <p>Comments:</p>
-                <div th:each="comment,iter : ${comments}">
-                  <span th:text=${authors.get(iter.index)}></span>
-                  <div class="comment" th:text=${comment.getText}>
+                <div th:each="element: ${comments}">
+                  <span th:text=${element.value}></span>
+                  <div class="comment" th:text=${element.key}>
                     nice picture
                   </div>
                 </div>

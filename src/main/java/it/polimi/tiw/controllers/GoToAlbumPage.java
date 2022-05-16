@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -21,7 +22,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 //import org.tinylog.Logger;
 
-import it.polimi.tiw.beans.Comment;
+//import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.CommentDAO;
 import it.polimi.tiw.dao.ImageDAO;
@@ -82,8 +83,7 @@ public class GoToAlbumPage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Image> images = null;
-		List<Comment> comments = null;
-		List<String> authors = null;
+		Map<String, String> commentToAuthor = new HashMap<>();
 		int neededPages = 1;
 
 		String albumIDStr = request.getParameter("id");
@@ -111,15 +111,20 @@ public class GoToAlbumPage extends HttpServlet {
 		try {
 			images = imgService.findImagesFromAlbum(albumID);
 			if (imageIndex != null) {
-				comments = commentService.findCommentsForImage(imageIndex);
-				authors = new ArrayList<>();
-				for (Comment comment : comments)
-					authors.add(userService.getUserFromID(comment.getID()).getFullName());
+				commentService.findCommentsForImage(imageIndex)
+				.forEach(comment -> {
+					try {
+						commentToAuthor.put(comment.getText(), userService.getUserFromID(comment.getUserID()).getFullName());
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				});;
 			}
+			
 			neededPages = (int) Math.ceil(((double) images.size()) / 5);
 		} catch (Exception e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retrieving images from the database");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retrieving comments from the database");
 			return;
 		}
 
@@ -135,8 +140,7 @@ public class GoToAlbumPage extends HttpServlet {
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 			if (imageIndex != null) {
-				ctx.setVariable("comments", comments);
-				ctx.setVariable("authors", authors);
+				ctx.setVariable("comments", commentToAuthor);
 			}
 			ctx.setVariable("images", sliceImages(images, currPage));
 			ctx.setVariable("pages", neededPages);
