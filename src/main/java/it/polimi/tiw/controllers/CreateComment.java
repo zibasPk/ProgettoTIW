@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.tinylog.Logger;
+
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.CommentDAO;
 
@@ -63,6 +65,13 @@ public class CreateComment extends HttpServlet {
 				albumIdStr == null || albumIdStr.isEmpty() ||
 				pageNumberStr == null || pageNumberStr.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
+			return;
+		
+		}
+		// checks if the comment length is less than 280
+		if (comment.length() > 280) {
+			Logger.debug("errore commento");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The comment is too long");
 			return;
 		}
 		

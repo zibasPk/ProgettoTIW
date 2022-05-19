@@ -52,12 +52,12 @@ public class CheckRegistraton extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String name = request.getParameter("name");
-		String surname = request.getParameter("email");
+		String surname = request.getParameter("surname");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		//todo far ripetere la password
+		String confirmPassword = request.getParameter("confirm-password");
 		//controlli sui dati inseriti nel form lato html?
-		String errorMsg = validateParams(email, name, surname, password);
+		String errorMsg = validateParams(email, name, surname, password, confirmPassword);
 		if (errorMsg != null) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + errorMsg);
 			return;
@@ -96,9 +96,10 @@ public class CheckRegistraton extends HttpServlet {
 		response.sendRedirect(path);
 	}
 	
-	private String validateParams(String email, String name, String surname, String password) {
+	private String validateParams(String email, String name, String surname, String password, String confirmPassword) {
 		if (email == null || email.isEmpty() || password == null || password.isEmpty() || 
-				name == null || name.isEmpty() || surname == null || surname.isEmpty()) {
+				name == null || name.isEmpty() || surname == null || surname.isEmpty() || confirmPassword == null || 
+					confirmPassword.isEmpty()) {
 			return "Missing parameters";
 		}
 		//todo mettere i limiti in html
@@ -125,6 +126,9 @@ public class CheckRegistraton extends HttpServlet {
 		}
 		if(!password.matches("\\S+")) {
 			return "Password contains an empty spaces";
+		}
+		if(!password.equals(confirmPassword)) {
+			return "Passwords do not match";
 		}
 		return null;
 	}
