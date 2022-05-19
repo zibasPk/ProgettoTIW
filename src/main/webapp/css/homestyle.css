@@ -1,55 +1,40 @@
-img.thumbnail {
-  max-height: 200px;
-  max-width: 200px;
-  overflow: hidden;
+body {
+  font-family: sans-serif;
 }
 
-.fullimage {
-	max-block-size: 500px;
+th, td {
+  border: 1px solid black;
+  padding: 10px;
 }
 
- div.images {
-  background-color: #eaeaea;
-  padding: 25px;
+thead th {
+  width: 25%;
 }
 
-div.tumbimage {
+span.welcome {
+  font-weight: bolder;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 2%;
+  padding-right: 20px;
+}
+table.myalbums {
+  padding: 10px;
+}
+
+table.otheralbums {
+  padding: 10px;
+}
+div.home-message {
   display: flex;
-  align-items: center;
+  align-items: left;
   margin-bottom: 10px;
 }
 
-div.imgref {
-	padding-left: 10px;
+tbody td:nth-child(odd) {
+  background-color: #fff;
 }
 
-div.imgtext {
-
-}
-
-.img-title {
-	font-weight: bold;
-}
-
-.img-title {
-	font-weight: lighter;
-}
-.comment{
-	width: 500px;
-	background-color: #fff;
-}
-.comment-auth{
-	display: block;
-	font-weight: bold;
-	padding-right: 5px;
-}
-
-.album-button{
-	padding-bottom: 10px;
-}
-
-.comment-text{
-
-	overflow-wrap: break-word;
-	font-weight: lighter;
+tbody td:nth-child(even) {
+  background-color: #eee;
 }
