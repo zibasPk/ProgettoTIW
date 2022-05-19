@@ -63,6 +63,8 @@ public class CheckRegistraton extends HttpServlet {
 			return;
 		}
 		
+		//makes email lowercase
+		email = email.toLowerCase();
 		//controllo se esiste già un altro user con la stessa mail
 		UserDAO userService = new UserDAO(connection);
 		boolean duplicate = false;

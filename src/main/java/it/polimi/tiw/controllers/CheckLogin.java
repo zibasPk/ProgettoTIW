@@ -57,6 +57,9 @@ public class CheckLogin extends HttpServlet{
 			return;
 		}
 		
+		//makes email lowercase
+		email = email.toLowerCase();
+		
 		UserDAO userService = new UserDAO(connection);
 		User user = null;
 		try {

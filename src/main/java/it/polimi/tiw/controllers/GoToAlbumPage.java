@@ -99,9 +99,7 @@ public class GoToAlbumPage extends HttpServlet {
 			
 		//checking if params are empty
 		if (pageStr == null || pageStr.isEmpty() || albumIdStr == null || albumIdStr.isEmpty()) {
-			Logger.debug("\nparameters incomplete redirecting to homepage");
-			Logger.debug("non ha senso");
-			
+			Logger.debug("\nparameters incomplete redirecting to homepage");			
 			response.sendRedirect(path + "/GoToHomePage");
 			return;
 		}
@@ -155,13 +153,13 @@ public class GoToAlbumPage extends HttpServlet {
 				response.sendRedirect(path + "/GoToHomePage");
 				return;
 			}
-			Logger.debug("album id is valid");
 		} catch(SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in check id param from the database");
 			return;
 		}
 		if (currPage * 5 > images.size() + 5 || currPage < 0) {
+			Logger.debug("album page isn't valid redirecting to first page");
 			response.sendRedirect(path + "/album?id=" + albumId +"&page=1");
 			return;
 		}

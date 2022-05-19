@@ -20,6 +20,16 @@ version="4.0">
     <param-name>dbDriver</param-name>
     <param-value>com.mysql.cj.jdbc.Driver</param-value>
   </context-param>
+  <filter> 
+      <filter-name>UserChecker</filter-name>
+      <filter-class>it.polimi.tiw.filters.UserChecker</filter-class> 
+ </filter>
+ <filter-mapping> 
+    <filter-name>UserChecker</filter-name> 
+    <url-pattern>/CreateComment</url-pattern> 
+    <url-pattern>/album</url-pattern> 
+    <url-pattern>/GoToHomePage</url-pattern>  
+ </filter-mapping>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
