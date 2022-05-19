@@ -27,6 +27,7 @@ tbody td:nth-child(even) {
 }
 
 img.thumbnail {
+	
   max-height: 200px;
   max-width: 200px;
   overflow: hidden;
@@ -48,7 +49,7 @@ div.tumbimage {
 }
 
 div.imgref {
-	padding-left: 10px;
+	padding-right: 10px;
 }
 
 div.imgtext {
