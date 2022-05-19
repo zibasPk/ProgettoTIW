@@ -16,36 +16,34 @@
         <input type="submit" value="back to homepage">
       </form>
     </div>
-    <div class="images">
-      <div th:each="image,iter : ${images}">
-        <div class="fullimage" th:if="${param.img != null}">
-          <div th:if="${param.img == image.getID}">
-            <img class="fullimage" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
-            <div class="imgtext">
-              <p class="img-title" th:text="${image.getTitle} + ' ' + ${image.getDate}">titolo + data creazione immagine</p>
-              <p class="img-descr" th:text="${image.getDescription}">image description</p>
-            </div>
-            <form class="album-button" th:action="@{album(id=${param.id}, page=${param.page})}" method="post">
-              <input type="submit" value="back to album page">
-            </form>
-            <div class="comments">
-              <span>Comments:</span>
-              <div class="comment" th:each="element: ${comments}">
-                <span class="comment-auth" th:text="${element.value} + ':'">comment owner</span>
-                <span class="comment-text" th:text=${element.key}>
-                  nice picture
-                </span>
-              </div>
-              <form class="new-comment" th:action="@{CreateComment(album-id=${param.id}, image-id=${image.getID}, page=${param.page})}" method="post">
-                <p>
-                  new comment <input type="text" placeholder="write your comment here" name="comment" required />
-                </p>
-                <input type="submit" value="send comment" />
-              </form>
-            </div>
+    <div>
+      <div class="fullimage" th:if="${param.img != null}">
+          <img class="fullimagesrc" th:src="@{${bigimage.getPath}}" th:alt="${bigimage.getTitle}">
+          <div class="imgtext">
+            <p class="img-title" th:text="${bigimage.getTitle} + ' ' + ${bigimage.getDate}">titolo + data creazione immagine</p>
+            <p class="img-descr" th:text="${bigimage.getDescription}">image description</p>
           </div>
-        </div>
-        <div class="tumbimage" th:unless="${param.img != null}">
+          <form class="album-button" th:action="@{album(id=${param.id}, page=${param.page})}" method="post">
+            <input type="submit" value="back to album page">
+          </form>
+          <div class="comments">
+            <span>Comments:</span>
+            <div class="comment" th:each="element: ${comments}">
+              <span class="comment-auth" th:text="${element.value} + ':'">comment owner</span>
+              <span class="comment-text" th:text=${element.key}>
+                nice picture
+              </span>
+            </div>
+            <form class="new-comment" th:action="@{CreateComment(album-id=${param.id}, image-id=${bigimage.getID}, page=${param.page})}" method="post">
+              <p>
+                new comment <input type="text" placeholder="write your comment here" name="comment" required />
+              </p>
+              <input type="submit" value="send comment" />
+            </form>
+          </div>
+      </div>
+      <div class="images" th:unless="${param.img != null}">
+        <div class ="tumbimage" th:each="image,iter : ${images}">
           <div class="imgref">
             <a th:href="@{/album(id=${param.id}, page=${param.page}, img = ${image.getID})}">
               <img class="thumbnail" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
@@ -68,7 +66,6 @@
               </div>
             </td>
             <td>
-
               <div th:if="${param.page < pages}">
                 <form th:action="@{album(id=${param.id}, page=${nextPage})}" method="post">
                   <input type="submit" value="next images">

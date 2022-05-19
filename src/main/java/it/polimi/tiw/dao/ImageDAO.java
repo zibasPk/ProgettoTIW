@@ -19,11 +19,15 @@ public class ImageDAO {
 	/**
 	 * finds images from a certain album
 	 */
-	public List<Image> findImagesFromAlbum(int albumID) throws SQLException{
+	public List<Image> findFiveImagesFromAlbum(int albumID, int limit, int offset) throws SQLException{
 		List<Image> images = new ArrayList<>();
-		String query = "SELECT * FROM progettotiw.image join progettotiw.image_to_album " + "ON ID = imageID WHERE albumID = ?";
+		String query = "SELECT * FROM progettotiw.image join progettotiw.image_to_album ON ID = imageID"
+				+ " WHERE albumID = ?"
+				+ " LIMIT ? offset ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, albumID);
+			pstatement.setInt(2, limit);
+			pstatement.setInt(3, offset);
 			try (ResultSet result = pstatement.executeQuery();){
 				while (result.next()) {
 					Image image = new Image();
@@ -39,14 +43,22 @@ public class ImageDAO {
 		return images;
 	}
 	
-	public boolean validImage(int imageID) throws SQLException{
+	public Image findImage(int imageID) throws SQLException{
 		String query = "SELECT * FROM progettotiw.image WHERE ID = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, imageID);
 			try (ResultSet result = pstatement.executeQuery();){
+				Image image = new Image();
 				if(!result.isBeforeFirst())// no results
-					return false;
-				return true;
+					return null;
+				while (result.next()) {
+					image.setId(result.getInt("ID"));
+					image.setTitle(result.getString("title"));
+					image.setDescription(result.getString("description"));
+					image.setPath(result.getString("path"));
+					image.setDate(result.getDate("date"));
+				}
+				return image;
 			}
 		}
 	}

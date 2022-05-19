@@ -90,28 +90,29 @@ public class GoToAlbumPage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Image> images = null;
+		Image fullImage = null;
 		Map<String, String> commentToAuthor = new HashMap<>();
 		int neededPages = 1;
 
 		String albumIdStr = request.getParameter("id");
 		String pageStr = request.getParameter("page");
 		String path = getServletContext().getContextPath();
-			
-		//checking if params are empty
+
+		// checking if params are empty
 		if (pageStr == null || pageStr.isEmpty() || albumIdStr == null || albumIdStr.isEmpty()) {
-			Logger.debug("\nparameters incomplete redirecting to homepage");			
+			Logger.debug("\nparameters incomplete redirecting to homepage");
 			response.sendRedirect(path + "/GoToHomePage");
 			return;
 		}
-
+		// creating DAOs
 		ImageDAO imgService = new ImageDAO(connection);
 		CommentDAO commentService = new CommentDAO(connection);
 		UserDAO userService = new UserDAO(connection);
 		AlbumDAO albumService = new AlbumDAO(connection);
+
+		// checking if params are parsable
 		int albumId = 0;
 		int currPage = 0;
-		
-		//checking if params are parsable
 		try {
 			albumId = Integer.parseInt(albumIdStr);
 			currPage = Integer.parseInt(pageStr);
@@ -121,12 +122,11 @@ public class GoToAlbumPage extends HttpServlet {
 			return;
 		}
 		Integer imageIndex = returnImageIndex(request, response);
-		
-		
-		try {
-			images = imgService.findImagesFromAlbum(albumId);
-			if (imageIndex != null) {
-				if(!imgService.validImage(imageIndex)) {
+
+		if (imageIndex != null) {
+			try {
+				fullImage = imgService.findImage(imageIndex);
+				if (fullImage == null) {
 					Logger.debug("\nimg id is invalid redirecting to homepage");
 					response.sendRedirect(path += "/GoToHomePage");
 					return;
@@ -137,46 +137,61 @@ public class GoToAlbumPage extends HttpServlet {
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-				});	
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in retrieving comments from the database");
+				return;
 			}
-			neededPages = (int) Math.ceil(((double) images.size()) / 5);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in retrieving comments from the database");
-			return;
+			
+		} else {
+			
+			try {
+				int limit = currPage * 5;
+				int offset = currPage * 5 - 5;
+				images = imgService.findFiveImagesFromAlbum(albumId, limit, offset);
+				neededPages = (int) Math.ceil(((double) images.size()) / 5);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in retrieving images from the database");
+				return;
+			}
+			
 		}
-		
-		//checking if params values are valid
+
+		// checking if params values are valid
 		try {
-			if(!albumService.validAlbum(albumId)) {
+			if (!albumService.validAlbum(albumId)) {
 				Logger.debug("album id isn't valid redirectiong to homepage");
 				response.sendRedirect(path + "/GoToHomePage");
 				return;
 			}
-		} catch(SQLException e) {
+			if (currPage * 5 - 5 > albumService.findAlbumImageCount(albumId) || currPage < 0) {
+				Logger.debug("album page isn't valid redirecting to first page");
+				response.sendRedirect(path + "/album?id=" + albumId + "&page=1");
+				return;
+			}
+		} catch (SQLException e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in check id param from the database");
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in checking id param from the database");
 			return;
 		}
-		if (currPage * 5 > images.size() + 5 || currPage < 0) {
-			Logger.debug("album page isn't valid redirecting to first page");
-			response.sendRedirect(path + "/album?id=" + albumId +"&page=1");
-			return;
-		}
-		
-		//using template resolver to generate html page
+
+		// using template resolver to generate html page and setting up ctx variables
 		path = "/WEB-INF/album.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		if (imageIndex != null) {
 			ctx.setVariable("comments", commentToAuthor);
+			ctx.setVariable("bigimage", fullImage);
+			Logger.debug("settato le contexts variablerere" + fullImage.toString());
+		} else {
+			ctx.setVariable("images", sliceImageList(images, currPage));
+			ctx.setVariable("pages", neededPages);
+			ctx.setVariable("nextPage", currPage + 1);
+			ctx.setVariable("prevPage", currPage - 1);
 		}
-		ctx.setVariable("images", sliceImageList(images, currPage));
-		ctx.setVariable("pages", neededPages);
-		ctx.setVariable("nextPage", currPage + 1);
-		ctx.setVariable("prevPage", currPage - 1);
 		templateEngine.process(path, ctx, response.getWriter());
-
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
