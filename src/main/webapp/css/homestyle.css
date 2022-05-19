@@ -1,41 +1,55 @@
-body {
-  font-family: sans-serif;
+img.thumbnail {
+  max-height: 200px;
+  max-width: 200px;
+  overflow: hidden;
 }
 
-table {
-  border-collapse: collapse;
+.fullimage {
+	max-block-size: 500px;
 }
 
-th, td {
-  border: 1px solid black;
-  padding: 10px;
+ div.images {
+  background-color: #eaeaea;
+  padding: 25px;
 }
 
-thead th {
-  width: 25%;
+div.tumbimage {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-thead {
-  background-color: #333;
-  color: white;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 2%;
+div.imgref {
+	padding-left: 10px;
 }
 
-tbody td:nth-child(odd) {
-  background-color: #fff;
+div.imgtext {
+
 }
 
-tbody td:nth-child(even) {
-  background-color: #eee;
-}
-
-p.noalbum {
-	font-style: italic;
-}
-
-span.welcome {
-	font-size: 35px;
+.img-title {
 	font-weight: bold;
+}
+
+.img-title {
+	font-weight: lighter;
+}
+.comment{
+	width: 500px;
+	background-color: #fff;
+}
+.comment-auth{
+	display: block;
+	font-weight: bold;
+	padding-right: 5px;
+}
+
+.album-button{
+	padding-bottom: 10px;
+}
+
+.comment-text{
+
+	overflow-wrap: break-word;
+	font-weight: lighter;
 }
