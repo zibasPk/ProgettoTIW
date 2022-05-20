@@ -19,7 +19,7 @@
     <div>
       <div class="fullimage" th:if="${param.img != null}">
           <img class="fullimagesrc" th:src="@{${bigimage.getPath}}" th:alt="${bigimage.getTitle}">
-          <div class="imgtext">
+          <div class="fullimgtext">
             <p class="img-title" th:text="${bigimage.getTitle} + ' ' + ${bigimage.getDate}">titolo + data creazione immagine</p>
             <p class="img-descr" th:text="${bigimage.getDescription}">image description</p>
           </div>
@@ -38,7 +38,7 @@
               <p>
                 new comment <input type="text" placeholder="write your comment here" name="comment" required />
               </p>
-              <input type="submit" value="send comment" />
+              <input type="submit" value="send comment" id="commentbox"/>
             </form>
           </div>
       </div>
@@ -49,7 +49,7 @@
               <img class="thumbnail" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
             </a>
           </div>
-          <div class="imgtext">
+          <div class="thumbimgtext">
             <p class="img-title" th:text="${image.getTitle} + ' ' + ${image.getDate}">titolo + data creazione immagine</p>
             <p class="img-descr" th:text="${image.getDescription}">descrizione immagine</p>
           </div>

@@ -3,7 +3,7 @@ img.thumbnail {
   width: 206px;
   overflow: hidden;
   border-style: solid;
-	border-color: #a9a9a9;
+  border-color: #a9a9a9;
 }
 
 /* .fullimage {
@@ -24,30 +24,37 @@ div.tumbimage {
 div.imgref {
 	padding: 0px;
 	
+	
 }
 
-div.imgtext {
+div.thumbimgtext {
 	
 	height: 155px;
 	padding-left: 20px;
 	padding-right: 20px;
 	background-color: #d5d5d5;
-	
 }
 
 
 .img-title {
+	font-weight: bold;
+}
+
+.img-descr {
 	font-weight: lighter;
 	font-style: italic;
-}
+} 
+
 .comment{
 	width: 500px;
 	background-color: #fff;
 }
+
 .comment-auth{
 	display: block;
 	font-weight: bold;
-	padding-right: 5px;
+	padding: 3px;
+	background-color: #c0c0c0;
 }
 
 .album-button{
@@ -55,7 +62,37 @@ div.imgtext {
 }
 
 .comment-text{
-
+	
+	background-color: #c0c0c0;
 	overflow-wrap: break-word;
 	font-weight: lighter;
+}
+
+img.fullimagesrc {
+	border-style: solid;
+	border-color: black;
+}
+
+div.comments {
+	padding: 10px;
+	border-style: solid;
+	border-color: black;
+	background-color: #c0c0c0;
+}
+
+div.comment {
+	
+	background-color: #c0c0c0;
+} 
+
+form.new-comment {
+	padding: 10px;
+	border-style: solid;
+	border-color: black;
+	background-color: #eaeaea;
+	font-size: 25px;
+}
+
+#commentbox {
+	 height:200px;
 }
