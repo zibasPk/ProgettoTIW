@@ -2,13 +2,12 @@ img.thumbnail {
   height: 143px;
   width: 206px;
   overflow: hidden;
-  border-style: solid;
-  border-color: #a9a9a9;
+  box-shadow: 0 0 0 1px silver, 0px 0px 20px 0px #989898;
 }
 
-/* .fullimage {
-	max-block-size: 500px;
-} */
+.fullimage {
+	margin-top: 10px;
+}
 
 div.images {
   background-color: #eaeaea;
@@ -19,20 +18,19 @@ div.tumbimage {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+	background-color: #d5d5d5;
+  /*! display: flex; */
 }
 
 div.imgref {
 	padding: 0px;
-	
-	
 }
 
 div.thumbimgtext {
-	
-	height: 155px;
+
+/* 	height: 155px; */
 	padding-left: 20px;
 	padding-right: 20px;
-	background-color: #d5d5d5;
 }
 
 
@@ -43,7 +41,7 @@ div.thumbimgtext {
 .img-descr {
 	font-weight: lighter;
 	font-style: italic;
-} 
+}
 
 .comment{
 	width: 500px;
@@ -53,8 +51,7 @@ div.thumbimgtext {
 .comment-auth{
 	display: block;
 	font-weight: bold;
-	padding: 3px;
-	background-color: #c0c0c0;
+
 }
 
 .album-button{
@@ -62,39 +59,44 @@ div.thumbimgtext {
 }
 
 .comment-text{
-	
-	background-color: #c0c0c0;
 	overflow-wrap: break-word;
 	font-weight: lighter;
 }
 
 img.fullimagesrc {
-	border-style: solid;
-	border-color: black;
+	box-shadow: 0 0 0 1px silver, 0px 0px 20px 0px #989898;
 }
 
 div.comments {
+	width: 70em;
 	padding: 10px;
-	border-style: solid;
-	border-color: black;
-	background-color: #c0c0c0;
+	box-shadow: 0 0 0 1px silver, 0 0 5px 0 #989898;
+	background-color: #dbe2ea;
 }
 
 div.comment {
-	
-	background-color: #c0c0c0;
-} 
+	box-shadow: 0 0 0 1px silver, 0 0 5px 0 #989898;
+	background-color: #dbe2ea;
+	padding: 2px;
+	margin: 10px;
+	width: auto;
+
+}
 
 form.new-comment {
-	padding: 10px;
-	border-style: solid;
-	border-color: black;
+	padding-bottom: 2px;
+	padding-left: 10px;
+	box-shadow: 0 0 0 1px silver, 0 0 5px 0 #989898;
 	background-color: #eaeaea;
-	font-size: 25px;
+	font-size: 20px;
+	width: auto;
 }
 
 #commentbox {
-	 height:50px;
-	 width: 1200px;
-	 font-size: 20px;
+	 margin-top: 10px;
+	 margin-left: auto;
+   margin-right: auto;
+	 height:80px;
+	 width: 600px;
+	 font-size: 15px;
 }

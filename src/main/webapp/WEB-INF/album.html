@@ -35,10 +35,12 @@
               </span>
             </div>
             <form class="new-comment" th:action="@{CreateComment(album-id=${param.id}, image-id=${bigimage.getID}, page=${param.page})}" method="post">
-              <p>
-                new comment <input type="text" placeholder="write your comment here" name="comment" id="commentbox" required />
-              </p>
-              <input type="submit" value="send comment"/>
+              <div>
+                <input type="text" placeholder="write your comment here" name="comment" id="commentbox" required />
+              </div>
+              <div>
+                <input type="submit" value="send comment"/>
+              </div>
             </form>
           </div>
       </div>
