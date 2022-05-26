@@ -23,7 +23,7 @@ public class AlbumDAO {
 	 */
 	public List<Album> findOwnedAlbums(int userID) throws SQLException {
 		List<Album> albums = new ArrayList<>();
-		String query = "SELECT * FROM progettotiw.album WHERE ownerID = ?";
+		String query = "SELECT * FROM progettotiw.album WHERE ownerID = ? order by creation_date DESC";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, userID);
 			try (ResultSet result = pstatement.executeQuery();) {
@@ -62,7 +62,7 @@ public class AlbumDAO {
 	 */
 	public List<Album> findNotOwnedAlbums(int userID) throws SQLException {
 		List<Album> albums = new ArrayList<>();
-		String query = "SELECT * FROM progettotiw.album WHERE ownerID != ?";
+		String query = "SELECT * FROM progettotiw.album WHERE ownerID != ? order by creation_date DESC";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, userID);
 			try (ResultSet result = pstatement.executeQuery();) {
