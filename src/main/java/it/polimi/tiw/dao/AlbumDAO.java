@@ -98,22 +98,19 @@ public class AlbumDAO {
 	 * @return the album containing the image with the given imageId, if there aren't any results it returns null
 	 * @throws SQLException
 	 */
-	public Album findImageAlbum(int imageID) throws SQLException {
-		String query = "SELECT albumID FROM progettotiw.image_to_album WHERE ID = ?";
+	public Integer findImageAlbumID(int imageID) throws SQLException {
+		String query = "SELECT albumID FROM progettotiw.image_to_album WHERE imageID = ?";
+		Integer albumID = null;
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, imageID);
 			try (ResultSet result = pstatement.executeQuery();) {
-				Album album = new Album();
 				if (!result.isBeforeFirst())// no results
-					return null;
+					return albumID;
 				while (result.next()) {
-					album.setID(result.getInt("ID"));
-					album.setTitle(result.getString("title"));
-					album.setOwnerID(result.getInt("ownerID"));
-					album.setCreationDate(result.getDate("creation_date"));
+					albumID = result.getInt("albumID");
 				}
-				return album;
 			}
+			return albumID;
 		}
 	}
 }

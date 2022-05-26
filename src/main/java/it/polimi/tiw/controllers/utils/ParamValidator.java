@@ -21,10 +21,11 @@ public class ParamValidator {
 	public ParamValidator(HttpServletResponse response) {
 		this.response = response;
 	}
-	
+
 	/**
-	 * This method checks the parameters to make sure they're valid.
-	 * Whenever a parameter is null or too long the login fails and an error message is displayed.
+	 * This method checks the parameters to make sure they're valid. Whenever a
+	 * parameter is null or too long the login fails and an error message is
+	 * displayed.
 	 */
 	public boolean validateLogin(String email, String password) throws IOException {
 		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
@@ -41,10 +42,11 @@ public class ParamValidator {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * This method checks the parameters to make sure they're valid. 
-	 * Whenever a parameter doesn't follow certain rules the sign up fails and an error message is displayed.
+	 * This method checks the parameters to make sure they're valid. Whenever a
+	 * parameter doesn't follow certain rules the sign up fails and an error message
+	 * is displayed.
 	 */
 	public boolean validateRegistration(String email, String name, String surname, String password,
 			String confirmPassword) throws IOException {
@@ -93,9 +95,10 @@ public class ParamValidator {
 	}
 
 	/**
-	 * This method checks whether the album exists and that the page number fits the number of images of said album.
-	 * Whenever one or both these conditions aren't valid, the user is redirected to the home page and an error message
-	 * is displayed.
+	 * This method checks whether the album exists and that the page number fits the
+	 * number of images of said album. Whenever one or both these conditions aren't
+	 * valid, the user is redirected to the home page and an error message is
+	 * displayed.
 	 */
 	public boolean validateAlbum(AlbumDAO albumService, String path, int albumId, int currPage) throws IOException {
 		try {
@@ -116,32 +119,27 @@ public class ParamValidator {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * This method checks that the image belongs to the album (by checking imgID and albumId).
-	 * Whenever this condition isn't valid the user is redirected to the home page and an error message is displayed.
+	 * This method checks that the image belongs to the album (by checking imgID and
+	 * albumId). Whenever this condition isn't valid the user is redirected to the
+	 * home page and an error message is displayed.
 	 */
-	public boolean validateShowImage(AlbumDAO albumService, ImageDAO imgService, String path, int imgID, int albumId,
+	public boolean validateShowImage(AlbumDAO albumService, ImageDAO imgService, String path, int imgID, int albumID,
 			int currPage) throws IOException {
 		try {
-			try {
-				if (albumService.findImageAlbum(imgID).getID() != imgID) {
-					response.sendRedirect(path + "/album?id=" + albumId + "&page=" + currPage);
-					return false;
-				}
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-				response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in checking id param from the database");
+			if (albumService.findImageAlbumID(imgID) != albumID) {
+				response.sendRedirect(path + "/album?id=" + albumID + "&page=" + currPage);
 				return false;
 			}
 			if (imgService.findImage(imgID) == null) {
 				Logger.debug("\nimg id is invalid redirecting to homepage");
-				response.sendRedirect(path + "/album?id=" + albumId + "&page=" + currPage);
+				response.sendRedirect(path + "/album?id=" + albumID + "&page=" + currPage);
 				return false;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in checking image param from the database");
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in checking image & album param from the database");
 			return false;
 		}
 		return true;
