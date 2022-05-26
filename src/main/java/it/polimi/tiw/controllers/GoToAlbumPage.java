@@ -91,7 +91,7 @@ public class GoToAlbumPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Image> images = null;
 		Image fullImage = null;
-		Map<String, String> commentToAuthor = new HashMap<>();
+		Map<String, String> commentToAuthor = new LinkedHashMap<>();
 		int neededPages = 1;
 
 		String albumIdStr = request.getParameter("id");
