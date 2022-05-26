@@ -44,7 +44,7 @@ public class Image implements Serializable{
 	}
 	
 	public String toString() {
-		return "id: " + id + "title: " + title + "date: " + date.toString();
+		return " id: " + id + " title: " + title + " date: " + date.toString();
 	}
 	
 }

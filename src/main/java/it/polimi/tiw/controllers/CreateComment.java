@@ -96,7 +96,7 @@ public class CreateComment extends HttpServlet {
 		}
 		
 		String path = getServletContext().getContextPath();
-		path += "/album?id=" + albumId + "&page=" + pageNumber + "&img=" + imageId;
+		path += "/showImage?id=" + albumId + "&page=" + pageNumber + "&img=" + imageId;
 		response.sendRedirect(path);
 	}
 	

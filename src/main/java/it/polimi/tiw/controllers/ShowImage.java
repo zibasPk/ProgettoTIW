@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -23,10 +24,12 @@ import org.tinylog.Logger;
 //import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.AlbumDAO;
+import it.polimi.tiw.dao.CommentDAO;
 import it.polimi.tiw.dao.ImageDAO;
+import it.polimi.tiw.dao.UserDAO;
 
-@WebServlet("/album")
-public class GoToAlbumPage extends HttpServlet {
+@WebServlet("/showImage")
+public class ShowImage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection = null;
@@ -55,19 +58,14 @@ public class GoToAlbumPage extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-	private List<Image> sliceImageList(List<Image> images, int page) {
-		int from = page * 5 - 5;
-		int to = images.size() > page * 5 - 1 ? page * 5 : images.size();
-
-		return images.subList(from, to);
-	}
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Image> images = null;
-		int neededPages = 1;
+		Image fullImage = null;
+		Map<String, String> commentToAuthor = new LinkedHashMap<>();
 
 		String albumIdStr = request.getParameter("id");
 		String pageStr = request.getParameter("page");
+		String imgTxt = request.getParameter("img");
+
 		String path = getServletContext().getContextPath();
 
 		// checking if params are empty
@@ -76,11 +74,8 @@ public class GoToAlbumPage extends HttpServlet {
 			response.sendRedirect(path + "/GoToHomePage");
 			return;
 		}
-		// creating DAOs
-		ImageDAO imgService = new ImageDAO(connection);
-		AlbumDAO albumService = new AlbumDAO(connection);
-
-		// checking if params are parsable
+		
+		// checking if album & currPage params are parsable
 		int albumId = 0;
 		int currPage = 0;
 		try {
@@ -92,7 +87,13 @@ public class GoToAlbumPage extends HttpServlet {
 			return;
 		}
 
-		// checking if params values are valid
+		// creating DAOs
+		ImageDAO imgService = new ImageDAO(connection);
+		CommentDAO commentService = new CommentDAO(connection);
+		UserDAO userService = new UserDAO(connection);
+		AlbumDAO albumService = new AlbumDAO(connection);
+
+		// checking if album & currPage params values are valid
 		try {
 			if (!albumService.validAlbum(albumId)) {
 				Logger.debug("album id isn't valid redirectiong to homepage");
@@ -109,16 +110,40 @@ public class GoToAlbumPage extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in checking id param from the database");
 			return;
 		}
-
-		// fetching the five images of the current page from database
+		
+		// checking if img param is valid
+		if (imgTxt == null || imgTxt.isEmpty()) {
+			Logger.debug("\nimg parameter incomplete redirecting to homepage");
+			response.sendRedirect(request.getServletContext().getContextPath() + "/GoToHomePage");
+		}
+		
+		//parsing img index
+		int imageIndex = 0;
 		try {
-			int limit = currPage * 5;
-			int offset = currPage * 5 - 5;
-			images = imgService.findFiveImagesFromAlbum(albumId, limit, offset);
-			neededPages = (int) Math.ceil(((double) images.size()) / 5);
-		} catch (SQLException e) {
+			imageIndex = Integer.parseInt(imgTxt);
+		} catch (NumberFormatException e2) {
+			Logger.debug("\nimg parameter invalid redirecting to homepage");
+			response.sendRedirect(request.getServletContext().getContextPath() + "/GoToHomePage");
+		}
+
+		// fetching full image + comments from database
+		try {
+			fullImage = imgService.findImage(imageIndex);
+			if (fullImage == null) {
+				Logger.debug("\nimg id is invalid redirecting to homepage");
+				response.sendRedirect(path + "/album?id=" + albumId + "&page=" + currPage);
+				return;
+			}
+			commentService.findCommentsForImage(imageIndex).forEach(comment -> {
+				try {
+					commentToAuthor.put(comment.getText(), userService.getUserFromID(comment.getUserID()).getFullName());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (Exception e) {
 			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in retrieving images from the database");
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in retrieving comments from the database");
 			return;
 		}
 
@@ -126,11 +151,9 @@ public class GoToAlbumPage extends HttpServlet {
 		path = "/WEB-INF/album.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("images", sliceImageList(images, currPage));
-		ctx.setVariable("pages", neededPages);
-		ctx.setVariable("nextPage", currPage + 1);
-		ctx.setVariable("prevPage", currPage - 1);
-
+		ctx.setVariable("comments", commentToAuthor);
+		ctx.setVariable("bigimage", fullImage);
+		Logger.debug("bigimage context variable was set" + fullImage.toString());
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

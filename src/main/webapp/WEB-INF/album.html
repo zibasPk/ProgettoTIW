@@ -17,7 +17,7 @@
       </form>
     </div>
     <div>
-      <div class="fullimage" th:if="${param.img != null}">
+      <div class="fullimage" th:if="${bigimage != null}">
           <img class="fullimagesrc" th:src="@{${bigimage.getPath}}" th:alt="${bigimage.getTitle}">
           <div class="fullimgtext">
             <p class="img-title" th:text="${bigimage.getTitle} + ' ' + ${bigimage.getDate}">titolo + data creazione immagine</p>
@@ -44,10 +44,10 @@
             </form>
           </div>
       </div>
-      <div class="images" th:unless="${param.img != null}">
+      <div class="images" th:unless="${bigimage != null}">
         <div class ="tumbimage" th:each="image,iter : ${images}">
           <div class="imgref">
-            <a th:href="@{/album(id=${param.id}, page=${param.page}, img = ${image.getID})}">
+            <a th:href="@{/showImage(id=${param.id}, page=${param.page}, img = ${image.getID})}">
               <img class="thumbnail" th:src="@{${image.getPath}}" th:alt="${image.getTitle}">
             </a>
           </div>
