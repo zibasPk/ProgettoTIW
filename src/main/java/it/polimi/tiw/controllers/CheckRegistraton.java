@@ -13,19 +13,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.validator.routines.EmailValidator;
-
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.controllers.utils.ParamValidator;
 import it.polimi.tiw.dao.UserDAO;
 
 @WebServlet("/CheckRegistration")
 public class CheckRegistraton extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-  private final int MAX_EMAIL_LENGHT = 320;
-	private final int MAX_NAME_LENGHT = 45;
-	private final int MAX_SURNAME_LENGHT = 45;
-	private final int MAX_PASSWORD_LENGHT = 45;
 	
 	public void init() throws ServletException {
 		try {
@@ -56,12 +51,10 @@ public class CheckRegistraton extends HttpServlet {
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		String confirmPassword = request.getParameter("confirm-password");
-		//controlli sui dati inseriti nel form lato html?
-		String errorMsg = validateParams(email, name, surname, password, confirmPassword);
-		if (errorMsg != null) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + errorMsg);
-			return;
-		}
+		ParamValidator validator = new ParamValidator(response);
+		
+		//check param validity
+		if(!validator.validateRegistration(email, name, surname, password, confirmPassword)) return;
 		
 		//makes email lowercase
 		email = email.toLowerCase();
@@ -96,49 +89,13 @@ public class CheckRegistraton extends HttpServlet {
 		response.sendRedirect(path);
 	}
 	
-	private String validateParams(String email, String name, String surname, String password, String confirmPassword) {
-		if (email == null || email.isEmpty() || password == null || password.isEmpty() || 
-				name == null || name.isEmpty() || surname == null || surname.isEmpty() || confirmPassword == null || 
-					confirmPassword.isEmpty()) {
-			return "Missing parameters";
-		}
-		//todo mettere i limiti in html
-		if (email.length() > MAX_EMAIL_LENGHT) {
-			return "The email is too long";
-		}
-		if (!EmailValidator.getInstance().isValid(email)) {
-			return "The email format is invalid";
-		}
-		if (name.length() > MAX_NAME_LENGHT) {
-			return "Name is too long";
-		}
-		if(!name.matches("\\S+")) {
-			return "Name contains an empty space";
-		}
-		if (surname.length() > MAX_SURNAME_LENGHT) {
-			return "Surname is too long";
-		}
-		if(!surname.matches("\\S+")) {
-			return "Surname contains an empty spaces";
-		}
-		if (password.length() > MAX_PASSWORD_LENGHT) {
-			return "Password is too long";
-		}
-		if(!password.matches("\\S+")) {
-			return "Password contains an empty spaces";
-		}
-		if(!password.equals(confirmPassword)) {
-			return "Passwords do not match";
-		}
-		return null;
-	}
-	
 	public void destroy() {
 		try {
 			if (connection != null) {
 				connection.close();
 			}
 		} catch (SQLException sqle) {
+			sqle.printStackTrace();
 		}
 	}
 		

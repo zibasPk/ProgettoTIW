@@ -22,6 +22,7 @@ import org.tinylog.Logger;
 
 //import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.Image;
+import it.polimi.tiw.controllers.utils.ParamValidator;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.dao.ImageDAO;
 
@@ -55,13 +56,6 @@ public class GoToAlbumPage extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-	private List<Image> sliceImageList(List<Image> images, int page) {
-		int from = page * 5 - 5;
-		int to = images.size() > page * 5 - 1 ? page * 5 : images.size();
-
-		return images.subList(from, to);
-	}
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Image> images = null;
 		int neededPages = 1;
@@ -69,6 +63,7 @@ public class GoToAlbumPage extends HttpServlet {
 		String albumIdStr = request.getParameter("id");
 		String pageStr = request.getParameter("page");
 		String path = getServletContext().getContextPath();
+		ParamValidator validator = new ParamValidator(response);
 
 		// checking if params are empty
 		if (pageStr == null || pageStr.isEmpty() || albumIdStr == null || albumIdStr.isEmpty()) {
@@ -93,22 +88,7 @@ public class GoToAlbumPage extends HttpServlet {
 		}
 
 		// checking if params values are valid
-		try {
-			if (!albumService.validAlbum(albumId)) {
-				Logger.debug("album id isn't valid redirectiong to homepage");
-				response.sendRedirect(path + "/GoToHomePage");
-				return;
-			}
-			if (currPage * 5 - 5 > albumService.findAlbumImageCount(albumId) || currPage < 0) {
-				Logger.debug("album page isn't valid redirecting to first page");
-				response.sendRedirect(path + "/album?id=" + albumId + "&page=1");
-				return;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in checking id param from the database");
-			return;
-		}
+		if(!validator.validateAlbum(albumService, path, albumId, currPage)) return;
 
 		// fetching the five images of the current page from database
 		try {
@@ -126,7 +106,7 @@ public class GoToAlbumPage extends HttpServlet {
 		path = "/WEB-INF/album.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("images", sliceImageList(images, currPage));
+		ctx.setVariable("images", images);
 		ctx.setVariable("pages", neededPages);
 		ctx.setVariable("nextPage", currPage + 1);
 		ctx.setVariable("prevPage", currPage - 1);
@@ -144,6 +124,7 @@ public class GoToAlbumPage extends HttpServlet {
 				connection.close();
 			}
 		} catch (SQLException sqle) {
+			sqle.printStackTrace();
 		}
 	}
 }

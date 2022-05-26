@@ -106,6 +106,7 @@ public class CreateComment extends HttpServlet {
 				connection.close();
 			}
 		} catch (SQLException sqle) {
+			sqle.printStackTrace();
 		}
 	}
 }

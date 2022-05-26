@@ -16,13 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.controllers.utils.ParamValidator;
 
 @WebServlet("/CheckLogin")
 public class CheckLogin extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-	private final int MAX_EMAIL_LENGHT = 320;
-	private final int MAX_PASSWORD_LENGHT = 45;
 	
 	public void init() throws ServletException {
 		try {
@@ -51,11 +50,9 @@ public class CheckLogin extends HttpServlet{
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		
-		String errorMsg = validateParams(email, password);
-		if(errorMsg != null) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Login failed: " + errorMsg);
-			return;
-		}
+		ParamValidator validator = new ParamValidator(response);
+		
+		if(!validator.validateLogin(email, password)) return;
 		
 		//makes email lowercase
 		email = email.toLowerCase();
@@ -79,25 +76,13 @@ public class CheckLogin extends HttpServlet{
 		response.sendRedirect(path);
 	}
 	
-	private String validateParams(String email, String password) {
-		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
-			return "Missing parameters";
-		}
-		if (password.length() > MAX_PASSWORD_LENGHT) {
-			return "Password is too long";
-		}
-		if (email.length() > MAX_EMAIL_LENGHT) {
-			return "Email is too long";
-		}
-		return null;
-	}
-	
 	public void destroy() {
 		try {
 			if (connection != null) {
 				connection.close();
 			}
 		} catch (SQLException sqle) {
+			sqle.printStackTrace();
 		}
 	}
 }

@@ -23,6 +23,7 @@ import org.tinylog.Logger;
 
 //import it.polimi.tiw.beans.Comment;
 import it.polimi.tiw.beans.Image;
+import it.polimi.tiw.controllers.utils.ParamValidator;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.dao.CommentDAO;
 import it.polimi.tiw.dao.ImageDAO;
@@ -65,6 +66,7 @@ public class ShowImage extends HttpServlet {
 		String albumIdStr = request.getParameter("id");
 		String pageStr = request.getParameter("page");
 		String imgTxt = request.getParameter("img");
+		ParamValidator validator = new ParamValidator(response);
 
 		String path = getServletContext().getContextPath();
 
@@ -74,7 +76,8 @@ public class ShowImage extends HttpServlet {
 			response.sendRedirect(path + "/GoToHomePage");
 			return;
 		}
-		
+			
+		//TODO: check chosen image is in album 
 		// checking if album & currPage params are parsable
 		int albumId = 0;
 		int currPage = 0;
@@ -94,30 +97,15 @@ public class ShowImage extends HttpServlet {
 		AlbumDAO albumService = new AlbumDAO(connection);
 
 		// checking if album & currPage params values are valid
-		try {
-			if (!albumService.validAlbum(albumId)) {
-				Logger.debug("album id isn't valid redirectiong to homepage");
-				response.sendRedirect(path + "/GoToHomePage");
-				return;
-			}
-			if (currPage * 5 - 5 > albumService.findAlbumImageCount(albumId) || currPage < 0) {
-				Logger.debug("album page isn't valid redirecting to first page");
-				response.sendRedirect(path + "/album?id=" + albumId + "&page=1");
-				return;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in checking id param from the database");
-			return;
-		}
-		
-		// checking if img param is valid
+		if(!validator.validateAlbum(albumService, path, albumId, currPage)) return;
+
+		// checking if img param exists
 		if (imgTxt == null || imgTxt.isEmpty()) {
 			Logger.debug("\nimg parameter incomplete redirecting to homepage");
 			response.sendRedirect(request.getServletContext().getContextPath() + "/GoToHomePage");
 		}
-		
-		//parsing img index
+
+		// parsing img index
 		int imageIndex = 0;
 		try {
 			imageIndex = Integer.parseInt(imgTxt);
@@ -126,14 +114,12 @@ public class ShowImage extends HttpServlet {
 			response.sendRedirect(request.getServletContext().getContextPath() + "/GoToHomePage");
 		}
 
+		// checking if img param value is valid
+		if(!validator.validateShowImage(albumService, imgService, path, imageIndex, albumId, currPage)) return;
+
 		// fetching full image + comments from database
 		try {
 			fullImage = imgService.findImage(imageIndex);
-			if (fullImage == null) {
-				Logger.debug("\nimg id is invalid redirecting to homepage");
-				response.sendRedirect(path + "/album?id=" + albumId + "&page=" + currPage);
-				return;
-			}
 			commentService.findCommentsForImage(imageIndex).forEach(comment -> {
 				try {
 					commentToAuthor.put(comment.getText(), userService.getUserFromID(comment.getUserID()).getFullName());
@@ -141,7 +127,7 @@ public class ShowImage extends HttpServlet {
 					e.printStackTrace();
 				}
 			});
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in retrieving comments from the database");
 			return;
@@ -167,6 +153,7 @@ public class ShowImage extends HttpServlet {
 				connection.close();
 			}
 		} catch (SQLException sqle) {
+			sqle.printStackTrace();
 		}
 	}
 }

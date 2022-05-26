@@ -98,20 +98,12 @@ public class GoToHomePage extends HttpServlet{
 		doGet(request, response);
 	}
 	
-	
-
-	
-	
-	
-	
-	
-	
 	public void destroy() {
 		if (connection != null) {
 			try {
 				connection.close();
 			} catch (SQLException e){
-				
+				e.printStackTrace();
 			}
 		}
 	}
