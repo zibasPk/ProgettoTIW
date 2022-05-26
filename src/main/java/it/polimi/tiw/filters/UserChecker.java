@@ -25,14 +25,12 @@ public class UserChecker implements Filter {
 	 * Default constructor.
 	 */
 	public UserChecker() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -40,7 +38,6 @@ public class UserChecker implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		Logger.debug("User filter executing..");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		
@@ -49,6 +46,7 @@ public class UserChecker implements Filter {
 		HttpSession s = req.getSession();
 	
 		if (s.isNew() || s.getAttribute("user") == null) {
+			Logger.debug("User filter executing..");
 			res.sendRedirect(loginpath);
 			return;
 		}
@@ -60,7 +58,6 @@ public class UserChecker implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
 	}
 
 }
