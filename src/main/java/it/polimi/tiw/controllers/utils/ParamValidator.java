@@ -97,7 +97,7 @@ public class ParamValidator {
 	/**
 	 * This method checks whether the album exists and that the page number fits the
 	 * number of images of said album. Whenever one or both these conditions aren't
-	 * valid, the user is redirected to the home page and an error message is
+	 * valid the method redirects to the home page and an error message is
 	 * displayed.
 	 */
 	public boolean validateAlbum(AlbumDAO albumService, String path, int albumId, int currPage) throws IOException {
@@ -122,8 +122,8 @@ public class ParamValidator {
 
 	/**
 	 * This method checks that the image belongs to the album (by checking imgID and
-	 * albumId). Whenever this condition isn't valid the user is redirected to the
-	 * home page and an error message is displayed.
+	 * albumId). Whenever this condition isn't valid the method redirects to the
+	 * album page and an error message is displayed.
 	 */
 	public boolean validateShowImage(AlbumDAO albumService, ImageDAO imgService, String path, int imgID, int albumID,
 			int currPage) throws IOException {
