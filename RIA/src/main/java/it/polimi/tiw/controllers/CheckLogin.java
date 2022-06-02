@@ -62,18 +62,21 @@ public class CheckLogin extends HttpServlet{
 		try {
 			user = userService.checkCredentials(email, password);
 		} catch (SQLException e){
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database credential checking");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Failure in database credential checking");
 			return;
 		}
 		
-		String path = getServletContext().getContextPath();
 		if (user == null) {
-			path += "/index.html";
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().println("Account does not exist");
 		} else {
 			request.getSession().setAttribute("user", user);
-			path += "/GoToHomePage";
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().println(user.getFullName());
 		}
-		response.sendRedirect(path);
 	}
 	
 	public void destroy() {

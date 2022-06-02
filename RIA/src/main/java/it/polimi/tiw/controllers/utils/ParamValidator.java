@@ -25,19 +25,22 @@ public class ParamValidator {
 	/**
 	 * This method checks the parameters to make sure they're valid. Whenever a
 	 * parameter is null or too long the login fails and an error message is
-	 * displayed.
+	 * sent back;
 	 */
 	public boolean validateLogin(String email, String password) throws IOException {
 		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Login failed: " + "Missing parameters");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Login failed: " + "Missing parameters");
 			return false;
 		}
 		if (email.length() > MAX_EMAIL_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Login failed: " + "Email is too long");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Login failed: " + "Email is too long");
 			return false;
 		}
 		if (password.length() > MAX_PASSWORD_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Login failed: " + "Password is too long");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Login failed: " + "Password is too long");
 			return false;
 		}
 		return true;
@@ -46,49 +49,59 @@ public class ParamValidator {
 	/**
 	 * This method checks the parameters to make sure they're valid. Whenever a
 	 * parameter doesn't follow certain rules the sign up fails and an error message
-	 * is displayed.
+	 * is sent back.
 	 */
 	public boolean validateRegistration(String email, String name, String surname, String password,
 			String confirmPassword) throws IOException {
 		if (email == null || email.isEmpty() || password == null || password.isEmpty() || name == null || name.isEmpty()
 				|| surname == null || surname.isEmpty() || confirmPassword == null || confirmPassword.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Missing parameters");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "Missing parameters");
 			return false;
 		}
 		if (email.length() > MAX_EMAIL_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Email is too long");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "Email is too long");
 			return false;
 		}
 		if (!EmailValidator.getInstance().isValid(email)) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "The email format is invalid");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "The email format is invalid");
 			return false;
 		}
 		if (name.length() > MAX_NAME_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Name is too long");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "Name is too long");
 			return false;
 		}
 		if (!name.matches("\\S+")) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Name contains an empty space");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "Name contains an empty space");
 			return false;
 		}
 		if (surname.length() > MAX_SURNAME_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Surname is too long");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "Surname is too long");
 			return false;
 		}
 		if (!surname.matches("\\S+")) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "SurName contains an empty space");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "SurName contains an empty space");
 			return false;
 		}
 		if (password.length() > MAX_PASSWORD_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Password is too long");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "Password is too long");
 			return false;
 		}
 		if (!password.matches("\\S+")) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Password contains an empty space");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "Password contains an empty space");
 			return false;
 		}
 		if (!password.equals(confirmPassword)) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Passwords do not match");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Signup failed: " + "Passwords do not match");
 			return false;
 		}
 		return true;
