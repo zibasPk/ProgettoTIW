@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" media="all" href ="css/indexstyle.css"/>
+<meta charset="ISO-8859-1">
+<title>Welcome to the login page!</title>
+</head>
+<body>
+	<h1>Let's get you started</h1>
+	<div  class="formdiv">
+		<h2>Log into your account</h2>
+		<form action="CheckLogin" method="POST">
+			<fieldset>
+				<p>
+					email: <input type="email" pattern="[a-z0-9A-Z._%+-]+@[a-z0-9A-Z.-]+\.[a-zA-Z]{2,}$" 
+					placeholder="email goes here" name="email" maxlength=320 required />
+				</p>
+				<p>
+					password: <input type="password" placeholder="password goes here" name="password" maxlength=45 required />
+				</p>
+				<input type="submit" value="user login" id="loginbutton">
+			</fieldset>
+		</form>
+	</div>
+	<div class="formdiv">
+		<h2>Create a new account</h2>
+		<form action="CheckRegistration" method="POST">
+			<fieldset>
+				<p>
+					name: <input type="text" placeholder="name goes here" name="name" maxlength=45 required />
+				</p>
+				<p>
+					surname: <input type="text" placeholder="last name goes here" name="surname" maxlength=45 required />
+				</p>
+				<p>
+					email: <input type="email"    pattern="[a-z0-9A-Z._%+-]+@[a-z0-9A-Z.-]+\.[a-zA-Z]{2,}$"
+					placeholder="email goes here" name="email" maxlength=320 required />
+				</p>
+				<p>
+					password: <input type="password" placeholder="password goes here" name="password" maxlength=45 required />
+				</p>
+				<p>
+					confirm password: <input type="password" placeholder="confirm password" name="confirm-password" maxlength=45 required />
+				</p>
+				<p>
+				<input type="submit" value="register as a new user" id="registrationbutton">
+				</p>
+			</fieldset>
+		</form>
+	</div>
+</body>
+</html>
