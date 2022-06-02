@@ -64,29 +64,31 @@ public class CheckRegistraton extends HttpServlet {
 		try {
 			duplicate = userService.checkDuplicateEmail(email);
 		} catch (SQLException e){
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database credential checking");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Failure in database credential checking");	
 			return;
 		}
 		
-		//aggiungo le credenziali nell'database, salvo l'user nella sessione, e faccio una redirect alla home page
-		String path = getServletContext().getContextPath();
+		
 		User user = null;
 		if (duplicate == false) {
 			try {
 				userService.createCredentials(email, name, surname, password);
 				user = userService.checkCredentials(email, password);
 			} catch (SQLException e){
-				response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Failure in database credential creation");
+				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+				response.getWriter().println("Failure in database credential creation");
 				return;
 			}
-			path = path + "/GoToHomePage"; 
+			 
 			request.getSession().setAttribute("user", user);
 		} else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User already registered");
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("User already registered");
 			return;
 		}
 		
-		response.sendRedirect(path);
+		response.setStatus(HttpServletResponse.SC_OK);
 	}
 	
 	public void destroy() {
