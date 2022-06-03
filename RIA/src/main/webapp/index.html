@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script defer type="text/javascript" src="credentialManagement.js"></script>
+<script defer type="text/javascript" src="utils.js"></script>
 <link rel="stylesheet" type="text/css" media="all" href ="css/indexstyle.css"/>
 <meta charset="ISO-8859-1">
 <title>Welcome to the login page!</title>
@@ -9,22 +11,22 @@
 	<h1>Let's get you started</h1>
 	<div  class="formdiv">
 		<h2>Log into your account</h2>
-		<form action="CheckLogin" method="POST">
+		<form action="#" method="POST">
 			<fieldset>
 				<p>
-					email: <input type="email" pattern="[a-z0-9A-Z._%+-]+@[a-z0-9A-Z.-]+\.[a-zA-Z]{2,}$" 
+					email: <input id="email" type="email" pattern="[a-z0-9A-Z._%+-]+@[a-z0-9A-Z.-]+\.[a-zA-Z]{2,}$" 
 					placeholder="email goes here" name="email" maxlength=320 required />
 				</p>
 				<p>
 					password: <input type="password" placeholder="password goes here" name="password" maxlength=45 required />
 				</p>
-				<input type="submit" value="user login" id="loginbutton">
+				<input type="submit" value="user login" id="loginbutton" >
 			</fieldset>
 		</form>
 	</div>
 	<div class="formdiv">
 		<h2>Create a new account</h2>
-		<form action="CheckRegistration" method="POST">
+		<form action="#" method="POST">
 			<fieldset>
 				<p>
 					name: <input type="text" placeholder="name goes here" name="name" maxlength=45 required />
@@ -37,16 +39,17 @@
 					placeholder="email goes here" name="email" maxlength=320 required />
 				</p>
 				<p>
-					password: <input type="password" placeholder="password goes here" name="password" maxlength=45 required />
+					password: <input id="password1" type="password" placeholder="password goes here" name="password" maxlength=45 required />
 				</p>
 				<p>
-					confirm password: <input type="password" placeholder="confirm password" name="confirm-password" maxlength=45 required />
+					confirm password: <input id="password2" type="password" placeholder="confirm password" name="confirm-password" maxlength=45 required />
 				</p>
 				<p>
 				<input type="submit" value="register as a new user" id="registrationbutton">
 				</p>
 			</fieldset>
 		</form>
+		<p id="errormessage"></p>
 	</div>
 </body>
 </html>

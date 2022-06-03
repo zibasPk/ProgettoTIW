@@ -88,7 +88,12 @@ public class CheckRegistraton extends HttpServlet {
 			return;
 		}
 		
+	// need to check this one (lines 1 3 4 5)
+		request.getSession().setAttribute("user", user);
 		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().println(user.getFullName());
 	}
 	
 	public void destroy() {
