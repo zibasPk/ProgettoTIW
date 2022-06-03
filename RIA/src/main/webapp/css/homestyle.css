@@ -1,0 +1,40 @@
+body {
+  font-family: sans-serif;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+thead th {
+  width: 25%;
+}
+
+span.welcome {
+  font-weight: bolder;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 2%;
+  padding-right: 20px;
+}
+table.myalbums {
+  padding: 10px;
+}
+
+table.otheralbums {
+  padding: 10px;
+}
+div.home-message {
+  display: flex;
+  align-items: left;
+  margin-bottom: 10px;
+}
+
+tbody td:nth-child(odd) {
+  background-color: #fff;
+}
+
+tbody td:nth-child(even) {
+  background-color: #eee;
+}

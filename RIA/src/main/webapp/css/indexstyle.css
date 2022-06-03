@@ -1,0 +1,32 @@
+body {
+  font-family: sans-serif;
+}
+
+h1 {
+  font-size: 35px;
+  font-weight: normal;
+  margin-top: 5px;
+  color: #000000;
+
+}
+
+h2 {
+  font-size: 25px;
+  font-weight: normal;
+  margin-top: 5px;
+  color: #000000;
+} 
+
+body {
+  margin: 25px;
+  background-color: rgb(240,240,240);
+  font-family: arial, sans-serif;
+  font-size: 14px;
+}
+
+form {
+	margin: 25px;
+  background-color: rgb(240,240,240);
+  font-family: arial, sans-serif;
+  font-size: 14px;
+}
