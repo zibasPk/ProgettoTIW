@@ -19,19 +19,12 @@ public class Logout extends HttpServlet {
 			throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-			
 
-		//metodo alternativo -> request.getRequestDispatcher("").include(request, response);
+		
 		HttpSession userSession = request.getSession();
 		userSession.invalidate();
 		
 		response.sendRedirect(getServletContext().getContextPath()+"/index.html");
-
-		
-
-		out.print("You are successfully logged out!");
-
-		out.close();
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
