@@ -125,7 +125,7 @@ public class ParamValidator {
 	 * albumId). Whenever this condition isn't valid the method redirects to the
 	 * album page and an error message is displayed.
 	 */
-	public boolean validateShowImage(AlbumDAO albumService, ImageDAO imgService, String path, int imgID, int albumID,
+	public boolean validateShowImage(AlbumDAO albumService, ImageDAO imgService, String path, int imgID, Integer albumID,
 			int currPage) throws IOException {
 		try {
 			if (albumService.findImageAlbumID(imgID) != albumID) {

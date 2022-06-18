@@ -41,7 +41,29 @@ public class ImageDAO {
 		}
 		return images;
 	}
-
+	
+	/**
+	 * Returns the amount of images in the album with the given ID
+	 * @throws SQLException
+	 */
+	public Integer findAlbumSize(int albumID) throws SQLException {
+		String query = "SELECT count(*) FROM progettotiw.image join progettotiw.image_to_album ON ID = imageID"
+				+ " WHERE albumID = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, albumID);
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst())// no results
+					return null;
+				result.next();
+				return result.getInt(1);
+			}
+		}
+	}
+	
+	/**
+	 * Finds a specific image from a given ID
+	 * @throws SQLException
+	 */
 	public Image findImage(int imageID) throws SQLException {
 		String query = "SELECT * FROM progettotiw.image WHERE ID = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {

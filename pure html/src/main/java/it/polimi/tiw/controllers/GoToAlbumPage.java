@@ -95,7 +95,7 @@ public class GoToAlbumPage extends HttpServlet {
 			int limit = currPage * 5;
 			int offset = currPage * 5 - 5;
 			images = imgService.findFiveImagesFromAlbum(albumId, limit, offset);
-			neededPages = (int) Math.ceil(((double) images.size()) / 5);
+			neededPages = (int) Math.ceil(((double) imgService.findAlbumSize(albumId)) / 5);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error in retrieving images from the database");
@@ -110,7 +110,7 @@ public class GoToAlbumPage extends HttpServlet {
 		ctx.setVariable("pages", neededPages);
 		ctx.setVariable("nextPage", currPage + 1);
 		ctx.setVariable("prevPage", currPage - 1);
-
+		Logger.debug("neede pages: " + neededPages);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
