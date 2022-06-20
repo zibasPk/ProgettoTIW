@@ -1,5 +1,5 @@
 {
-	let pageOrchestrator = new PageOrchestrator(); // main controller
+	let albums, pageOrchestrator = new PageOrchestrator(); // main controller
 
 	window.addEventListener("load", () => {
 		if (false && sessionStorage.getItem("username") == null) {
@@ -10,10 +10,116 @@
 		}
 	})
 
+	function AlbumLists(options) {
+		this.alert = options['alert'];
+		this.noAlbumAlert = options['noAlbumAlert']
+		this.myListContainer = options['myListContainer'];
+		this.myContainerBody = options['myContainerBody'];
+		this.otherListContainer = options['otherListContainer'];
+		this.otherContainerBody = options['otherContainerBody'];
+
+		this.reset = () => {
+			//TODO: reset resets to original order maybe
+		}
+
+		this.show = (next) => {
+			makeCall("GET", "GetHomeData", null,
+				(req) => {
+					if (req.readyState == XMLHttpRequest.DONE) {
+						var message = req.responseText;
+						switch (req.status) {
+							case 200:
+								var json = JSON.parse(req.responseText);
+								var myAlbumsToShow = json[0];
+								var otherAlbumsToShow = json[1];
+								if (myAlbumsToShow.length == 0) {
+									this.noAlbumAlert.textContent = "No Albums to your name"
+									return;
+								}
+								this.updateMyAlbums(myAlbums)
+								break;
+							case 502:
+								this.alert.textContent = message;
+								break;
+						}
+					}
+				});
+		}
+		
+		this.updateMyAlbums = (myAlbums) => {
+			var elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
+			this.myContainerBody.innerHTML = ""; // empties the table body
+			myAlbums.forEach((album) => {
+				row = document.createElement("tr");
+				nameCell = document.createElement("td");
+				destcell.textContent = album.getTitle();
+				row.appendChild(nameCell);
+				dateCell = document.createElement("td");
+				dateCell.textContent = album.getCreationDate();
+				row.appendChild(dateCell);
+				linkCell = document.createElement("td");
+				anchor.createElement("a");
+				linkCell.appendChild(anchor);
+				linkText = document.createTextNode("Open");
+				anchor.appendChild(linkText);
+				anchor.setAttribute('albumid', album.getID());
+				anchor.addEventListener("click", (e) => {
+					//todo show album details
+				}, false);
+				anchor.href = "#";
+				row.appendChild(linkCell);
+				this.myContainerBody.appendChild(row);
+			});
+			this.myListContainer.style.visibility = "visible";
+
+		}
+
+		this.updateOtherAlbums = (otherAlbums) => {
+			var elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
+			this.myContainerBody.innerHTML = ""; // empties the table body
+			otherAlbums.forEach((album) => {
+				row = document.createElement("tr");
+				nameCell = document.createElement("td");
+				destcell.textContent = album.getTitle();
+				row.appendChild(nameCell);
+				dateCell = document.createElement("td");
+				dateCell.textContent = album.getCreationDate();
+				row.appendChild(dateCell);
+				linkCell = document.createElement("td");
+				anchor.createElement("a");
+				linkCell.appendChild(anchor);
+				linkText = document.createTextNode("Open");
+				anchor.appendChild(linkText);
+				anchor.setAttribute('albumid', album.getID());
+				anchor.addEventListener("click", (e) => {
+					//todo show album details
+				}, false);
+				anchor.href = "#";
+				row.appendChild(linkCell);
+				this.myContainerBody.appendChild(row);
+			});
+			this.otherListContainer.style.visibility = "visible";
+		}
+
+		this.reset = () => {
+			this.myListContainer.style.visibility = "hidden";
+			this.otherListContainer.style.visibility = "hidden";
+		}
+	}
+
 	function PageOrchestrator() {
 		var alertContainer = document.getElementById("id_alert");
 
 		this.start = function () {
+			albums = new AlbumLists({
+				alert: alertContainer,
+				noAlbumAlert: document.getElementById("noalbumalert"),
+				myListContainer: document.getElementById("id_myalbumslist"),
+				myContainerBody: document.getElementById("id_myalbumsbody"),
+				otherListContainer: document.getElementById("id_otheralbumslist"),
+				otherContainerBody: document.getElementById("id_otheralbumsbody"),
+
+			});
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
 				var form = e.target.closest("form");
 				if (form.checkValidity()) {
@@ -28,6 +134,9 @@
 			})
 		};
 		this.refresh = function () {
+			alertContainer.textContent = "";
+			albums.reset();
+			albums.show();
 		};
 	}
 };

@@ -18,12 +18,14 @@
       </form>
     </div>
   </div>
-  <table class="myalbums">
-    <tbody>
+  <table class="myalbums" id="id_myalbumslist">
+    <thead>
       <tr>
         <th>Your Albums</th>
         <th>Creation Date</th>
       </tr>
+    </thead>
+    <tbody id="id_myalbumsbody">
       <tr>
         <td><span>ablum_name</span></td>
         <td><span>ablum_date</span></td>
@@ -32,14 +34,16 @@
     </tbody>
   </table>
   <div>
-    <p class="noalbum">No albums to your name</p>
+    <p class="noalbum" id="noalbumalert">No albums to your name</p>
   </div>
-  <table class="otheralbums">
-    <tbody>
+  <table class="otheralbums" id="id_otheralbumslist">
+    <thead>
       <tr>
         <th>Other Albums</th>
         <th>Creation Date</th>
       </tr>
+    </thead>
+    <tbody id="id_otheralbumsbody">
       <tr>
         <td><span>ablum_name</span></td>
         <td><span>ablum_date</span></td>
