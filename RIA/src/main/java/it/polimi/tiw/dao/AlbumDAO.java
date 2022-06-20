@@ -15,6 +15,33 @@ public class AlbumDAO {
 	public AlbumDAO(Connection connection) {
 		this.connection = connection;
 	}
+	
+	/**
+	 * @param albumID 
+	 * @return album with the given ID, if there isn't one null
+	 * @throws SQLException
+	 */
+	public Album findAlbum(Integer albumID) throws SQLException {
+		Album album = null;
+		String query = "SELECT * FROM progettotiw.album WHERE ID = ? ";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, albumID);
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst())// no results
+					return album;
+				
+				result.next();
+				album = new Album();
+				album.setID(result.getInt("ID"));
+				album.setTitle(result.getString("title"));
+				album.setOwnerID(result.getInt("ownerID"));
+				album.setCreationDate(result.getDate("creation_date"));
+			}
+		}
+		return album;
+	}
+
+	
 
 	/**
 	 * @param userID
@@ -93,9 +120,11 @@ public class AlbumDAO {
 			}
 		}
 	}
+
 	/**
 	 * 
-	 * @return the album containing the image with the given imageId, if there aren't any results it returns null
+	 * @return the album containing the image with the given imageId, if there
+	 *         aren't any results it returns null
 	 * @throws SQLException
 	 */
 	public Integer findImageAlbumID(int imageID) throws SQLException {
