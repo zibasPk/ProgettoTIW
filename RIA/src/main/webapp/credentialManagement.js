@@ -22,7 +22,7 @@ var email = document.getElementById("email");
 								case 401: // unauthorized
 									document.getElementById("errormessage").textContent = message;
 									break;
-								case 500: // server error
+								case 502: // bad gate way
 									document.getElementById("errormessage").textContent = message;
 									break;
 							}
