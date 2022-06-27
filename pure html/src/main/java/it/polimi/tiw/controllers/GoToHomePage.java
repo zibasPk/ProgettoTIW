@@ -2,14 +2,11 @@ package it.polimi.tiw.controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-//import java.util.List;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +20,7 @@ import org.tinylog.Logger;
 
 import it.polimi.tiw.beans.Album;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.controllers.utils.ConnectionHandler;
 import it.polimi.tiw.dao.AlbumDAO;
 
 
@@ -37,19 +35,8 @@ public class GoToHomePage extends HttpServlet{
 	}
 	
 	public void init() throws ServletException {
-		try {
-			ServletContext context = getServletContext();
-			String driver = context.getInitParameter("dbDriver");
-			String url = context.getInitParameter("dbUrl");
-			String user = context.getInitParameter("dbUser");
-			String password = context.getInitParameter("dbPassword");
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, user, password);
-		} catch (ClassNotFoundException e) {;
-			throw new UnavailableException("Can't load database driver");
-		} catch (SQLException e) {
-			throw new UnavailableException("Couldn't get db connection");
-		}
+		connection = ConnectionHandler.getConnection(getServletContext());
+		
 		ServletContext servletContext = getServletContext();
 		Logger.debug(servletContext.getContextPath());
 		
@@ -99,13 +86,11 @@ public class GoToHomePage extends HttpServlet{
 	}
 	
 	public void destroy() {
-		if (connection != null) {
 			try {
-				connection.close();
+				ConnectionHandler.closeConnection(connection);
 			} catch (SQLException e){
 				e.printStackTrace();
 			}
-		}
 	}
 	
 }
