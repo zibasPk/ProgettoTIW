@@ -5,10 +5,10 @@ import java.util.Date;
 
 public class Album implements Serializable {
 	private static final long serialVersionUID = 1L;
-	int id;
-	String title;
-	int ownerID;
-	Date creationDate;
+	private int id;
+	private String title;
+	private int ownerID;
+	private Date creationDate;
 	
 	public int getID() {
 		return id;
