@@ -86,6 +86,7 @@
 				row.appendChild(nameCell);
 				dateCell = document.createElement("td");
 				dateCell.textContent = album.creationDate;
+				row.appendChild(dateCell);
 				linkCell = document.createElement("td");
 				anchor = document.createElement("a");
 				linkCell.appendChild(anchor);
