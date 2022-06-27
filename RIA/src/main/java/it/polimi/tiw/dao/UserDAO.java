@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.tinylog.Logger;
-
 import it.polimi.tiw.beans.User;
 
 public class UserDAO {
@@ -30,7 +28,6 @@ public class UserDAO {
 				if(!result.isBeforeFirst())// no result check credentials failed
 					return null;
 				else {
-					Logger.debug("in else");
 					result.next();
 					User user = new User();
 					user.setId(result.getInt("ID"));

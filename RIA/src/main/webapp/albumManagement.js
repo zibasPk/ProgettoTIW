@@ -2,8 +2,8 @@
 	let albums, pageOrchestrator = new PageOrchestrator(); // main controller
 
 	window.addEventListener("load", () => {
-		if (false && sessionStorage.getItem("username") == null) {
-			window.location.href = "../index.html";
+		if (sessionStorage.getItem("username") == null) {
+			window.location.href = "index.html";
 		} else {
 			pageOrchestrator.start(); // initializes components
 			pageOrchestrator.refresh();
@@ -36,7 +36,7 @@
 									this.noAlbumAlert.textContent = "No Albums to your name"
 									return;
 								}
-								this.noAlbumAlert.textContent ="";
+								this.noAlbumAlert.textContent = "";
 								this.updateMyAlbums(myAlbumsToShow);
 								this.updateOtherAlbums(otherAlbumsToShow);
 								break;
@@ -47,14 +47,14 @@
 					}
 				});
 		}
-		
+
 		this.updateMyAlbums = (myAlbums) => {
 			var elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
 			this.myContainerBody.innerHTML = ""; // empties the table body
 			myAlbums.forEach((album) => {
 				row = document.createElement("tr");
 				nameCell = document.createElement("td");
-				nameCell.textContent = album.title	;
+				nameCell.textContent = album.title;
 				row.appendChild(nameCell);
 				dateCell = document.createElement("td");
 				dateCell.textContent = new Date(album.creationDate).toLocaleDateString();
@@ -124,16 +124,9 @@
 
 			});
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
-				var form = e.target.closest("form");
-				if (form.checkValidity()) {
-					makeCall("POST", 'Logout', e.target.closest("form"),
-						(x) => {
-							if (x.readyState == XMLHttpRequest.DONE) {
-								window.sessionStorage.removeItem('username');
-							}
-						}
-					)
-				}
+				window.sessionStorage.removeItem('username');
+				makeCall("POST", 'Logout', null, (x) => {});
+				window.location.href = "index.html";
 			})
 		};
 		this.refresh = function () {

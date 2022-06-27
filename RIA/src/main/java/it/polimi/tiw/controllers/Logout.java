@@ -16,13 +16,10 @@ public class Logout extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		response.setContentType("text/html");
-
 		HttpSession userSession = request.getSession();
 		userSession.invalidate();
-		
-		response.sendRedirect(getServletContext().getContextPath()+"/index.html");
 	}
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
