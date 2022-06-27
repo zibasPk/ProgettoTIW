@@ -29,15 +29,15 @@ public class ParamValidator {
 	 */
 	public boolean validateLogin(String email, String password) throws IOException {
 		if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Login failed: " + "Missing parameters");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Login failed: " + "Missing parameters");
 			return false;
 		}
 		if (email.length() > MAX_EMAIL_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Login failed: " + "Email is too long");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Login failed: " + "Email is too long");
 			return false;
 		}
 		if (password.length() > MAX_PASSWORD_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Login failed: " + "Password is too long");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Login failed: " + "Password is too long");
 			return false;
 		}
 		return true;
@@ -52,43 +52,43 @@ public class ParamValidator {
 			String confirmPassword) throws IOException {
 		if (email == null || email.isEmpty() || password == null || password.isEmpty() || name == null || name.isEmpty()
 				|| surname == null || surname.isEmpty() || confirmPassword == null || confirmPassword.isEmpty()) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Missing parameters");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "Missing parameters");
 			return false;
 		}
 		if (email.length() > MAX_EMAIL_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Email is too long");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "Email is too long");
 			return false;
 		}
 		if (!EmailValidator.getInstance().isValid(email)) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "The email format is invalid");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "The email format is invalid");
 			return false;
 		}
 		if (name.length() > MAX_NAME_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Name is too long");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "Name is too long");
 			return false;
 		}
 		if (!name.matches("\\S+")) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Name contains an empty space");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "Name contains an empty space");
 			return false;
 		}
 		if (surname.length() > MAX_SURNAME_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Surname is too long");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "Surname is too long");
 			return false;
 		}
 		if (!surname.matches("\\S+")) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "SurName contains an empty space");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "SurName contains an empty space");
 			return false;
 		}
 		if (password.length() > MAX_PASSWORD_LENGHT) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Password is too long");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "Password is too long");
 			return false;
 		}
 		if (!password.matches("\\S+")) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Password contains an empty space");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "Password contains an empty space");
 			return false;
 		}
 		if (!password.equals(confirmPassword)) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Signup failed: " + "Passwords do not match");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Signup failed: " + "Passwords do not match");
 			return false;
 		}
 		return true;
@@ -129,6 +129,7 @@ public class ParamValidator {
 			int currPage) throws IOException {
 		try {
 			if (albumService.findImageAlbumID(imgID) != albumID) {
+				Logger.debug("\nimg id is invalid redirecting to album page");
 				response.sendRedirect(path + "/album?id=" + albumID + "&page=" + currPage);
 				return false;
 			}
