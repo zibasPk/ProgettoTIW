@@ -57,7 +57,7 @@
 				nameCell.textContent = album.title	;
 				row.appendChild(nameCell);
 				dateCell = document.createElement("td");
-				dateCell.textContent = album.creationDate;
+				dateCell.textContent = new Date(album.creationDate).toLocaleDateString();
 				row.appendChild(dateCell);
 				linkCell = document.createElement("td");
 				anchor = document.createElement("a");
@@ -85,7 +85,7 @@
 				nameCell.textContent = album.title;
 				row.appendChild(nameCell);
 				dateCell = document.createElement("td");
-				dateCell.textContent = album.creationDate;
+				dateCell.textContent = new Date(album.creationDate).toLocaleDateString();
 				row.appendChild(dateCell);
 				linkCell = document.createElement("td");
 				anchor = document.createElement("a");
