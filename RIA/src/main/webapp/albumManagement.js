@@ -36,7 +36,9 @@
 									this.noAlbumAlert.textContent = "No Albums to your name"
 									return;
 								}
-								this.updateMyAlbums(myAlbums)
+								this.noAlbumAlert.textContent ="";
+								this.updateMyAlbums(myAlbumsToShow);
+								this.updateOtherAlbums(otherAlbumsToShow);
 								break;
 							case 502:
 								this.alert.textContent = message;
@@ -52,17 +54,17 @@
 			myAlbums.forEach((album) => {
 				row = document.createElement("tr");
 				nameCell = document.createElement("td");
-				destcell.textContent = album.getTitle();
+				nameCell.textContent = album.title	;
 				row.appendChild(nameCell);
 				dateCell = document.createElement("td");
-				dateCell.textContent = album.getCreationDate();
+				dateCell.textContent = album.creationDate;
 				row.appendChild(dateCell);
 				linkCell = document.createElement("td");
-				anchor.createElement("a");
+				anchor = document.createElement("a");
 				linkCell.appendChild(anchor);
 				linkText = document.createTextNode("Open");
 				anchor.appendChild(linkText);
-				anchor.setAttribute('albumid', album.getID());
+				anchor.setAttribute('albumid', album.id);
 				anchor.addEventListener("click", (e) => {
 					//todo show album details
 				}, false);
@@ -76,27 +78,26 @@
 
 		this.updateOtherAlbums = (otherAlbums) => {
 			var elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
-			this.myContainerBody.innerHTML = ""; // empties the table body
+			this.otherContainerBody.innerHTML = ""; // empties the table body
 			otherAlbums.forEach((album) => {
 				row = document.createElement("tr");
 				nameCell = document.createElement("td");
-				destcell.textContent = album.getTitle();
+				nameCell.textContent = album.title;
 				row.appendChild(nameCell);
 				dateCell = document.createElement("td");
-				dateCell.textContent = album.getCreationDate();
-				row.appendChild(dateCell);
+				dateCell.textContent = album.creationDate;
 				linkCell = document.createElement("td");
-				anchor.createElement("a");
+				anchor = document.createElement("a");
 				linkCell.appendChild(anchor);
 				linkText = document.createTextNode("Open");
 				anchor.appendChild(linkText);
-				anchor.setAttribute('albumid', album.getID());
+				anchor.setAttribute('albumid', album.id);
 				anchor.addEventListener("click", (e) => {
 					//todo show album details
 				}, false);
 				anchor.href = "#";
 				row.appendChild(linkCell);
-				this.myContainerBody.appendChild(row);
+				this.otherContainerBody.appendChild(row);
 			});
 			this.otherListContainer.style.visibility = "visible";
 		}
@@ -108,9 +109,10 @@
 	}
 
 	function PageOrchestrator() {
-		var alertContainer = document.getElementById("id_alert");
+		var alertContainer;
 
 		this.start = function () {
+			alertContainer = document.getElementById("id_alert");
 			albums = new AlbumLists({
 				alert: alertContainer,
 				noAlbumAlert: document.getElementById("noalbumalert"),
