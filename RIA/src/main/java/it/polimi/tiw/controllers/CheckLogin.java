@@ -2,12 +2,9 @@ package it.polimi.tiw.controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.UnavailableException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +15,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.controllers.utils.ConnectionHandler;
 import it.polimi.tiw.controllers.utils.ParamValidator;
 
 @WebServlet("/CheckLogin")
@@ -28,20 +26,7 @@ public class CheckLogin extends HttpServlet{
 	private Connection connection = null;
 	
 	public void init() throws ServletException {
-		try {
-			ServletContext context = getServletContext();
-			String driver = context.getInitParameter("dbDriver");
-			String url = context.getInitParameter("dbUrl");
-			String user = context.getInitParameter("dbUser");
-			String password = context.getInitParameter("dbPassword");
-			Class.forName(driver);
-			connection = DriverManager.getConnection(url, user, password);
-
-		} catch (ClassNotFoundException e) {
-			throw new UnavailableException("Can't load database driver");
-		} catch (SQLException e) {
-			throw new UnavailableException("Couldn't get db connection");
-		}
+		connection = ConnectionHandler.getConnection(getServletContext());
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -83,13 +68,12 @@ public class CheckLogin extends HttpServlet{
 		}
 	}
 	
+	@Override
 	public void destroy() {
 		try {
-			if (connection != null) {
-				connection.close();
-			}
-		} catch (SQLException sqle) {
-			sqle.printStackTrace();
+			ConnectionHandler.closeConnection(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 }
