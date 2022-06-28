@@ -64,7 +64,7 @@ var password2 = document.getElementById("password2");
 								case 401: // unauthorized
 									document.getElementById("errormessage").textContent = message;
 									break;
-								case 500: // server error
+								case 502: // bad gateway
 									document.getElementById("errormessage").textContent = message;
 									break;
 							}
