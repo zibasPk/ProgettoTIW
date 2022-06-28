@@ -31,10 +31,15 @@ div.home-message {
   margin-bottom: 10px;
 }
 
-tbody td:nth-child(odd) {
+tr:nth-child(odd) {
   background-color: #fff;
 }
 
-tbody td:nth-child(even) {
+tr:nth-child(even) {
   background-color: #eee;
+}
+
+tbody .selected{
+  color: red;
+  background-color: rgb(176, 229, 248);
 }
