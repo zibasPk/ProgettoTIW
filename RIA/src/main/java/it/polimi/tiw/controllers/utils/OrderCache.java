@@ -19,43 +19,48 @@ public class OrderCache {
 	/**
 	 * Saves the order of the given album list in cache and DB
 	 */
-	public static boolean saveOrder(User user, List<Integer> albumOrder, Connection connection) throws SQLException{
+	public static boolean saveOrder(User user, List<Integer> albumOrder, Connection connection) throws SQLException {
 		AlbumDAO albumService = new AlbumDAO(connection);
 		// check if the saved order contains albums of other users or non existing ones
-		for(Integer albumId: albumOrder) {
+		for (Integer albumId : albumOrder) {
 			Album album = albumService.findAlbum(albumId);
-			if (album == null || album.getOwnerID() != user.getId()) 
+			if (album == null || album.getOwnerID() != user.getId())
 				return false;
 		}
+		albumService.saveAlbumOrder(user.getId(), albumOrder);
 		nameToAlbumOrder.put(user.getId(), albumOrder);
 		return true;
 	}
 
 	/**
 	 * Returns and ordered list of the albums of the given user loading order from
-	 * cache
+	 * cache or DB<br> If there is no saved order it returns the default order.
 	 */
 	public List<Album> getOrderedAlbums(User user, Connection connection) throws SQLException {
 		List<Integer> albumOrder = nameToAlbumOrder.get(user.getId());
 		List<Album> albumsInOrder = new ArrayList<>();
 		AlbumDAO albumService = new AlbumDAO(connection);
-		// if there is and order load from cache
+		// if there no entry in the cache look for it in the DB
+		if (albumOrder == null) {
+			albumOrder = albumService.getAlbumOrder(user.getId());
+		}
+		// if and order was found
 		if (albumOrder != null) {
 			for (Integer albumID : albumOrder) {
 				Album album = albumService.findAlbum(albumID);
 				if (album != null) {
 					albumsInOrder.add(album);
 				} else {
-					Logger.debug("one of the ordered albums no longer exist invalidating entry");
+					Logger.debug("one of the ordered albums no longer exist invalidating cache entry");
 					nameToAlbumOrder.remove(user.getId());
 					return this.getOrderedAlbums(user, connection);
 				}
 			}
 			return albumsInOrder;
-		} else {
-			Logger.debug("no saved order found returning standard order");
-			return albumService.findOwnedAlbums(user.getId());
 		}
+		
+		Logger.debug("no saved order found returning standard order");
+		return albumService.findOwnedAlbums(user.getId());
 	}
 
 }

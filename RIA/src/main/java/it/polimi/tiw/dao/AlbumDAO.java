@@ -15,9 +15,9 @@ public class AlbumDAO {
 	public AlbumDAO(Connection connection) {
 		this.connection = connection;
 	}
-	
+
 	/**
-	 * @param albumID 
+	 * @param albumID
 	 * @return album with the given ID, if there isn't one null
 	 * @throws SQLException
 	 */
@@ -29,7 +29,7 @@ public class AlbumDAO {
 			try (ResultSet result = pstatement.executeQuery();) {
 				if (!result.isBeforeFirst())// no results
 					return album;
-				
+
 				result.next();
 				album = new Album();
 				album.setID(result.getInt("ID"));
@@ -40,8 +40,6 @@ public class AlbumDAO {
 		}
 		return album;
 	}
-
-	
 
 	/**
 	 * @param userID
@@ -83,7 +81,7 @@ public class AlbumDAO {
 
 	/**
 	 * @param userID
-	 * @return albums not owned by user
+	 * @return albums not owned by user ordered in descending order by date
 	 * @throws SQLException
 	 */
 	public List<Album> findNotOwnedAlbums(int userID) throws SQLException {
@@ -141,5 +139,41 @@ public class AlbumDAO {
 			}
 			return albumID;
 		}
+	}
+
+	/**
+	 * Inserts the given album order into the DB.
+	*/
+	public void saveAlbumOrder(int userId, List<Integer> albumOrder) throws SQLException {
+		String query = "INSERT INTO progettotiw.album_order (userID, albumID, position) VALUES (?, ?, ?)";
+		for (Integer albumId : albumOrder) {
+			try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+				pstatement.setInt(1, userId);
+				pstatement.setInt(2, albumId);
+				pstatement.setInt(3, albumOrder.indexOf(albumId));
+				pstatement.executeUpdate();
+			}
+		}
+	}
+
+	/**
+	 * @param userId
+	 * @return saved order of albums, if there is none returns null
+	 * @throws SQLException
+	 */
+	public List<Integer> getAlbumOrder(int userId) throws SQLException {
+		List<Integer> order = new ArrayList<>();
+		String query = "SELECT * FROM progettotiw.album_order WHERE userID = ? order by position ASC";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, userId);
+			try (ResultSet result = pstatement.executeQuery();) {
+				if (!result.isBeforeFirst())// no results
+					return null;
+				while (result.next()) {
+					order.add(result.getInt("albumID"));
+				}
+			}
+		}
+		return order;
 	}
 }
