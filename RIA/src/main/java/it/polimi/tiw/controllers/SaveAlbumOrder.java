@@ -41,12 +41,21 @@ public class SaveAlbumOrder extends HttpServlet {
 		BufferedReader reader = req.getReader();
 		Gson gson = new Gson();
 		Integer[] order = gson.fromJson(reader, Integer[].class);
-		
+
 		HttpSession session = req.getSession();
 		User user = (User) session.getAttribute("user");
-		OrderCache.saveOrder(user, Arrays.asList(order), connection);
+		try {
+			if (!OrderCache.saveOrder(user, Arrays.asList(order), connection)) {
+				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				resp.getWriter().println("invalid saved order");
+			}
+		} catch (SQLException e) {
+			resp.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			resp.getWriter().println("Failure in database while savingorder");
+			return;
+		}
 	}
-	
+
 	@Override
 	public void destroy() {
 		try {

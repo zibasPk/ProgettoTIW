@@ -43,3 +43,8 @@ tbody .selected{
   color: red;
   background-color: rgb(176, 229, 248);
 }
+
+.alertmessage {
+  padding-left: 10px;
+  color: red;
+}

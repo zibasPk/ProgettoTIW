@@ -19,9 +19,16 @@ public class OrderCache {
 	/**
 	 * Saves the order of the given album list in cache and DB
 	 */
-	public static void saveOrder(User user, List<Integer> albumOrder, Connection connection) {
+	public static boolean saveOrder(User user, List<Integer> albumOrder, Connection connection) throws SQLException{
+		AlbumDAO albumService = new AlbumDAO(connection);
+		// check if the saved order contains albums of other users or non existing ones
+		for(Integer albumId: albumOrder) {
+			Album album = albumService.findAlbum(albumId);
+			if (album == null || album.getOwnerID() != user.getId()) 
+				return false;
+		}
 		nameToAlbumOrder.put(user.getId(), albumOrder);
-
+		return true;
 	}
 
 	/**

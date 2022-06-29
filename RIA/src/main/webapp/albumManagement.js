@@ -33,11 +33,11 @@
 								var json = JSON.parse(req.responseText);
 								var myAlbumsToShow = json[0];
 								var otherAlbumsToShow = json[1];
+								this.noAlbumAlert.textContent = "No Albums to your name"
 								if (myAlbumsToShow.length != 0) {
 									this.updateMyAlbums(myAlbumsToShow);
 									this.noAlbumAlert.textContent = "";
 								}
-								this.noAlbumAlert.textContent = "No Albums to your name"
 								this.updateOtherAlbums(otherAlbumsToShow);
 								break;
 							case 502:
@@ -147,10 +147,13 @@
 					if (req.readyState == XMLHttpRequest.DONE) {
 						var message = req.responseText;
 						switch (req.status) {
-							case 200:
+							case 200: 
 								break;
-							case 502:
-								this.alertContainer.textContent = message;
+							case 400: // bad request
+								alertContainer.textContent = message;
+								break;
+							case 502: // bad gateway
+								alertContainer.textContent = message;
 								break;
 						}
 					}
@@ -234,6 +237,7 @@
 		var indexDest = rowsArray.indexOf(dest);
 
 		if (startElement != null) {
+			startElement.getElementsByTagName("a")[0];
 			// Move the dragged element to the new position
 			if (rowsArray.indexOf(startElement) < indexDest)
 				// If we're moving down, then we insert the element after our reference (indexDest)
