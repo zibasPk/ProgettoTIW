@@ -5,10 +5,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.tinylog.Logger;
 
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.controllers.utils.ConnectionHandler;
@@ -16,6 +20,7 @@ import it.polimi.tiw.controllers.utils.ParamValidator;
 import it.polimi.tiw.dao.UserDAO;
 
 @WebServlet("/CheckRegistration")
+@MultipartConfig
 public class CheckRegistraton extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
@@ -31,12 +36,13 @@ public class CheckRegistraton extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String name = request.getParameter("name");
-		String surname = request.getParameter("surname");
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-		String confirmPassword = request.getParameter("confirm-password");
+		String name = StringEscapeUtils.escapeJava(request.getParameter("name"));
+		String surname = StringEscapeUtils.escapeJava(request.getParameter("surname"));
+		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
+		String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+		String confirmPassword = StringEscapeUtils.escapeJava(request.getParameter("confirm-password"));
 		ParamValidator validator = new ParamValidator(response);
+		Logger.debug("registration started");
 		
 		//check param validity
 		if(!validator.validateRegistration(email, name, surname, password, confirmPassword)) return;
