@@ -164,7 +164,7 @@
 		};
 	}
 
-	let startElement;
+	let startElement = null;
 	/* 
 				This fuction puts all row to "notselected" class, 
 				then we use CSS to put "notselected" in black and "selected" in red
@@ -203,6 +203,8 @@
 		dest.classList.add("selected");
 	}
 
+
+
 	/*
 			The dragleave event is fired when a dragged 
 			element leaves a valid drop target.
@@ -231,15 +233,19 @@
 		var rowsArray = Array.from(table.querySelectorAll('tbody > tr'));
 		var indexDest = rowsArray.indexOf(dest);
 
-		// Move the dragged element to the new position
-		if (rowsArray.indexOf(startElement) < indexDest)
-			// If we're moving down, then we insert the element after our reference (indexDest)
-			startElement.parentElement.insertBefore(startElement, rowsArray[indexDest + 1]);
-		else
-			// If we're moving up, then we insert the element before our reference (indexDest)
-			startElement.parentElement.insertBefore(startElement, rowsArray[indexDest]);
+		if (startElement != null) {
+			// Move the dragged element to the new position
+			if (rowsArray.indexOf(startElement) < indexDest)
+				// If we're moving down, then we insert the element after our reference (indexDest)
+				startElement.parentElement.insertBefore(startElement, rowsArray[indexDest + 1]);
+			else
+				// If we're moving up, then we insert the element before our reference (indexDest)
+				startElement.parentElement.insertBefore(startElement, rowsArray[indexDest]);
+		}
 
 		// Mark all rows in "not selected" class to reset previous dragOver
 		unselectRows(rowsArray);
+		// Make start element null
+		startElement = null;
 	}
 };
