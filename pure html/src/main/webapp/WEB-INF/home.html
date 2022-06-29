@@ -10,7 +10,7 @@
 
 <body>
   <th:block xmlns:th="http://www.thymeleaf.org">
-    <div class = "home-message">
+    <div class="home-message">
       <span class="welcome" th:text="'Welcome to your home page ' + ${session.user.getName}">
         Welcome to your home page </span>
       <div class="logout_button">
@@ -37,6 +37,11 @@
     <div th:unless="${owned_albums.size > 0}">
       <p class="noalbum">No albums to your name</p>
     </div>
+    <p>
+    <form action="GoToCreateAlbum" method=POST>
+      <input type="submit" value="create or add pictures to album" required></input>
+    </form>
+    </p>
     <table class="otheralbums">
       <tbody>
         <tr>

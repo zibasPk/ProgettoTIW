@@ -10,20 +10,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.tinylog.Logger;
-
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.controllers.utils.ConnectionHandler;
-import it.polimi.tiw.dao.CommentDAO;
+import it.polimi.tiw.dao.AlbumDAO;
 
-@WebServlet("/CreateComment")
-public class CreateComment extends HttpServlet {
+@WebServlet("/CreateAlbum")
+public class CreateAlbum extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-
-	public CreateComment() {
-		super();
-	}
 
 	public void init() throws ServletException {
 		connection = ConnectionHandler.getConnection(getServletContext());
@@ -36,27 +30,17 @@ public class CreateComment extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String comment = request.getParameter("comment");
-		String albumIdStr = request.getParameter("album-id");
-		String imageIdStr = request.getParameter("image-id");
-		String pageNumberStr = request.getParameter("page"); 
-		int albumId = 0;
-		int imageId = 0;
-		int pageNumber = 0;
+		String albumName = request.getParameter("albumName");
+	 
 		//String error = null;
 		User user = null;
-		if (comment == null || comment.isEmpty() || 
-				imageIdStr == null || imageIdStr.isEmpty() ||
-				albumIdStr == null || albumIdStr.isEmpty() ||
-				pageNumberStr == null || pageNumberStr.isEmpty()) {
+		if (albumName == null || albumName.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
 			return;
-		
 		}
-		// checks if the comment length is less than 280
-		if (comment.length() > 280) {
-			Logger.debug("errore commento");
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The comment is too long");
+		// checks if the album name lenght is longer than 32 chars
+		if (albumName.length() > 32) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The name is too long");
 			return;
 		}
 		
@@ -65,26 +49,16 @@ public class CreateComment extends HttpServlet {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		try {
-			albumId = Integer.parseInt(albumIdStr);
-			imageId = Integer.parseInt(imageIdStr);
-			pageNumber = Integer.parseInt(pageNumberStr);
-		} catch (NumberFormatException e2) {
-			//error = "Bad post ID input";
-		}
-		CommentDAO commentService = new CommentDAO(connection);
+		AlbumDAO albumService = new AlbumDAO(connection);
 		
 		try {
-			commentService.createComment(imageId, user.getId(), comment);
+			albumService.createAlbum(user.getId(), albumName);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while inserting album into DB");
 			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while inserting album into DB");
 			return;
 		}
-		
-		String path = getServletContext().getContextPath();
-		path += "/showImage?id=" + albumId + "&page=" + pageNumber + "&img=" + imageId;
-		response.sendRedirect(path);
+		response.sendRedirect(getServletContext().getContextPath() +"GoToCreateAlbum");
 	}
 	
 	public void destroy() {

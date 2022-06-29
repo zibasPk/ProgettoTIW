@@ -29,7 +29,10 @@ version="4.0">
     <url-pattern>/CreateComment</url-pattern> 
     <url-pattern>/album</url-pattern> 
     <url-pattern>/GoToHomePage</url-pattern>
-    <url-pattern>/showImage</url-pattern>    
+    <url-pattern>/ShowImage</url-pattern>
+    <url-pattern>/GoToCreateAlbum</url-pattern>    
+    <url-pattern>/CreateAlbum</url-pattern>    
+    <url-pattern>/AddToAlbum</url-pattern>    
  </filter-mapping>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

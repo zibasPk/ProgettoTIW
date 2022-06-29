@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<link rel="stylesheet" type="text/css" media="all" href="css/albumstyle.css" />
+<meta charset="ISO-8859-1">
+<title>album</title>
+<!-- <link rel="stylesheet" type="text/css" media="all" /> -->
+</head>
+
+<head>
+
+<body>
+  <div>
+    Create album
+  </div>
+  <form action="CreateAlbum" method="POST">
+    <fieldset>
+      <p>
+        name: <input name="albumName" required />
+      </p>
+      <input type="submit" value="create">
+    </fieldset>
+  </form>
+  <div>
+    Add pictures to Album
+  </div>
+  <th:block xmlns:th="http://www.thymeleaf.org">
+    <form action="AddToAlbum" method="POST">
+      <fieldset>
+        <p>
+          <select name="albumId">
+            <option th:each="album: ${albums}" th:value="${album.getID}" th:text="${album.getTitle}">album</option>
+          </select>
+        </p>
+        <p>
+          <select name="imageId">
+            <option th:each="image: ${images}" th:value="${image.getID}" th:text="${image.getTitle}">image</option>
+          </select>
+        </p>
+        <input type="submit" value="add">
+      </fieldset>
+    </form>
+  </th:block>
+</body>
+
+</html>

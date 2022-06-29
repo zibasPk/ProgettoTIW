@@ -113,4 +113,19 @@ public class AlbumDAO {
 			return albumID;
 		}
 	}
+	
+	/**
+	 * Creates an album in the DB
+	 * @param ownerId
+	 * @param albumName
+	 * @throws SQLException
+	 */
+	public void createAlbum(int ownerId,String albumName) throws SQLException {
+		String query = "INSERT INTO progettotiw.album (ownerID, title, creation_date) VALUES (?, ?, CURRENT_DATE())";
+		try (PreparedStatement pstatement = connection.prepareStatement(query)) {
+			pstatement.setInt(1, ownerId);
+			pstatement.setString(2, albumName);
+			pstatement.executeUpdate();
+		}
+	}
 }
