@@ -33,12 +33,11 @@
 								var json = JSON.parse(req.responseText);
 								var myAlbumsToShow = json[0];
 								var otherAlbumsToShow = json[1];
-								if (myAlbumsToShow.length == 0) {
-									this.noAlbumAlert.textContent = "No Albums to your name"
-									return;
+								if (myAlbumsToShow.length != 0) {
+									this.updateMyAlbums(myAlbumsToShow);
+									this.noAlbumAlert.textContent = "";
 								}
-								this.noAlbumAlert.textContent = "";
-								this.updateMyAlbums(myAlbumsToShow);
+								this.noAlbumAlert.textContent = "No Albums to your name"
 								this.updateOtherAlbums(otherAlbumsToShow);
 								break;
 							case 502:
