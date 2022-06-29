@@ -46,6 +46,33 @@ INSERT INTO `album` VALUES (1,'2021-04-20','paesaggi',1),(2,'2020-08-10','statue
 UNLOCK TABLES;
 
 --
+-- Table structure for table `album_order`
+--
+
+DROP TABLE IF EXISTS `album_order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `album_order` (
+  `userID` int NOT NULL,
+  `albumID` int NOT NULL,
+  `position` int NOT NULL,
+  PRIMARY KEY (`userID`,`albumID`),
+  KEY `albumID_idx` (`albumID`),
+  CONSTRAINT `albmId` FOREIGN KEY (`albumID`) REFERENCES `album` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `usrId` FOREIGN KEY (`userID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `album_order`
+--
+
+LOCK TABLES `album_order` WRITE;
+/*!40000 ALTER TABLE `album_order` DISABLE KEYS */;
+/*!40000 ALTER TABLE `album_order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `comment`
 --
 
@@ -58,7 +85,7 @@ CREATE TABLE `comment` (
   `imageID` int NOT NULL,
   `text` varchar(280) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +94,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (1,1,3,'i like it!'),(6,1,3,'so cool'),(7,1,3,'ciao'),(8,9,3,'ciao'),(9,9,3,'che bello'),(10,9,3,'lol'),(11,9,3,'fantastico'),(12,1,2,'wow so pretty');
+INSERT INTO `comment` VALUES (6,1,3,'so cool'),(7,1,3,'ciao'),(8,9,3,'ciao'),(9,9,3,'che bello'),(11,9,3,'fantastico'),(12,1,2,'wow so pretty'),(16,1,3,'adsajdn'),(17,1,3,'so cool'),(18,1,3,'so cool'),(19,1,3,'martone'),(20,1,3,'beta'),(21,1,3,'gamma'),(22,1,3,'ftugyhus'),(23,1,3,'milano'),(24,1,3,'milanoafbua'),(25,1,3,'mario'),(26,1,3,'mario'),(27,1,3,'oj'),(28,1,4,'nice family'),(29,1,4,'wow'),(30,1,3,'aewsredftgyh');
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,7 +171,7 @@ CREATE TABLE `user` (
   `password` varchar(45) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +180,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'milo.brontesi@gmail.com','milo','brontesi','admin'),(2,'pietro.fraternari@gmail.com','pietro','fraternari','admin'),(3,'andrea.colombo@gmail.com','andrea','colombo','admin'),(9,'federico.milani@mail.polimi.it','federico','milani','admin');
+INSERT INTO `user` VALUES (1,'milo.brontesi@gmail.com','milo','brontesi','admin'),(2,'pietro.fraternari@gmail.com','pietro','fraternari','admin'),(3,'andrea.colombo@gmail.com','andrea','colombo','admin'),(9,'federico.milani@mail.polimi.it','federico','milani','admin'),(12,'mambata1@mambata.it','mambata','sirda','mambata');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,4 +197,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-19 10:52:38
+-- Dump completed on 2022-06-29 13:15:15
