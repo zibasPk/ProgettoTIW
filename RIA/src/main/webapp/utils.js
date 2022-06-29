@@ -32,7 +32,9 @@ function sendSaveOrder(orderedImages, cback) {
 
 function checkEmailField(email) {
 
-	if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+	var regx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
+	if (email.value.match(regx)) {
 		return (true);
 	}
 	alert("You have entered an invalid email address!")
@@ -42,9 +44,9 @@ function checkEmailField(email) {
 
 
 function checkPasswordsMatch(password1, password2) {
-	if (password1 == password2) {
-		return (true);
+	if (password1.value != password2.value) {
+		alert("passwords don't match");
+		return (false);
 	}
-	alert("passwords don't match");
-	return (false);
+	return (true);
 }

@@ -1,11 +1,11 @@
 
-var email = document.getElementById("email");
 
 (function login() { // avoid variables ending up in the global scope
-
+	
+	var email = document.getElementById("email");
 	document.getElementById("loginbutton").addEventListener('click', (e) => {
 		var form = e.target.closest("form");
-		//if (checkEmailField(email)) {
+		if (checkEmailField(email)) {
 			if (form.checkValidity()) {
 				makeCall("POST", 'CheckLogin', e.target.closest("form"),
 					function(x) {
@@ -33,21 +33,24 @@ var email = document.getElementById("email");
 			} else {
 				form.reportValidity();
 			}
-		//}
+		}
 	});
 
 }
 
 )();
 
-var password1 = document.getElementById("passowrd1");
-var password2 = document.getElementById("password2");
 
-(function() { // avoid variables ending up in the global scope
+
+(function registration() { // avoid variables ending up in the global scope
+
+	var email = document.getElementById("email");
+	var password1 = document.getElementById("password1");
+	var password2 = document.getElementById("password2");
 
 	document.getElementById("registrationbutton").addEventListener('click', (e) => {
 		var form = e.target.closest("form");
-		if (checkPasswordsMatch(password1, password2)) {
+		if (checkPasswordsMatch(password1, password2) && checkEmailField(email)) {
 			if (form.checkValidity()) {
 				makeCall("POST", 'CheckRegistration', e.target.closest("form"),
 					function(x) {
