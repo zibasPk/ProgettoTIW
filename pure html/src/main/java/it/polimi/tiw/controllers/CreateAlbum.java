@@ -58,7 +58,7 @@ public class CreateAlbum extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while inserting album into DB");
 			return;
 		}
-		response.sendRedirect(getServletContext().getContextPath() +"GoToCreateAlbum");
+		response.sendRedirect(getServletContext().getContextPath() +"/GoToCreateAlbum");
 	}
 	
 	public void destroy() {

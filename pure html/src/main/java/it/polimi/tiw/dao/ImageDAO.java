@@ -91,8 +91,8 @@ public class ImageDAO {
 	 */
 	public List<Image> findFreeImages(int userId) throws SQLException {
 		List<Image> images = new ArrayList<>();
-		String query = "SELECT * FROM progettotiw.image\r\n"
-				+ "WHERE image.uploaderID == ? and image.ID NOT IN (select imageID from image_to_album)";
+		String query = "SELECT * FROM progettotiw.image "
+				+ "WHERE image.uploaderID = ? and image.ID NOT IN (select imageID from image_to_album)";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, userId);
 			try (ResultSet result = pstatement.executeQuery();) {
