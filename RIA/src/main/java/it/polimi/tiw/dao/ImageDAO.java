@@ -61,5 +61,28 @@ public class ImageDAO {
 			}
 		}
 	}
-
+	
+	public List<Image> findImagesFromAlbum(int albumID) throws SQLException {
+		List<Image> images = new ArrayList<>();
+		String query = "SELECT * from progettotiw.image join progettotiw.image_to_album on ID = imageID "
+				+ "WHERE albumID = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, albumID);
+			try (ResultSet result = pstatement.executeQuery();) {
+				while (result.next()) {
+					Image image = new Image();
+					image.setId(result.getInt("ID"));
+					image.setTitle(result.getString("title"));
+					image.setDescription(result.getString("description"));
+					image.setPath(result.getString("path"));
+					image.setDate(result.getDate("date"));
+					images.add(image);
+				}
+			}
+			
+		}
+		return images;
+	}
 }
+
+

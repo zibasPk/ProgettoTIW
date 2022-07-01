@@ -19,11 +19,8 @@
 		this.otherListContainer = options['otherListContainer'];
 		this.otherContainerBody = options['otherContainerBody'];
 
-		this.reset = () => {
-			//TODO: reset resets to original order maybe
-		}
 
-		this.show = (next) => {
+		this.show = () => {
 			makeCall("GET", "GetHomeData", null,
 				(req) => {
 					if (req.readyState == XMLHttpRequest.DONE) {
@@ -67,7 +64,11 @@
 				anchor.appendChild(linkText);
 				anchor.setAttribute('albumid', album.id);
 				anchor.addEventListener("click", (e) => {
-					//todo show album details
+
+					var images = new ShowAlbumImages(album.id);
+					images.startImages();
+					images.show(album.id);
+
 				}, false);
 				anchor.href = "#";
 				row.appendChild(linkCell);
@@ -100,7 +101,11 @@
 				anchor.appendChild(linkText);
 				anchor.setAttribute('albumid', album.id);
 				anchor.addEventListener("click", (e) => {
-					//todo show album details
+
+					var images = new ShowAlbumImages(album.id);
+					images.startImages();
+					images.show(album.id);
+
 				}, false);
 				anchor.href = "#";
 				row.appendChild(linkCell);
@@ -115,10 +120,106 @@
 		}
 	}
 
+	function ShowAlbumImages(albumID) {
+
+		let page = 1;
+
+		this.startImages = function() {
+			document.getElementById("id_allalbums").innerHTML = "";
+			document.getElementById("id_buttons").style.visibility = "visible";
+		}
+
+		this.show = function(albumID) {
+
+			makeCall("GET", "GetAlbumData?albumid=" + albumID, null,
+				(req) => {
+					if (req.readyState == XMLHttpRequest.DONE) {
+						var message = req.responseText;
+						switch (req.status) {
+							case 200:
+								var json = JSON.parse(req.responseText);
+								var albumImages = json;
+								document.getElementById("id_noimagesalert").textContent = "this Album has no images!";
+								document.getElementById("id_buttons").style.visibility = "hidden";
+								if (albumImages.length != 0) {
+									this.clearPage();
+									this.update(albumImages, page);
+									document.getElementById("id_noimagesalert").textContent = "";
+								}
+								break;
+							case 502:
+								this.alert.textContent = message;
+								break;
+						}
+					}
+				});
+		}
+
+		this.update = function(albumImages, page) {
+
+			document.getElementById("id_next").style.visibility = "visible";
+			document.getElementById("id_previous").style.visibility = "visible";
+			document.getElementById("id_backtoalbums").style.visibility = "visible";
+			document.getElementById("id_albumimages").style.visibility = "visible";
+			document.getElementById("id_albumimages").innerHTML = "";
+
+			let row, imageCell, dataCell, date;
+
+			albumImages.forEach((image, index) => {
+				if (index < (page * 5) && index >= (page * 5) - 5) {
+
+					row = document.createElement("tr");
+					imageCell = document.createElement("td");
+					imageCell.innerHTML = '<img src ="/pure_html/' + image.path + '"/>';
+					row.appendChild(imageCell);
+					dataCell = document.createElement("td");
+					date = new Date(image.date).toLocaleDateString();
+					dataCell.textContent = image.title + " " + date + "\n" + image.description;
+					row.appendChild(dataCell);
+					document.getElementById("id_albumimages").appendChild(row);
+				}
+			});
+
+			if (page * 5 > albumImages.length) {
+				document.getElementById("id_next").style.visibility = "hidden";
+			}
+			if (page < 2) {
+				document.getElementById("id_previous").style.visibility = "hidden";
+			}
+
+
+			document.getElementById("id_next").addEventListener("click", (e) => {
+				page++;
+				this.update(albumImages, page);
+
+
+
+			}, false);
+			document.getElementById("id_previous").addEventListener("click", (e) => {
+
+				page--;
+				this.update(albumImages, page);
+
+			}, false);
+
+			document.getElementById("id_backtoalbums").addEventListener("click", (e) => {
+				window.location.href = "home.html";
+			})
+
+
+		}
+
+		this.clearPage = () => {
+			// document.getElementById("allalbums").innerHTML = "";
+			return;
+		}
+
+	}
+
 	function PageOrchestrator() {
 		var alertContainer;
 
-		this.start = function () {
+		this.start = function() {
 			alertContainer = document.getElementById("id_alert");
 			albums = new AlbumLists({
 				alert: alertContainer,
@@ -147,7 +248,7 @@
 					if (req.readyState == XMLHttpRequest.DONE) {
 						var message = req.responseText;
 						switch (req.status) {
-							case 200: 
+							case 200:
 								break;
 							case 400: // bad request
 								alertContainer.textContent = message;
@@ -160,10 +261,15 @@
 				})
 			})
 		};
-		this.refresh = function () {
+		this.refresh = function() {
 			alertContainer.textContent = "";
 			albums.reset();
 			albums.show();
+
+			//the following line of code makes so that the image table isn't visible at the beginning (testing phase for it)
+			document.getElementById("id_albumimages").style.visibility = "hidden";
+			document.getElementById("id_buttons").style.visibility = "hidden";
+
 		};
 	}
 

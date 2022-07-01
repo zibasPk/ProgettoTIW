@@ -48,3 +48,10 @@ tbody .selected{
   padding-left: 10px;
   color: red;
 }
+
+img{
+  height: 143px;
+  width: 206px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px silver, 0px 0px 20px 0px #989898;
+}

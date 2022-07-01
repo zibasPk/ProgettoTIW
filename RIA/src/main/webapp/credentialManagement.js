@@ -44,13 +44,13 @@
 
 (function registration() { // avoid variables ending up in the global scope
 
-	var email = document.getElementById("email");
+	var regemail = document.getElementById("registrationemail");
 	var password1 = document.getElementById("password1");
 	var password2 = document.getElementById("password2");
 
 	document.getElementById("registrationbutton").addEventListener('click', (e) => {
 		var form = e.target.closest("form");
-		if (checkPasswordsMatch(password1, password2) && checkEmailField(email)) {
+		if (checkPasswordsMatch(password1, password2) && checkEmailField(regemail)) {
 			if (form.checkValidity()) {
 				makeCall("POST", 'CheckRegistration', e.target.closest("form"),
 					function(x) {
