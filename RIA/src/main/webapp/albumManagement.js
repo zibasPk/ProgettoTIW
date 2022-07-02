@@ -1,5 +1,5 @@
 {
-	let albums, pageOrchestrator = new PageOrchestrator(); // main controller
+	let albums, images, pageOrchestrator = new PageOrchestrator(); // main controller
 
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
@@ -12,13 +12,13 @@
 
 	function AlbumLists(options) {
 		this.alert = options['alert'];
+		this.pageContainer = options['pageContainer'];
 		this.saveOrderButton = options['saveOrder'];
 		this.noAlbumAlert = options['noAlbumAlert'];
 		this.myListContainer = options['myListContainer'];
 		this.myContainerBody = options['myContainerBody'];
 		this.otherListContainer = options['otherListContainer'];
 		this.otherContainerBody = options['otherContainerBody'];
-
 
 		this.show = () => {
 			makeCall("GET", "GetHomeData", null,
@@ -64,11 +64,7 @@
 				anchor.appendChild(linkText);
 				anchor.setAttribute('albumid', album.id);
 				anchor.addEventListener("click", (e) => {
-
-					var images = new ShowAlbumImages(album.id);
-					images.startImages();
-					images.show(album.id);
-
+					images.show(album.id, this);
 				}, false);
 				anchor.href = "#";
 				row.appendChild(linkCell);
@@ -80,7 +76,6 @@
 				this.myContainerBody.appendChild(row);
 			});
 			this.myListContainer.style.visibility = "visible";
-
 		}
 
 		this.updateOtherAlbums = (otherAlbums) => {
@@ -101,11 +96,7 @@
 				anchor.appendChild(linkText);
 				anchor.setAttribute('albumid', album.id);
 				anchor.addEventListener("click", (e) => {
-
-					var images = new ShowAlbumImages(album.id);
-					images.startImages();
-					images.show(album.id);
-
+					images.show(album.id, this);
 				}, false);
 				anchor.href = "#";
 				row.appendChild(linkCell);
@@ -118,19 +109,27 @@
 			this.myListContainer.style.visibility = "hidden";
 			this.otherListContainer.style.visibility = "hidden";
 		}
+
+		this.clear = () => {
+			this.pageContainer.innerHTML = "";
+		}
 	}
 
-	function ShowAlbumImages(albumID) {
+	function AlbumPage(options) {
+		this.alert = options['alert'];
+		this.pageContainer = options['pageContainer'];
+		this.imagesContainer = options['imagesContainer'];
+		this.buttonsContainer = options['buttonsContainer'];
+		this.previousButton = options['previousButton'];
+		this.nextButton = options['nextButton'];
+		this.backToAlbumsButton = options['backToAlbumsButton'];
 
 		let page = 1;
 
-		this.startImages = function() {
-			document.getElementById("id_allalbums").innerHTML = "";
-			document.getElementById("id_buttons").style.visibility = "visible";
-		}
-
-		this.show = function(albumID) {
-
+		this.show = function (albumID, previous) {
+			if (previous != null)
+				previous.clear();
+			this.buttonsContainer.style.visibility = "visible";
 			makeCall("GET", "GetAlbumData?albumid=" + albumID, null,
 				(req) => {
 					if (req.readyState == XMLHttpRequest.DONE) {
@@ -139,12 +138,11 @@
 							case 200:
 								var json = JSON.parse(req.responseText);
 								var albumImages = json;
-								document.getElementById("id_noimagesalert").textContent = "this Album has no images!";
-								document.getElementById("id_buttons").style.visibility = "hidden";
+								this.alert.textContent = "this Album has no images!";
+								this.buttonsContainer.style.visibility = "hidden";
 								if (albumImages.length != 0) {
-									this.clearPage();
 									this.update(albumImages, page);
-									document.getElementById("id_noimagesalert").textContent = "";
+									this.alert.textContent = "";
 								}
 								break;
 							case 502:
@@ -155,19 +153,15 @@
 				});
 		}
 
-		this.update = function(albumImages, page) {
-
-			document.getElementById("id_next").style.visibility = "visible";
-			document.getElementById("id_previous").style.visibility = "visible";
-			document.getElementById("id_backtoalbums").style.visibility = "visible";
-			document.getElementById("id_albumimages").style.visibility = "visible";
-			document.getElementById("id_albumimages").innerHTML = "";
-
+		this.update = function (albumImages, page) {
+			this.nextButton.style.visibility = "visible";
+			this.previousButton.style.visibility = "visible";
+			this.backToAlbumsButton.style.visibility = "visible";
+			this.imagesContainer.style.visibility = "visible";
+			this.imagesContainer.innerHTML = "";
 			let row, imageCell, dataCell, date;
-
 			albumImages.forEach((image, index) => {
 				if (index < (page * 5) && index >= (page * 5) - 5) {
-
 					row = document.createElement("tr");
 					imageCell = document.createElement("td");
 					imageCell.innerHTML = '<img src ="/pure_html/' + image.path + '"/>';
@@ -176,42 +170,45 @@
 					date = new Date(image.date).toLocaleDateString();
 					dataCell.textContent = image.title + " " + date + "\n" + image.description;
 					row.appendChild(dataCell);
-					document.getElementById("id_albumimages").appendChild(row);
+					this.imagesContainer.appendChild(row);
 				}
 			});
 
+			// show or hide next and previous buttons depending on the page
 			if (page * 5 > albumImages.length) {
-				document.getElementById("id_next").style.visibility = "hidden";
+				this.nextButton.style.visibility = "hidden";
 			}
+
 			if (page < 2) {
-				document.getElementById("id_previous").style.visibility = "hidden";
+				this.previousButton.style.visibility = "hidden";
 			}
 
-
-			document.getElementById("id_next").addEventListener("click", (e) => {
+			// bind event listeners to buttons
+			this.nextButton.addEventListener("click", (e) => {
 				page++;
 				this.update(albumImages, page);
+			},
+				false);
 
-
-
-			}, false);
-			document.getElementById("id_previous").addEventListener("click", (e) => {
-
+			this.previousButton.addEventListener("click", (e) => {
 				page--;
 				this.update(albumImages, page);
+			},
+				false);
 
-			}, false);
-
-			document.getElementById("id_backtoalbums").addEventListener("click", (e) => {
+			this.backToAlbumsButton.addEventListener("click", (e) => {
 				window.location.href = "home.html";
 			})
-
-
 		}
 
-		this.clearPage = () => {
-			// document.getElementById("allalbums").innerHTML = "";
-			return;
+		this.reset = () => {
+			this.buttonsContainer.style.visibility = "hidden";
+			this.imagesContainer.innerHTML = "";
+		}
+
+		this.clear = () => {
+			this.buttonsContainer.style.visibility = "hidden";
+			this.imagesContainer.innerHTML = "";
 		}
 
 	}
@@ -219,23 +216,32 @@
 	function PageOrchestrator() {
 		var alertContainer;
 
-		this.start = function() {
+		this.start = function () {
 			alertContainer = document.getElementById("id_alert");
 			albums = new AlbumLists({
 				alert: alertContainer,
+				pageContainer: document.getElementById("id_allalbums"),
 				saveOrderButton: document.getElementById("id_saveorder"),
 				noAlbumAlert: document.getElementById("noalbumalert"),
 				myListContainer: document.getElementById("id_myalbumslist"),
 				myContainerBody: document.getElementById("id_myalbumsbody"),
 				otherListContainer: document.getElementById("id_otheralbumslist"),
 				otherContainerBody: document.getElementById("id_otheralbumsbody"),
-
+			});
+			images = new AlbumPage({
+				alert: alertContainer,
+				pageContainer: document.getElementById("id_albumpage"),
+				imagesContainer: document.getElementById("id_albumimages"),
+				buttonsContainer: document.getElementById("id_buttons"),
+				previousButton: document.getElementById("id_previous"),
+				nextButton: document.getElementById("id_next"),
+				backToAlbumsButton: document.getElementById("id_backtoalbums"),
 			});
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
 				window.sessionStorage.removeItem('username');
 				makeCall("POST", 'Logout', null, (x) => { });
 				window.location.href = "index.html";
-			})
+			});
 			document.getElementById("id_saveorder").addEventListener('click', (e) => {
 				var albums = document.getElementById("id_myalbumsbody");
 				var albumsList = new Array();
@@ -259,9 +265,10 @@
 						}
 					}
 				})
-			})
+			});
 		};
-		this.refresh = function() {
+
+		this.refresh = function () {
 			alertContainer.textContent = "";
 			albums.reset();
 			albums.show();
