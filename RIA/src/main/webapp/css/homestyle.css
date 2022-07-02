@@ -16,15 +16,18 @@ span.welcome {
   font-size: 1.2rem;
   text-transform: uppercase;
   letter-spacing: 2%;
-  padding-right: 20px;
+  padding-right: 10px;
 }
 table.myalbums {
   padding: 10px;
+  padding-bottom: 0px;
 }
 
 table.otheralbums {
   padding: 10px;
+  padding-top: 20px;
 }
+
 div.home-message {
   display: flex;
   align-items: left;
@@ -58,4 +61,16 @@ img{
 
 .createOrAddForm {
   padding-left: 10px;
+}
+
+.left_button{
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.noalbum {
+  padding: 0px;
+  margin: 0px;
+  color: red;
+  margin-left: 10px;
 }
