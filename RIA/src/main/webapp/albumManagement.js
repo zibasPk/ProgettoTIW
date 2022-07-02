@@ -194,12 +194,12 @@
 					row = document.createElement("tr");
 					imageCell = document.createElement("td");
 					imgTag = document.createElement("img");
-					imgTag.src = image.path;
+					imgTag.src = "." + image.path;
 					imageCell.appendChild(imgTag);
 					row.appendChild(imageCell);
 					dataCell = document.createElement("td");
 					date = new Date(image.date).toLocaleDateString();
-					dataCell.textContent = image.title + " " + date + "\n" + image.description;
+					dataCell.textContent = image.title + " " + date + "</br>" + image.description;
 					row.appendChild(dataCell);
 					this.imagesContainer.appendChild(row);
 				}
@@ -362,12 +362,14 @@
 
 
 	function PageOrchestrator() {
-		let alertContainer;
+		let alertContainer, backButton;
 
 		this.start = function () {
 			alertContainer = document.getElementById("id_alert");
+			backButton = document.getElementById("id_backbutton");
 			albums = new AlbumLists({
 				alert: alertContainer,
+				backButton: backButton,
 				pageContainer: document.getElementById("id_page"),
 				saveOrderButton: document.getElementById("id_saveorder"),
 				createAlbumButton: document.getElementById("id_createalbum"),
@@ -384,7 +386,7 @@
 				buttonsContainer: document.getElementById("id_buttons"),
 				previousButton: document.getElementById("id_previous"),
 				nextButton: document.getElementById("id_next"),
-				backToAlbumsButton: document.getElementById("id_backtoalbums"),
+				backToAlbumsButton: backButton,
 			});
 			createAlbumPage = new CreateAlbumPage(document.getElementById("id_page"), alertContainer);
 
