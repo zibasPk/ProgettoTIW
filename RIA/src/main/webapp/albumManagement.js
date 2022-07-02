@@ -1,5 +1,5 @@
 {
-	let albums, images, pageOrchestrator = new PageOrchestrator(); // main controller
+	let albums, images, createAlbumPage, pageOrchestrator = new PageOrchestrator(); // main controller
 
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
@@ -13,12 +13,42 @@
 	function AlbumLists(options) {
 		this.alert = options['alert'];
 		this.pageContainer = options['pageContainer'];
-		this.saveOrderButton = options['saveOrder'];
+		this.saveOrderButton = options['saveOrderButton'];
+		this.createAlbumButton = options['createAlbumButton'];
 		this.noAlbumAlert = options['noAlbumAlert'];
 		this.myListContainer = options['myListContainer'];
 		this.myContainerBody = options['myContainerBody'];
 		this.otherListContainer = options['otherListContainer'];
 		this.otherContainerBody = options['otherContainerBody'];
+
+		this.saveOrderButton.addEventListener('click', (e) => {
+			var albums = document.getElementById("id_myalbumsbody");
+			var albumsList = new Array();
+			for (let i = 0, row; row = albums.rows[i]; i++) {
+				var col = row.cells[2];
+				var anchor = col.getElementsByTagName("a")[0];
+				albumsList.push(anchor.getAttribute("albumid"));
+			}
+			sendSaveOrder(albumsList, (req) => {
+				if (req.readyState == XMLHttpRequest.DONE) {
+					var message = req.responseText;
+					switch (req.status) {
+						case 200:
+							break;
+						case 400: // bad request
+							alertContainer.textContent = message;
+							break;
+						case 502: // bad gateway
+							alertContainer.textContent = message;
+							break;
+					}
+				}
+			})
+		});
+
+		this.createAlbumButton.addEventListener('click', (e) => {
+			createAlbumPage.show(this);
+		});
 
 		this.show = () => {
 			makeCall("GET", "GetHomeData", null,
@@ -43,7 +73,6 @@
 						}
 					}
 				});
-
 		}
 
 		this.updateMyAlbums = (myAlbums) => {
@@ -159,12 +188,14 @@
 			this.backToAlbumsButton.style.visibility = "visible";
 			this.imagesContainer.style.visibility = "visible";
 			this.imagesContainer.innerHTML = "";
-			let row, imageCell, dataCell, date;
+			let row, imageCell, imgTag, dataCell, date;
 			albumImages.forEach((image, index) => {
 				if (index < (page * 5) && index >= (page * 5) - 5) {
 					row = document.createElement("tr");
 					imageCell = document.createElement("td");
-					imageCell.innerHTML = '<img src ="/pure_html/' + image.path + '"/>';
+					imgTag = document.createElement("img");
+					imgTag.src = image.path;
+					imageCell.appendChild(imgTag);
 					row.appendChild(imageCell);
 					dataCell = document.createElement("td");
 					date = new Date(image.date).toLocaleDateString();
@@ -213,15 +244,105 @@
 
 	}
 
+	function CreateAlbumPage(pageContainer, alertContainer) {
+		this.pageContainer = pageContainer;
+		this.alert = alertContainer;
+		this.show = (previous) => {
+			previous.clear();
+			makeCall("GET", "GetCreateAlbumData", null,
+				(req) => {
+					if (req.readyState == XMLHttpRequest.DONE) {
+						let message = req.responseText;
+						switch (req.status) {
+							case 200:
+								let json = JSON.parse(req.responseText);
+								let myAlbums = json[0];
+								let myImages = json[1];
+								this.update(myAlbums, myImages);
+								break;
+							case 502:
+								this.alert.textContent = message;
+								break;
+						}
+					}
+				});
+		}
+
+		this.update = (myAlbums, myImages) => {
+			let createForm, createInput, createButton, addImageForm, addImagesButton, selectAlbum, selectImage;
+			pageContainer.innerHTML = "";
+			// creation of create album form
+			let title1 = document.createElement("p");
+			title1.textContent = "Create an album";
+			pageContainer.appendChild(title1);
+			createForm = document.createElement("form");
+			createInput = document.createElement("input");
+			createInput.name = "albumName";
+			createInput.setAttribute('required', '');
+			createButton = document.createElement("input");
+			createButton.type = "button";
+			createButton.value = "create album";
+			createButton.addEventListener('click', e => {
+				//send create album message needs to recieve created album
+			})
+			createForm.appendChild(createInput);
+			createForm.appendChild(createButton);
+			pageContainer.appendChild(createForm);
+
+			// if there is no need to show the add album form 
+			if (myAlbums.length == 0 && myImages.length == 0) {
+				this.alert.textContent = "You have no images or albums";
+				return;
+			}
+			if (myImages.length == 0) {
+				this.alert.textContent = "You have no images to add to an album";
+				return;
+			}
+
+
+			// creation of add album form
+			let title2 = document.createElement("p");
+			title2.textContent = "Add images to your albums";
+			pageContainer.appendChild(title2);
+			addImageForm = document.createElement("form");
+			selectImage = document.createElement("select");
+			myImages.forEach((image) => {
+				let option = document.createElement("option");
+				option.value = image.id;
+				option.text = image.title;
+				selectImage.appendChild(option);
+			})
+			selectAlbum = document.createElement("select");
+			myAlbums.forEach((album) => {
+				let option = document.createElement("option");
+				option.value = album.id;
+				option.text = album.title;
+				selectAlbum.appendChild(option);
+			})
+			addImagesButton = document.createElement("input");
+			addImagesButton.value = "add image to album";
+			addImagesButton.type = "button";
+			addImagesButton.addEventListener('click', (e) => {
+				//if send add image is a success remove image from select 
+			})
+			addImageForm.appendChild(selectImage);
+			addImageForm.appendChild(selectAlbum);
+			addImageForm.appendChild(addImagesButton);
+			pageContainer.appendChild(addImageForm);
+		}
+	}
+
+
 	function PageOrchestrator() {
-		var alertContainer;
+		let alertContainer;
 
 		this.start = function () {
 			alertContainer = document.getElementById("id_alert");
 			albums = new AlbumLists({
 				alert: alertContainer,
-				pageContainer: document.getElementById("id_allalbums"),
+				pageContainer: document.getElementById("id_page"),
 				saveOrderButton: document.getElementById("id_saveorder"),
+				createAlbumButton: document.getElementById("id_createalbum"),
 				noAlbumAlert: document.getElementById("noalbumalert"),
 				myListContainer: document.getElementById("id_myalbumslist"),
 				myContainerBody: document.getElementById("id_myalbumsbody"),
@@ -237,35 +358,14 @@
 				nextButton: document.getElementById("id_next"),
 				backToAlbumsButton: document.getElementById("id_backtoalbums"),
 			});
+			createAlbumPage = new CreateAlbumPage(document.getElementById("id_page"), alertContainer);
+
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
 				window.sessionStorage.removeItem('username');
 				makeCall("POST", 'Logout', null, (x) => { });
 				window.location.href = "index.html";
 			});
-			document.getElementById("id_saveorder").addEventListener('click', (e) => {
-				var albums = document.getElementById("id_myalbumsbody");
-				var albumsList = new Array();
-				for (let i = 0, row; row = albums.rows[i]; i++) {
-					var col = row.cells[2];
-					var anchor = col.getElementsByTagName("a")[0];
-					albumsList.push(anchor.getAttribute("albumid"));
-				}
-				sendSaveOrder(albumsList, (req) => {
-					if (req.readyState == XMLHttpRequest.DONE) {
-						var message = req.responseText;
-						switch (req.status) {
-							case 200:
-								break;
-							case 400: // bad request
-								alertContainer.textContent = message;
-								break;
-							case 502: // bad gateway
-								alertContainer.textContent = message;
-								break;
-						}
-					}
-				})
-			});
+
 		};
 
 		this.refresh = function () {
