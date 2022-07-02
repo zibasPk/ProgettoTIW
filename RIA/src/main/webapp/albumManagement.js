@@ -270,20 +270,42 @@
 
 		this.update = (myAlbums, myImages) => {
 			let createForm, createInput, createButton, addImageForm, addImagesButton, selectAlbum, selectImage;
-			pageContainer.innerHTML = "";
 			// creation of create album form
 			let title1 = document.createElement("p");
 			title1.textContent = "Create an album";
+			title1.classList.add("createOrAddForm");
 			pageContainer.appendChild(title1);
 			createForm = document.createElement("form");
+			createForm.action = "#";
+			createForm.classList.add("createOrAddForm")
 			createInput = document.createElement("input");
 			createInput.name = "albumName";
-			createInput.setAttribute('required', '');
+			createInput.required = true;
 			createButton = document.createElement("input");
 			createButton.type = "button";
 			createButton.value = "create album";
 			createButton.addEventListener('click', e => {
-				//send create album message needs to recieve created album
+				if (!validAlbumName(createInput.value)) {
+					this.alert.textContent = "Invalid album name length";
+					return;
+				}
+				makeCall("POST", "CreateAlbum", createForm,
+					(x) => {
+						if (x.readyState == XMLHttpRequest.DONE) {
+							let message = x.responseText;
+							switch (x.status) {
+								case 200:
+									this.show(this);
+									break;
+								case 400: // bad request
+									this.alert.textContent = message;
+									break;
+								case 502: // bad gateway
+									this.alert.textContent = message;
+									break;
+							}
+						}
+					});
 			})
 			createForm.appendChild(createInput);
 			createForm.appendChild(createButton);
@@ -299,12 +321,14 @@
 				return;
 			}
 
-
 			// creation of add album form
 			let title2 = document.createElement("p");
 			title2.textContent = "Add images to your albums";
+			title2.classList.add("createOrAddForm")
 			pageContainer.appendChild(title2);
 			addImageForm = document.createElement("form");
+			addImageForm.classList.add("createOrAddForm");
+			addImageForm.action = "#";
 			selectImage = document.createElement("select");
 			myImages.forEach((image) => {
 				let option = document.createElement("option");
@@ -329,6 +353,10 @@
 			addImageForm.appendChild(selectAlbum);
 			addImageForm.appendChild(addImagesButton);
 			pageContainer.appendChild(addImageForm);
+		}
+
+		this.clear = () => {
+			pageContainer.innerHTML = "";
 		}
 	}
 

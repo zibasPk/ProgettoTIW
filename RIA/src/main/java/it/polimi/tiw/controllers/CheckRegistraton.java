@@ -24,16 +24,16 @@ import it.polimi.tiw.dao.UserDAO;
 public class CheckRegistraton extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-	
+
 	public void init() throws ServletException {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String name = StringEscapeUtils.escapeJava(request.getParameter("name"));
@@ -43,50 +43,49 @@ public class CheckRegistraton extends HttpServlet {
 		String confirmPassword = StringEscapeUtils.escapeJava(request.getParameter("confirm-password"));
 		ParamValidator validator = new ParamValidator(response);
 		Logger.debug("registration started");
-		
-		//check param validity
-		if(!validator.validateRegistration(email, name, surname, password, confirmPassword)) return;
-		
-		//makes email lowercase
+
+		// check param validity
+		if (!validator.validateRegistration(email, name, surname, password, confirmPassword))
+			return;
+
+		// makes email lowercase
 		email = email.toLowerCase();
-		//controllo se esiste già un altro user con la stessa mail
+		// checks if a user with the same mail exists
 		UserDAO userService = new UserDAO(connection);
 		boolean duplicate = false;
 		try {
 			duplicate = userService.checkDuplicateEmail(email);
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
-			response.getWriter().println("Failure in database credential checking");	
+			response.getWriter().println("Failure in database credential checking");
 			return;
 		}
-		
-		
+
 		User user = null;
 		if (duplicate == false) {
 			try {
 				userService.createCredentials(email, name, surname, password);
 				user = userService.checkCredentials(email, password);
-			} catch (SQLException e){
+			} catch (SQLException e) {
 				response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 				response.getWriter().println("Failure in database credential creation");
 				return;
 			}
-			 
+
 			request.getSession().setAttribute("user", user);
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			response.getWriter().println("User already registered");
 			return;
 		}
-		
-	// need to check this one (lines 1 3 4 5)
+
 		request.getSession().setAttribute("user", user);
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().println(user.getFullName());
 	}
-	
+
 	@Override
 	public void destroy() {
 		try {
@@ -95,5 +94,5 @@ public class CheckRegistraton extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-		
+
 }

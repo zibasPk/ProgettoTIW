@@ -2,15 +2,15 @@
 
 (function login() { // avoid variables ending up in the global scope
 	
-	var email = document.getElementById("email");
+	let email = document.getElementById("email");
 	document.getElementById("loginbutton").addEventListener('click', (e) => {
-		var form = e.target.closest("form");
+		let form = e.target.closest("form");
 		if (checkEmailField(email)) {
 			if (form.checkValidity()) {
 				makeCall("POST", 'CheckLogin', e.target.closest("form"),
 					function(x) {
 						if (x.readyState == XMLHttpRequest.DONE) {
-							var message = x.responseText;
+							let message = x.responseText;
 							switch (x.status) {
 								case 200:
 									sessionStorage.setItem('username', message);
@@ -44,18 +44,18 @@
 
 (function registration() { // avoid variables ending up in the global scope
 
-	var regemail = document.getElementById("registrationemail");
-	var password1 = document.getElementById("password1");
-	var password2 = document.getElementById("password2");
+	let regemail = document.getElementById("registrationemail");
+	let password1 = document.getElementById("password1");
+	let password2 = document.getElementById("password2");
 
 	document.getElementById("registrationbutton").addEventListener('click', (e) => {
-		var form = e.target.closest("form");
+		let form = e.target.closest("form");
 		if (checkPasswordsMatch(password1, password2) && checkEmailField(regemail)) {
 			if (form.checkValidity()) {
 				makeCall("POST", 'CheckRegistration', e.target.closest("form"),
 					function(x) {
 						if (x.readyState == XMLHttpRequest.DONE) {
-							var message = x.responseText;
+							let message = x.responseText;
 							switch (x.status) {
 								case 200:
 									sessionStorage.setItem('username', message);

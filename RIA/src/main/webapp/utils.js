@@ -50,3 +50,7 @@ function checkPasswordsMatch(password1, password2) {
 	}
 	return (true);
 }
+
+function validAlbumName(name){
+	return name.length > 0 && name.length < 32;
+}
