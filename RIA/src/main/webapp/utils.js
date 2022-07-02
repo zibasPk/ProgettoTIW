@@ -1,6 +1,6 @@
 
 function makeCall(method, url, formElement, cback, reset = true) {
-	var req = new XMLHttpRequest(); // visible by closure
+	let req = new XMLHttpRequest(); // visible by closure
 	req.onreadystatechange = function () {
 		cback(req)
 	}; // closure
@@ -16,7 +16,7 @@ function makeCall(method, url, formElement, cback, reset = true) {
 }
 
 function sendSaveOrder(orderedImages, cback) {
-	var req = new XMLHttpRequest();
+	let req = new XMLHttpRequest();
 	req.onreadystatechange = () => {
 		cback(req);
 	}
@@ -32,7 +32,7 @@ function sendSaveOrder(orderedImages, cback) {
 
 function checkEmailField(email) {
 
-	var regx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+	let regx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
 	if (email.value.match(regx)) {
 		return (true);

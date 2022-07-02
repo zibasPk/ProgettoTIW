@@ -22,16 +22,16 @@
 		this.otherContainerBody = options['otherContainerBody'];
 
 		this.saveOrderButton.addEventListener('click', (e) => {
-			var albums = document.getElementById("id_myalbumsbody");
-			var albumsList = new Array();
+			let albums = document.getElementById("id_myalbumsbody");
+			let albumsList = new Array();
 			for (let i = 0, row; row = albums.rows[i]; i++) {
-				var col = row.cells[2];
-				var anchor = col.getElementsByTagName("a")[0];
+				let col = row.cells[2];
+				let anchor = col.getElementsByTagName("a")[0];
 				albumsList.push(anchor.getAttribute("albumid"));
 			}
 			sendSaveOrder(albumsList, (req) => {
 				if (req.readyState == XMLHttpRequest.DONE) {
-					var message = req.responseText;
+					let message = req.responseText;
 					switch (req.status) {
 						case 200:
 							break;
@@ -54,12 +54,12 @@
 			makeCall("GET", "GetHomeData", null,
 				(req) => {
 					if (req.readyState == XMLHttpRequest.DONE) {
-						var message = req.responseText;
+						let message = req.responseText;
 						switch (req.status) {
 							case 200:
-								var json = JSON.parse(req.responseText);
-								var myAlbumsToShow = json[0];
-								var otherAlbumsToShow = json[1];
+								let json = JSON.parse(req.responseText);
+								let myAlbumsToShow = json[0];
+								let otherAlbumsToShow = json[1];
 								this.noAlbumAlert.textContent = "No Albums to your name"
 								if (myAlbumsToShow.length != 0) {
 									this.updateMyAlbums(myAlbumsToShow);
@@ -76,7 +76,7 @@
 		}
 
 		this.updateMyAlbums = (myAlbums) => {
-			var elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
+			let elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
 			this.myContainerBody.innerHTML = ""; // empties the table body
 			myAlbums.forEach((album) => {
 				row = document.createElement("tr");
@@ -108,7 +108,7 @@
 		}
 
 		this.updateOtherAlbums = (otherAlbums) => {
-			var elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
+			let elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
 			this.otherContainerBody.innerHTML = ""; // empties the table body
 			otherAlbums.forEach((album) => {
 				row = document.createElement("tr");
@@ -162,11 +162,11 @@
 			makeCall("GET", "GetAlbumData?albumid=" + albumID, null,
 				(req) => {
 					if (req.readyState == XMLHttpRequest.DONE) {
-						var message = req.responseText;
+						let message = req.responseText;
 						switch (req.status) {
 							case 200:
-								var json = JSON.parse(req.responseText);
-								var albumImages = json;
+								let json = JSON.parse(req.responseText);
+								let albumImages = json;
 								this.alert.textContent = "this Album has no images!";
 								this.buttonsContainer.style.visibility = "hidden";
 								if (albumImages.length != 0) {
@@ -386,7 +386,7 @@
 				then we use CSS to put "notselected" in black and "selected" in red
 		*/
 	function unselectRows(rowsArray) {
-		for (var i = 0; i < rowsArray.length; i++) {
+		for (let i = 0; i < rowsArray.length; i++) {
 			rowsArray[i].classList.remove("selected");
 		}
 	}
