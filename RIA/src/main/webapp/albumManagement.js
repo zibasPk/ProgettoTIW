@@ -12,6 +12,7 @@
 
 	function AlbumLists(options) {
 		this.alert = options['alert'];
+		this.backButton = options['backButton'];
 		this.pageContainer = options['pageContainer'];
 		this.saveOrderButton = options['saveOrderButton'];
 		this.createAlbumButton = options['createAlbumButton'];
@@ -51,6 +52,12 @@
 		});
 
 		this.show = () => {
+			this.backButton = clearBackButtonListeners();
+			this.backButton.addEventListener('click', (e) => {
+				window.sessionStorage.removeItem('username');
+				makeCall("POST", 'Logout', null, (x) => { });
+				window.location.href = "index.html";
+			})
 			makeCall("GET", "GetHomeData", null,
 				(req) => {
 					if (req.readyState == XMLHttpRequest.DONE) {
@@ -159,6 +166,10 @@
 			if (previous != null)
 				previous.clear();
 			this.buttonsContainer.style.visibility = "visible";
+			this.backToAlbumsButton = clearBackButtonListeners();
+			this.backToAlbumsButton.addEventListener("click", (e) => {
+				window.location.href = "home.html";
+			})
 			makeCall("GET", "GetAlbumData?albumid=" + albumID, null,
 				(req) => {
 					if (req.readyState == XMLHttpRequest.DONE) {
@@ -185,7 +196,6 @@
 		this.update = function (albumImages, page) {
 			this.nextButton.style.visibility = "visible";
 			this.previousButton.style.visibility = "visible";
-			this.backToAlbumsButton.style.visibility = "visible";
 			this.imagesContainer.style.visibility = "visible";
 			this.imagesContainer.innerHTML = "";
 			let row, imageCell, imgTag, dataCell, date;
@@ -226,10 +236,6 @@
 				this.update(albumImages, page);
 			},
 				false);
-
-			this.backToAlbumsButton.addEventListener("click", (e) => {
-				window.location.href = "home.html";
-			})
 		}
 
 		this.reset = () => {
@@ -244,11 +250,18 @@
 
 	}
 
-	function CreateAlbumPage(pageContainer, alertContainer) {
+	function CreateAlbumPage(backButton, pageContainer, alertContainer) {
 		this.pageContainer = pageContainer;
 		this.alert = alertContainer;
+		this.backButton = backButton;
+
 		this.show = (previous) => {
 			previous.clear();
+			this.backButton = clearBackButtonListeners();
+			this.backButton = document.getElementById("id_backbutton");
+			backButton.addEventListener('click', (e) => {
+				
+			})
 			makeCall("GET", "GetCreateAlbumData", null,
 				(req) => {
 					if (req.readyState == XMLHttpRequest.DONE) {
@@ -387,7 +400,7 @@
 				nextButton: document.getElementById("id_next"),
 				backToAlbumsButton: backButton,
 			});
-			createAlbumPage = new CreateAlbumPage(document.getElementById("id_page"), alertContainer);
+			createAlbumPage = new CreateAlbumPage(backButton, document.getElementById("id_page"), alertContainer);
 
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
 				window.sessionStorage.removeItem('username');

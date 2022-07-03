@@ -140,3 +140,10 @@ function dragDrop(event) {
 	// Make start element null
 	startElement = null;
 }
+
+function clearBackButtonListeners() {
+	let button = document.getElementById("id_backbutton");
+	let newNode = button.cloneNode(true);
+	button.parentNode.replaceChild(newNode, button);
+	return newNode;
+}
