@@ -26,8 +26,6 @@ version="4.0">
  </filter>
  <filter-mapping> 
     <filter-name>UserChecker</filter-name> 
-    <url-pattern>/CreateComment</url-pattern> 
-    <url-pattern>/album</url-pattern> 
     <url-pattern>/AddToAlbum</url-pattern>
     <url-pattern>/CreateAlbum</url-pattern>    
     <url-pattern>/GetAlbumData</url-pattern>    
@@ -35,7 +33,7 @@ version="4.0">
     <url-pattern>/GetHomeData</url-pattern>
     <url-pattern>/GetImageData</url-pattern>
     <url-pattern>/SaveAlbumOrder</url-pattern>
-    <url-pattern>/CreateComment</url-pattern>
+   <!--  <url-pattern>/CreateComment</url-pattern>-->
  </filter-mapping>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

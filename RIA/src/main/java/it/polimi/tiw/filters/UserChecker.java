@@ -4,7 +4,6 @@ package it.polimi.tiw.filters;
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -22,18 +21,6 @@ import org.tinylog.Logger;
 public class UserChecker implements Filter {
 
 	/**
-	 * Default constructor.
-	 */
-	public UserChecker() {
-	}
-
-	/**
-	 * @see Filter#destroy()
-	 */
-	public void destroy() {
-	}
-
-	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -44,21 +31,14 @@ public class UserChecker implements Filter {
 		String loginpath = req.getServletContext().getContextPath() + "/index.html";
 		// check if the client is an admin
 		HttpSession s = req.getSession();
+		Logger.debug("User filter executing..");
 	
 		if (s.isNew() || s.getAttribute("user") == null) {
 			res.setStatus(403);
 			res.setHeader("Location", loginpath);
-			Logger.debug("User filter executing..");
 			return;
 		}
 		// pass the request along the filter chain
 		chain.doFilter(request, response);
 	}
-
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
-	public void init(FilterConfig fConfig) throws ServletException {
-	}
-
 }
