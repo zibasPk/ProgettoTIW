@@ -389,8 +389,8 @@
 							case 200:
 								let json = JSON.parse(x.responseText);
 								let image = json[0];
-								let comments = json[1];
-								this.update(image, comments);
+								let commentMap = json[1];
+								this.update(image, commentMap);
 								break;
 							case 400:
 								this.alert.textContent = message;
@@ -403,8 +403,8 @@
 				})
 		}
 
-		this.update = (image, comments) => {
-			let contentDiv, imageSrc, title, description, commentsDiv;
+		this.update = (image, commentMap) => {
+			let contentDiv, imageSrc, title, description, commentsDiv, commentDiv, authSpan, contentSpan;
 			contentDiv = document.createElement("div");
 			contentDiv.classList.add("modal-content");
 
@@ -420,13 +420,39 @@
 			commentsDiv = document.createElement("div");
 			commentsDiv.classList.add("comments");
 			contentDiv.appendChild(commentsDiv);
-
+		
+			for (const[key, value] of Object.entries(commentMap))  {
+				
+			commentDiv = document.createElement("div");
+			commentsDiv.style = "overflow-y";
+			commentDiv.setAttribute("class", "commentDiv");
+			commentsDiv.appendChild(commentDiv);
+			authSpan = document.createElement("span");
+			authSpan.textContent = value + ":  ";
+			commentDiv.appendChild(authSpan);
+			contentSpan = document.createElement("span");
+			contentSpan.textContent = key;
+			commentDiv.appendChild(contentSpan);
+			}
+			let newCommentInput = document.createElement("input");
+			newCommentInput.type = "text";
+			commentsDiv.appendChild(newCommentInput); 
 			this.popupContainer.appendChild(contentDiv);
+			let newCommentButton =  document.createElement("input");
+			newCommentButton.type = "button";
+			newCommentButton.value = "send comment";
+			commentsDiv.appendChild(newCommentButton);
 			this.popupContainer.style.display = "block";
+			let closeWindow = document.createElement("span");
+			closeWindow.textContent = "X";
+			commentsDiv.appendChild(closeWindow);
+			closeWindow.onclick = () => {
+				this.clear();
+			}
 		}
 		
 		this.clear = () => {
-			this.popupContainer.innerHTML = "";
+			this.popupContainer.style.display = "none";
 		}
 	}
 
