@@ -38,3 +38,7 @@ tbody td:nth-child(odd) {
 tbody td:nth-child(even) {
   background-color: #eee;
 }
+
+.createButton {
+	margin-left: 10px;
+}

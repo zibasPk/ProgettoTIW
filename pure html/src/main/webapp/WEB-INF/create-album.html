@@ -16,7 +16,7 @@
   <form action="CreateAlbum" method="POST">
     <fieldset>
       <p>
-        name: <input name="albumName" required />
+        name: <input name="albumName" maxlength=32 required />
       </p>
       <input type="submit" value="create">
     </fieldset>
@@ -27,11 +27,17 @@
   <th:block xmlns:th="http://www.thymeleaf.org">
     <form action="AddToAlbum" method="POST">
       <fieldset>
+      	<div>
+    		Select album
+  		</div>
         <p>
           <select name="albumId">
             <option th:each="album: ${albums}" th:value="${album.getID}" th:text="${album.getTitle}">album</option>
           </select>
         </p>
+        <div>
+    		Select picture
+  		</div>
         <p>
           <select name="imageId">
             <option th:each="image: ${images}" th:value="${image.getID}" th:text="${image.getTitle}">image</option>

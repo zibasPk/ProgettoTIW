@@ -28,6 +28,7 @@ public class CommentDAO {
 			pstatement.executeUpdate();
 		}
 	}
+	
 	/**
 	 * find comments for given image id, if there are non it returns empty list
 	 * 

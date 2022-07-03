@@ -45,6 +45,7 @@
           </div>
       </div>
       <div class="images" th:unless="${bigimage != null}">
+      <div th:if = "${images.size == 0}"> No Images in this Album</div>
         <div class ="tumbimage" th:each="image,iter : ${images}">
           <div class="imgref">
             <a th:href="@{/showImage(id=${param.id}, page=${param.page}, img = ${image.getID})}">
