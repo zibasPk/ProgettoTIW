@@ -263,7 +263,7 @@
 			this.backButton = clearBackButtonListeners();
 			this.backButton = document.getElementById("id_backbutton");
 			backButton.addEventListener('click', (e) => {
-
+				window.location.href = "home.html";
 			})
 			makeCall("GET", "GetCreateAlbumData", null,
 				(x) => {
@@ -328,11 +328,11 @@
 			pageContainer.appendChild(createForm);
 
 			// if there is no need to show the add album form 
-			if (myAlbums.length == 0 && myImages.length == 0) {
+			if ((myAlbums == null && myImages == null) || (myAlbums.length == 0 && myImages.length == 0)) {
 				this.alert.textContent = "You have no images or albums";
 				return;
 			}
-			if (myImages.length == 0) {
+			if (myImages == null ||myImages.length == 0) {
 				this.alert.textContent = "You have no images to add to an album";
 				return;
 			}
@@ -346,6 +346,7 @@
 			addImageForm.classList.add("createOrAddForm");
 			addImageForm.action = "#";
 			selectImage = document.createElement("select");
+			selectImage.name = "imageId";
 			myImages.forEach((image) => {
 				let option = document.createElement("option");
 				option.value = image.id;
@@ -353,6 +354,7 @@
 				selectImage.appendChild(option);
 			})
 			selectAlbum = document.createElement("select");
+			selectAlbum.name = "albumId";
 			myAlbums.forEach((album) => {
 				let option = document.createElement("option");
 				option.value = album.id;
@@ -363,6 +365,23 @@
 			addImagesButton.value = "add image to album";
 			addImagesButton.type = "button";
 			addImagesButton.addEventListener('click', (e) => {
+				makeCall("POST", "AddToAlbum", addImageForm,
+					(x) => {
+						if (x.readyState == XMLHttpRequest.DONE) {
+							let message = x.responseText;
+							switch (x.status) {
+								case 200:
+									this.show(this);
+									break;
+								case 400: // bad request
+									this.alert.textContent = message;
+									break;
+								case 502: // bad gateway
+									this.alert.textContent = message;
+									break;
+							}
+						}
+					});
 				//if send add image is a success remove image from select 
 			})
 			addImageForm.appendChild(selectImage);
