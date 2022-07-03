@@ -1,5 +1,5 @@
 {
-	let albums, images, createAlbumPage, pageOrchestrator = new PageOrchestrator(); // main controller
+	let albums, images, createAlbumPage, modal, pageOrchestrator = new PageOrchestrator(); // main controller
 
 	window.addEventListener("load", () => {
 		if (sessionStorage.getItem("username") == null) {
@@ -30,10 +30,10 @@
 				let anchor = col.getElementsByTagName("a")[0];
 				albumsList.push(anchor.getAttribute("albumid"));
 			}
-			sendSaveOrder(albumsList, (req) => {
-				if (req.readyState == XMLHttpRequest.DONE) {
-					let message = req.responseText;
-					switch (req.status) {
+			sendSaveOrder(albumsList, (x) => {
+				if (x.readyState == XMLHttpRequest.DONE) {
+					let message = x.responseText;
+					switch (x.status) {
 						case 200:
 							break;
 						case 400: // bad request
@@ -59,12 +59,12 @@
 				window.location.href = "index.html";
 			})
 			makeCall("GET", "GetHomeData", null,
-				(req) => {
-					if (req.readyState == XMLHttpRequest.DONE) {
-						let message = req.responseText;
-						switch (req.status) {
+				(x) => {
+					if (x.readyState == XMLHttpRequest.DONE) {
+						let message = x.responseText;
+						switch (x.status) {
 							case 200:
-								let json = JSON.parse(req.responseText);
+								let json = JSON.parse(x.responseText);
 								let myAlbumsToShow = json[0];
 								let otherAlbumsToShow = json[1];
 								this.noAlbumAlert.textContent = "No Albums to your name"
@@ -171,12 +171,12 @@
 				window.location.href = "home.html";
 			})
 			makeCall("GET", "GetAlbumData?albumid=" + albumID, null,
-				(req) => {
-					if (req.readyState == XMLHttpRequest.DONE) {
-						let message = req.responseText;
-						switch (req.status) {
+				(x) => {
+					if (x.readyState == XMLHttpRequest.DONE) {
+						let message = x.responseText;
+						switch (x.status) {
 							case 200:
-								let json = JSON.parse(req.responseText);
+								let json = JSON.parse(x.responseText);
 								let albumImages = json;
 								this.alert.textContent = "this Album has no images!";
 								this.buttonsContainer.style.visibility = "hidden";
@@ -205,11 +205,14 @@
 					imageCell = document.createElement("td");
 					imgTag = document.createElement("img");
 					imgTag.src = "." + image.path;
+					imgTag.addEventListener("mouseover", (e) => {
+						modal.show(this, image.id);
+					})
 					imageCell.appendChild(imgTag);
 					row.appendChild(imageCell);
 					dataCell = document.createElement("td");
 					date = new Date(image.date).toLocaleDateString();
-					dataCell.textContent = image.title + " " + date + "</br>" + image.description;
+					dataCell.innerHTML = image.title + " " + date + "<br />"  + image.description;
 					row.appendChild(dataCell);
 					this.imagesContainer.appendChild(row);
 				}
@@ -260,15 +263,15 @@
 			this.backButton = clearBackButtonListeners();
 			this.backButton = document.getElementById("id_backbutton");
 			backButton.addEventListener('click', (e) => {
-				
+
 			})
 			makeCall("GET", "GetCreateAlbumData", null,
-				(req) => {
-					if (req.readyState == XMLHttpRequest.DONE) {
-						let message = req.responseText;
-						switch (req.status) {
+				(x) => {
+					if (x.readyState == XMLHttpRequest.DONE) {
+						let message = x.responseText;
+						switch (x.status) {
 							case 200:
-								let json = JSON.parse(req.responseText);
+								let json = JSON.parse(x.responseText);
 								let myAlbums = json[0];
 								let myImages = json[1];
 								this.update(myAlbums, myImages);
@@ -373,6 +376,60 @@
 		}
 	}
 
+	function ModalImage(popupContainer, alertContainer) {
+		this.alert = alertContainer;
+		this.popupContainer = popupContainer;
+
+		this.show = (previous, imageId) => {
+			makeCall('GET', "GetImageData?imageId=" + imageId, null,
+				(x) => {
+					if (x.readyState == XMLHttpRequest.DONE) {
+						let message = x.responseText;
+						switch (x.status) {
+							case 200:
+								let json = JSON.parse(x.responseText);
+								let image = json[0];
+								let comments = json[1];
+								this.update(image, comments);
+								break;
+							case 400:
+								this.alert.textContent = message;
+								break;
+							case 502:
+								this.alert.textContent = message;
+								break;
+						}
+					}
+				})
+		}
+
+		this.update = (image, comments) => {
+			let contentDiv, imageSrc, title, description, commentsDiv;
+			contentDiv = document.createElement("div");
+			contentDiv.classList.add("modal-content");
+
+			imageSrc = document.createElement("img");
+			imageSrc.src = "." + image.path;
+			contentDiv.appendChild(imageSrc);
+			title = document.createElement("p");
+			title.textContent = image.title + " " + new Date(image.date).toLocaleDateString();
+			contentDiv.appendChild(title);
+			description = document.createElement("p");
+			description.textContent = image.description;
+			contentDiv.appendChild(description);
+			commentsDiv = document.createElement("div");
+			commentsDiv.classList.add("comments");
+			contentDiv.appendChild(commentsDiv);
+
+			this.popupContainer.appendChild(contentDiv);
+			this.popupContainer.style.display = "block";
+		}
+		
+		this.clear = () => {
+			this.popupContainer.innerHTML = "";
+		}
+	}
+
 	function PageOrchestrator() {
 		let alertContainer, backButton;
 
@@ -401,6 +458,8 @@
 				backToAlbumsButton: backButton,
 			});
 			createAlbumPage = new CreateAlbumPage(backButton, document.getElementById("id_page"), alertContainer);
+
+			modal = new ModalImage(document.getElementById("id_modalpopup"));
 
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
 				window.sessionStorage.removeItem('username');
