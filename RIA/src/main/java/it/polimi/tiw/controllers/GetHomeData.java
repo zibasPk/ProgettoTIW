@@ -41,6 +41,7 @@ public class GetHomeData extends HttpServlet {
 		try {
 			myAlbums = cache.getOrderedAlbums(user, connection);
 		} catch (SQLException e) {
+			e.printStackTrace();
 			resp.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			resp.getWriter().println("Error in retrieving albums from databse");
 			return;
@@ -49,6 +50,7 @@ public class GetHomeData extends HttpServlet {
 		try {
 			otherAlbums = albumService.findNotOwnedAlbums(user.getId());
 		} catch (SQLException e) {
+			e.printStackTrace();
 			resp.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			resp.getWriter().println("Error in retrieving albums from databse");
 			return;

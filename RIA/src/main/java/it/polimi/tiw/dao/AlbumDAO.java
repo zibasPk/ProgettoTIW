@@ -155,6 +155,20 @@ public class AlbumDAO {
 			}
 		}
 	}
+	
+	/**
+	 * Inserts an album in a given position
+	 * @throws SQLException
+	 */
+	public void addToAlbumOrder(int userId, int albumId, int position) throws SQLException {
+		String query = "INSERT INTO progettotiw.album_order (userID, albumID, position) VALUES (?, ?, ?)";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, userId);
+			pstatement.setInt(2, albumId);
+			pstatement.setInt(3, position);
+			pstatement.executeUpdate();
+		}
+	}
 
 	/**
 	 * @param userId
@@ -175,6 +189,19 @@ public class AlbumDAO {
 			}
 		}
 		return order;
+	}
+	
+	/**
+	 * Deletes the order entry for a certain user
+	 * @param userId
+	 * @throws SQLException
+	 */
+	public void deleteAlbumOrder(int userId) throws SQLException {
+		String query = "DELETE FROM progettotiw.album_order WHERE userID = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, userId);
+			pstatement.executeUpdate();
+		}
 	}
 	
 	/**
