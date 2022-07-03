@@ -162,7 +162,7 @@
 
 		let page = 1;
 
-		this.show = function (albumID, previous) {
+		this.show = function(albumID, previous) {
 			if (previous != null)
 				previous.clear();
 			this.buttonsContainer.style.visibility = "visible";
@@ -193,7 +193,7 @@
 				});
 		}
 
-		this.update = function (albumImages, page) {
+		this.update = function(albumImages, page) {
 			this.nextButton.style.visibility = "visible";
 			this.previousButton.style.visibility = "visible";
 			this.imagesContainer.style.visibility = "visible";
@@ -212,7 +212,7 @@
 					row.appendChild(imageCell);
 					dataCell = document.createElement("td");
 					date = new Date(image.date).toLocaleDateString();
-					dataCell.innerHTML = image.title + " " + date + "<br />"  + image.description;
+					dataCell.innerHTML = image.title + " " + date + "<br />" + image.description;
 					row.appendChild(dataCell);
 					this.imagesContainer.appendChild(row);
 				}
@@ -332,7 +332,7 @@
 				this.alert.textContent = "You have no images or albums";
 				return;
 			}
-			if (myImages == null ||myImages.length == 0) {
+			if (myImages == null || myImages.length == 0) {
 				this.alert.textContent = "You have no images to add to an album";
 				return;
 			}
@@ -423,10 +423,16 @@
 		}
 
 		this.update = (image, commentMap) => {
-			let contentDiv, imageSrc, title, description, commentsDiv, commentDiv, authSpan, contentSpan;
+			let contentDiv, imageSrc, title, description, commentsDiv, commentDiv, authSpan, contentSpan, alertDiv;
 			contentDiv = document.createElement("div");
 			contentDiv.classList.add("modal-content");
 
+			let closeWindow = document.createElement("span");
+			closeWindow.setAttribute("class", "closewindow");
+			closeWindow.innerHTML = "&times;";
+			contentDiv.appendChild(closeWindow);
+			this.alertDiv = document.createElement("div");
+		    contentDiv.appendChild(this.alertDiv);
 			imageSrc = document.createElement("img");
 			imageSrc.src = "." + image.path;
 			contentDiv.appendChild(imageSrc);
@@ -439,37 +445,62 @@
 			commentsDiv = document.createElement("div");
 			commentsDiv.classList.add("comments");
 			contentDiv.appendChild(commentsDiv);
-		
-			for (const[key, value] of Object.entries(commentMap))  {
-				
-			commentDiv = document.createElement("div");
-			commentsDiv.style = "overflow-y";
-			commentDiv.setAttribute("class", "commentDiv");
-			commentsDiv.appendChild(commentDiv);
-			authSpan = document.createElement("span");
-			authSpan.textContent = value + ":  ";
-			commentDiv.appendChild(authSpan);
-			contentSpan = document.createElement("span");
-			contentSpan.textContent = key;
-			commentDiv.appendChild(contentSpan);
+
+			for (const [key, value] of Object.entries(commentMap)) {
+
+				commentDiv = document.createElement("div");
+				commentsDiv.style = "overflow-y";
+				commentDiv.setAttribute("class", "commentDiv");
+				commentsDiv.appendChild(commentDiv);
+				authSpan = document.createElement("span");
+				authSpan.textContent = value + ":  ";
+				commentDiv.appendChild(authSpan);
+				contentSpan = document.createElement("span");
+				contentSpan.textContent = key;
+				commentDiv.appendChild(contentSpan);
 			}
+			let newCommentForm = document.createElement("form");
+			newCommentForm.action = "#";
 			let newCommentInput = document.createElement("input");
+			newCommentInput.name = "newComment";
 			newCommentInput.type = "text";
-			commentsDiv.appendChild(newCommentInput); 
+			newCommentForm.appendChild(newCommentInput);
+			commentsDiv.appendChild(newCommentForm);
 			this.popupContainer.appendChild(contentDiv);
-			let newCommentButton =  document.createElement("input");
+			let newCommentButton = document.createElement("input");
 			newCommentButton.type = "button";
 			newCommentButton.value = "send comment";
 			commentsDiv.appendChild(newCommentButton);
 			this.popupContainer.style.display = "block";
-			let closeWindow = document.createElement("span");
-			closeWindow.textContent = "X";
-			commentsDiv.appendChild(closeWindow);
+			
 			closeWindow.onclick = () => {
 				this.clear();
 			}
+
+			newCommentButton.onclick = () => {
+
+				makeCall('POST', "CreateComment?imageid=" + image.id, newCommentForm,
+					(x) => {
+						if (x.readyState == XMLHttpRequest.DONE) {
+							let message = x.responseText;
+							switch (x.status) {
+								case 200:
+									this.clear();
+									this.show(null , image.id);
+									break;
+								case 400:
+									this.alertDiv.textContent = message;
+									break;
+								case 502:
+									this.alertDiv.textContent = message;
+									break;
+							}
+						}
+					})
+
+			}
 		}
-		
+
 		this.clear = () => {
 			this.popupContainer.innerHTML = "";
 			this.popupContainer.style.display = "none";
@@ -479,7 +510,7 @@
 	function PageOrchestrator() {
 		let alertContainer, backButton;
 
-		this.start = function () {
+		this.start = function() {
 			alertContainer = document.getElementById("id_alert");
 			backButton = document.getElementById("id_backbutton");
 			albums = new AlbumLists({
@@ -515,7 +546,7 @@
 
 		};
 
-		this.refresh = function () {
+		this.refresh = function() {
 			alertContainer.textContent = "";
 			albums.reset();
 			albums.show();
