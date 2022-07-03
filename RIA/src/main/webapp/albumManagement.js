@@ -452,6 +452,7 @@
 		}
 		
 		this.clear = () => {
+			this.popupContainer.innerHTML = "";
 			this.popupContainer.style.display = "none";
 		}
 	}
