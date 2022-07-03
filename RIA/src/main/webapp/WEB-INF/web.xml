@@ -33,6 +33,8 @@ version="4.0">
     <url-pattern>/GetHomeData</url-pattern>
     <url-pattern>/GetImageData</url-pattern>
     <url-pattern>/SaveAlbumOrder</url-pattern>
+    <url-pattern>/home.html</url-pattern>
+    <url-pattern>/Logout</url-pattern>
    <!--  <url-pattern>/CreateComment</url-pattern>-->
  </filter-mapping>
   <welcome-file-list>

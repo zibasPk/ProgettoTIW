@@ -262,7 +262,7 @@
 			previous.clear();
 			this.backButton = clearBackButtonListeners();
 			this.backButton = document.getElementById("id_backbutton");
-			backButton.addEventListener('click', (e) => {
+			this.backButton.addEventListener('click', (e) => {
 				window.location.href = "home.html";
 			})
 			makeCall("GET", "GetCreateAlbumData", null,
@@ -509,7 +509,7 @@
 
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
 				window.sessionStorage.removeItem('username');
-				makeCall("POST", 'Logout', null, (x) => { });
+				makeCall("POST", "Logout", null, (x) => { });
 				window.location.href = "index.html";
 			});
 

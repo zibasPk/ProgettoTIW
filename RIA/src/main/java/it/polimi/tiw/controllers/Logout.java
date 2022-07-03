@@ -9,15 +9,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.tinylog.Logger;
+
+import it.polimi.tiw.beans.User;
+
 @WebServlet("/Logout")
 public class Logout extends HttpServlet {
-
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		HttpSession userSession = request.getSession();
-		userSession.invalidate();
+		HttpSession session = request.getSession(false);
+		User user = (User) session.getAttribute("user");
+		Logger.debug(user.getFullName() + " logged out");
+		if (session != null) {
+			session.invalidate();
+		}
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
