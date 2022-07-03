@@ -46,8 +46,9 @@ public class UserChecker implements Filter {
 		HttpSession s = req.getSession();
 	
 		if (s.isNew() || s.getAttribute("user") == null) {
+			res.setStatus(403);
+			res.setHeader("Location", loginpath);
 			Logger.debug("User filter executing..");
-			res.sendRedirect(loginpath);
 			return;
 		}
 		// pass the request along the filter chain

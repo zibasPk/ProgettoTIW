@@ -28,8 +28,14 @@ version="4.0">
     <filter-name>UserChecker</filter-name> 
     <url-pattern>/CreateComment</url-pattern> 
     <url-pattern>/album</url-pattern> 
-    <url-pattern>/GoToHomePage</url-pattern>
-    <url-pattern>/showImage</url-pattern>    
+    <url-pattern>/AddToAlbum</url-pattern>
+    <url-pattern>/CreateAlbum</url-pattern>    
+    <url-pattern>/GetAlbumData</url-pattern>    
+    <url-pattern>/GetCreateAlbumData</url-pattern>
+    <url-pattern>/GetHomeData</url-pattern>
+    <url-pattern>/GetImageData</url-pattern>
+    <url-pattern>/SaveAlbumOrder</url-pattern>
+    <url-pattern>/CreateComment</url-pattern>
  </filter-mapping>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
