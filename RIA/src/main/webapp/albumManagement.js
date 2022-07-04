@@ -12,6 +12,7 @@
 
 	function AlbumLists(options) {
 		this.alert = options['alert'];
+		this.welcomeMessage = options['welcomeMessage'];
 		this.backButton = options['backButton'];
 		this.pageContainer = options['pageContainer'];
 		this.saveOrderButton = options['saveOrderButton'];
@@ -52,6 +53,7 @@
 		});
 
 		this.show = (previous) => {
+			this.welcomeMessage.textContent ="Welcome to Your Home Page";
 			if (previous != null)
 				previous.clear();
 			this.saveOrderButton.style.display = "";
@@ -167,6 +169,7 @@
 
 	function AlbumPage(options) {
 		this.alert = options['alert'];
+		this.welcomeMessage = options['welcomeMessage'];
 		this.pageContainer = options['pageContainer'];
 		this.imagesContainer = options['imagesContainer'];
 		this.buttonsContainer = options['buttonsContainer'];
@@ -177,6 +180,7 @@
 		let page = 1;
 
 		this.show = function (albumID, previous) {
+			this.welcomeMessage.textContent = "Album Page";
 			if (previous != null)
 				previous.clear();
 			this.buttonsContainer.style.visibility = "visible";
@@ -268,14 +272,16 @@
 
 	}
 
-	function CreateAlbumPage(backButton, pageContainer, alertContainer) {
+	function CreateAlbumPage(backButton, pageContainer, alertContainer, welcomeMessage) {
 		this.pageContainer = pageContainer;
 		this.alert = alertContainer;
 		this.backButton = backButton;
+		this.welcomeMessage = welcomeMessage
 		this.createOrAddDiv = null;
 
 		this.show = (previous) => {
 			previous.clear();
+			welcomeMessage.textContent = "Create or Add Pictures to an Album";
 			this.backButton = clearBackButtonListeners();
 			this.backButton = document.getElementById("id_backbutton");
 			this.backButton.addEventListener('click', (e) => {
@@ -544,13 +550,15 @@
 	}
 
 	function PageOrchestrator() {
-		let alertContainer, backButton;
+		let alertContainer, backButton, welcomeMessage;
 
 		this.start = function () {
 			alertContainer = document.getElementById("id_alert");
 			backButton = document.getElementById("id_backbutton");
+			welcomeMessage = document.getElementById("id_welcome")
 			albums = new AlbumLists({
 				alert: alertContainer,
+				welcomeMessage: welcomeMessage,
 				backButton: backButton,
 				pageContainer: document.getElementById("id_page"),
 				saveOrderButton: document.getElementById("id_saveorder"),
@@ -563,6 +571,7 @@
 			});
 			images = new AlbumPage({
 				alert: alertContainer,
+				welcomeMessage: welcomeMessage,
 				pageContainer: document.getElementById("id_albumpage"),
 				imagesContainer: document.getElementById("id_albumimages"),
 				buttonsContainer: document.getElementById("id_buttons"),
@@ -570,7 +579,7 @@
 				nextButton: document.getElementById("id_next"),
 				backToAlbumsButton: backButton,
 			});
-			createAlbumPage = new CreateAlbumPage(backButton, document.getElementById("id_page"), alertContainer);
+			createAlbumPage = new CreateAlbumPage(backButton, document.getElementById("id_page"), alertContainer, welcomeMessage);
 
 			modal = new ModalImage(document.getElementById("id_modalpopup"), document.getElementById("id_modalcontent"));
 
