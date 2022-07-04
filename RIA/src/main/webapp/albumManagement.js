@@ -53,7 +53,7 @@
 		});
 
 		this.show = (previous) => {
-			this.welcomeMessage.textContent ="Welcome to Your Home Page";
+			this.welcomeMessage.textContent = "Welcome to Your Home Page";
 			if (previous != null)
 				previous.clear();
 			this.saveOrderButton.style.display = "";
@@ -183,7 +183,7 @@
 			this.welcomeMessage.textContent = "Album Page";
 			if (previous != null)
 				previous.clear();
-			this.buttonsContainer.style.visibility = "visible";
+			this.buttonsContainer.style.display = "";
 			this.backToAlbumsButton = clearBackButtonListeners();
 			this.backToAlbumsButton.addEventListener("click", (e) => {
 				albums.show(this);
@@ -197,10 +197,11 @@
 								let json = JSON.parse(x.responseText);
 								let albumImages = json;
 								this.alert.textContent = "this Album has no images!";
-								this.buttonsContainer.style.visibility = "hidden";
 								if (albumImages.length != 0) {
 									this.update(albumImages, page);
 									this.alert.textContent = "";
+								} else {
+									this.buttonsContainer.style.visibility = "hidden";
 								}
 								break;
 							case 502:
@@ -266,7 +267,7 @@
 
 		this.clear = () => {
 			this.alert.textContent = "";
-			this.buttonsContainer.style.visibility = "hidden";
+			this.buttonsContainer.style.display = "none";
 			this.imagesContainer.innerHTML = "";
 		}
 
@@ -442,7 +443,7 @@
 								let authors = json[2];
 								let commentMap = [];
 								for (let i = 0; i < comments.length; i++) {
-									commentMap.push([comments[i], authors[i]])
+									commentMap.push([comments[i], authors[i]]);
 								}
 								this.popupContainer.style.display = "block";
 								if (contentDiv.innerHTML == "") {
@@ -598,7 +599,7 @@
 
 			//the following line of code makes so that the image table isn't visible at the beginning (testing phase for it)
 			document.getElementById("id_albumimages").style.visibility = "hidden";
-			document.getElementById("id_buttons").style.visibility = "hidden";
+			document.getElementById("id_buttons").style.display = "none";
 
 		};
 	}
