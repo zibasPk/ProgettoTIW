@@ -147,3 +147,7 @@ function clearBackButtonListeners() {
 	button.parentNode.replaceChild(newNode, button);
 	return newNode;
 }
+
+function preventFormDefault(event) {
+	event.preventDefault();
+}

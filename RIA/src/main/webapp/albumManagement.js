@@ -292,6 +292,7 @@
 			title1.classList.add("createOrAddForm");
 			pageContainer.appendChild(title1);
 			createForm = document.createElement("form");
+			createForm.addEventListener('submit', preventFormDefault);
 			createForm.action = "#";
 			createForm.classList.add("createOrAddForm")
 			createInput = document.createElement("input");
@@ -343,6 +344,7 @@
 			title2.classList.add("createOrAddForm")
 			pageContainer.appendChild(title2);
 			addImageForm = document.createElement("form");
+			addImageForm.addEventListener('submit', preventFormDefault);
 			addImageForm.classList.add("createOrAddForm");
 			addImageForm.action = "#";
 			selectImage = document.createElement("select");
@@ -461,6 +463,7 @@
 			}
 			let newCommentForm = document.createElement("form");
 			newCommentForm.action = "#";
+			newCommentForm.addEventListener('submit', preventFormDefault);
 			let newCommentInput = document.createElement("input");
 			newCommentInput.name = "newComment";
 			newCommentInput.type = "text";
