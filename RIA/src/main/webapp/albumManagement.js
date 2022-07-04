@@ -158,6 +158,7 @@
 
 		this.clear = () => {
 			this.alert.textContent = "";
+			this.noAlbumAlert.textContent ="";
 			this.saveOrderButton.style.display = "none";
 			this.createAlbumButton.style.display = "none";
 			this.myListContainer.style.display = "none";
@@ -179,7 +180,7 @@
 
 		let page = 1;
 
-		this.show = function (albumID, previous) {
+		this.show = (albumID, previous) => {
 			this.welcomeMessage.textContent = "Album Page";
 			if (previous != null)
 				previous.clear();
@@ -197,6 +198,9 @@
 								let json = JSON.parse(x.responseText);
 								let albumImages = json;
 								this.alert.textContent = "this Album has no images!";
+								this.nextButton.style.visibility = "hidden";
+								this.previousButton.style.visibility = "hidden";
+								this.imagesContainer.style.visibility = "hidden";
 								if (albumImages.length != 0) {
 									this.update(albumImages, page);
 									this.alert.textContent = "";
@@ -212,7 +216,7 @@
 				});
 		}
 
-		this.update = function (albumImages, page) {
+		this.update = (albumImages, page) => {
 			this.nextButton.style.visibility = "visible";
 			this.previousButton.style.visibility = "visible";
 			this.imagesContainer.style.visibility = "visible";
@@ -224,9 +228,19 @@
 					imageCell = document.createElement("td");
 					imgTag = document.createElement("img");
 					imgTag.src = "." + image.path;
-					imgTag.addEventListener("mouseover", (e) => {
-						modal.show(this, image.id);
+
+					
+					imgTag.addEventListener("mouseenter", (e) => {
+						this.ticker = setTimeout(() => {
+							modal.show(this, image.id);
+						}, 500);
 					})
+
+					imgTag.addEventListener("mouseleave", (e) => {
+						if (this.ticker)
+							clearTimeout(this.ticker);
+					})
+
 					imageCell.appendChild(imgTag);
 					row.appendChild(imageCell);
 					dataCell = document.createElement("td");
@@ -479,10 +493,9 @@
 			description = document.createElement("p");
 			description.textContent = image.description;
 			this.contentDiv.appendChild(description);
-
-			closeWindow.onclick = () => {
+			closeWindow.addEventListener('click',  () => {
 				this.clear();
-			}
+			})
 		}
 
 		this.updateComments = (image, commentMap) => {
