@@ -151,3 +151,9 @@ function clearBackButtonListeners() {
 function preventFormDefault(event) {
 	event.preventDefault();
 }
+
+function sortComments(commentsMap) {
+	commentsMap.sort(function (a, b) {
+		return a[0].id - b[0].id;
+	});
+}

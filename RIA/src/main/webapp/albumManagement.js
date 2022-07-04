@@ -410,7 +410,12 @@
 							case 200:
 								let json = JSON.parse(x.responseText);
 								let image = json[0];
-								let commentMap = json[1];
+								let comments = json[1];
+								let authors = json[2];
+								let commentMap = []; 
+								for(let i = 0; i < comments.length; i++) {
+									commentMap.push([comments[i],authors[i]])
+								}
 								this.update(image, commentMap);
 								break;
 							case 400:
@@ -447,18 +452,17 @@
 			commentsDiv = document.createElement("div");
 			commentsDiv.classList.add("comments");
 			contentDiv.appendChild(commentsDiv);
-
-			for (const [key, value] of Object.entries(commentMap)) {
-
+			sortComments(commentMap);
+			for (const [comment, author] of commentMap) {
 				commentDiv = document.createElement("div");
 				commentsDiv.style = "overflow-y";
 				commentDiv.setAttribute("class", "commentDiv");
 				commentsDiv.appendChild(commentDiv);
 				authSpan = document.createElement("span");
-				authSpan.textContent = value + ":  ";
+				authSpan.textContent = author + ":  ";
 				commentDiv.appendChild(authSpan);
 				contentSpan = document.createElement("span");
-				contentSpan.textContent = key;
+				contentSpan.textContent = comment.text;
 				commentDiv.appendChild(contentSpan);
 			}
 			let newCommentForm = document.createElement("form");
