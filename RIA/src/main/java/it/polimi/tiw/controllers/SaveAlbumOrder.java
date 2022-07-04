@@ -41,12 +41,21 @@ public class SaveAlbumOrder extends HttpServlet {
 
 		HttpSession session = req.getSession();
 		User user = (User) session.getAttribute("user");
+
+		if (order == null || order.length == 0) {
+			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			resp.getWriter().println("invalid saved order");
+			return;
+		}
+
 		try {
 			if (!OrderCache.saveOrder(user, Arrays.asList(order), connection)) {
 				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				resp.getWriter().println("invalid saved order");
+				return;
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
 			resp.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			resp.getWriter().println("Failure in database while savingorder");
 			return;
