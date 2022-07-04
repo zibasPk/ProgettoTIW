@@ -162,7 +162,7 @@
 
 		let page = 1;
 
-		this.show = function(albumID, previous) {
+		this.show = function (albumID, previous) {
 			if (previous != null)
 				previous.clear();
 			this.buttonsContainer.style.visibility = "visible";
@@ -193,7 +193,7 @@
 				});
 		}
 
-		this.update = function(albumImages, page) {
+		this.update = function (albumImages, page) {
 			this.nextButton.style.visibility = "visible";
 			this.previousButton.style.visibility = "visible";
 			this.imagesContainer.style.visibility = "visible";
@@ -397,9 +397,11 @@
 		}
 	}
 
-	function ModalImage(popupContainer, alertContainer) {
-		this.alert = alertContainer;
+	function ModalImage(popupContainer, contentDiv) {
+		this.contentDiv = contentDiv;
 		this.popupContainer = popupContainer;
+		this.alertDiv = null;
+		this.commentsDiv = null;
 
 		this.show = (previous, imageId) => {
 			makeCall('GET', "GetImageData?imageId=" + imageId, null,
@@ -412,11 +414,15 @@
 								let image = json[0];
 								let comments = json[1];
 								let authors = json[2];
-								let commentMap = []; 
-								for(let i = 0; i < comments.length; i++) {
-									commentMap.push([comments[i],authors[i]])
+								let commentMap = [];
+								for (let i = 0; i < comments.length; i++) {
+									commentMap.push([comments[i], authors[i]])
 								}
-								this.update(image, commentMap);
+								this.popupContainer.style.display = "block";
+								if (contentDiv.innerHTML == "") {
+									this.updateImage(image);
+								}
+								this.updateComments(image, commentMap);
 								break;
 							case 400:
 								this.alert.textContent = message;
@@ -429,41 +435,48 @@
 				})
 		}
 
-		this.update = (image, commentMap) => {
-			let contentDiv, imageSrc, title, description, commentsDiv, commentDiv, authSpan, contentSpan, alertDiv;
-			contentDiv = document.createElement("div");
-			contentDiv.classList.add("modal-content");
-
+		this.updateImage = (image) => {
+			let imageSrc, title, description;
 			let closeWindow = document.createElement("span");
 			closeWindow.setAttribute("class", "closewindow");
 			closeWindow.innerHTML = "&times;";
-			contentDiv.appendChild(closeWindow);
+			this.contentDiv.appendChild(closeWindow);
 			this.alertDiv = document.createElement("div");
-		    contentDiv.appendChild(this.alertDiv);
+			this.contentDiv.appendChild(this.alertDiv);
 			imageSrc = document.createElement("img");
 			imageSrc.src = "." + image.path;
-			contentDiv.appendChild(imageSrc);
+			this.contentDiv.appendChild(imageSrc);
 			title = document.createElement("p");
 			title.textContent = image.title + " " + new Date(image.date).toLocaleDateString();
-			contentDiv.appendChild(title);
+			this.contentDiv.appendChild(title);
 			description = document.createElement("p");
 			description.textContent = image.description;
-			contentDiv.appendChild(description);
-			commentsDiv = document.createElement("div");
-			commentsDiv.classList.add("comments");
-			contentDiv.appendChild(commentsDiv);
+			this.contentDiv.appendChild(description);
+
+			closeWindow.onclick = () => {
+				this.clear();
+			}
+		}
+
+		this.updateComments = (image, commentMap) => {
+			let commentDiv, authSpan, contentSpan;
+			//comments
+			this.commentsDiv = document.createElement("div");
+			this.commentsDiv.classList.add("comments");
+			//sorting comments by id
 			sortComments(commentMap);
+			//creating comment nodes
 			for (const [comment, author] of commentMap) {
 				commentDiv = document.createElement("div");
-				commentsDiv.style = "overflow-y";
+				this.commentsDiv.style = "overflow-y";
 				commentDiv.setAttribute("class", "commentDiv");
-				commentsDiv.appendChild(commentDiv);
 				authSpan = document.createElement("span");
 				authSpan.textContent = author + ":  ";
 				commentDiv.appendChild(authSpan);
 				contentSpan = document.createElement("span");
 				contentSpan.textContent = comment.text;
 				commentDiv.appendChild(contentSpan);
+				this.commentsDiv.appendChild(commentDiv);
 			}
 			let newCommentForm = document.createElement("form");
 			newCommentForm.action = "#";
@@ -472,18 +485,11 @@
 			newCommentInput.name = "newComment";
 			newCommentInput.type = "text";
 			newCommentForm.appendChild(newCommentInput);
-			commentsDiv.appendChild(newCommentForm);
-			this.popupContainer.appendChild(contentDiv);
+			this.commentsDiv.appendChild(newCommentForm);
+			this.popupContainer.appendChild(this.contentDiv);
 			let newCommentButton = document.createElement("input");
 			newCommentButton.type = "button";
 			newCommentButton.value = "send comment";
-			commentsDiv.appendChild(newCommentButton);
-			this.popupContainer.style.display = "block";
-			
-			closeWindow.onclick = () => {
-				this.clear();
-			}
-
 			newCommentButton.onclick = () => {
 
 				makeCall('POST', "CreateComment?imageid=" + image.id, newCommentForm,
@@ -492,8 +498,8 @@
 							let message = x.responseText;
 							switch (x.status) {
 								case 200:
-									this.clear();
-									this.show(null , image.id);
+									this.commentsDiv.innerHTML = "";
+									this.show(null, image.id);
 									break;
 								case 400:
 									this.alertDiv.textContent = message;
@@ -506,10 +512,13 @@
 					})
 
 			}
+			this.commentsDiv.appendChild(newCommentButton);
+
+			this.contentDiv.appendChild(this.commentsDiv);
 		}
 
 		this.clear = () => {
-			this.popupContainer.innerHTML = "";
+			this.contentDiv.innerHTML = "";
 			this.popupContainer.style.display = "none";
 		}
 	}
@@ -517,7 +526,7 @@
 	function PageOrchestrator() {
 		let alertContainer, backButton;
 
-		this.start = function() {
+		this.start = function () {
 			alertContainer = document.getElementById("id_alert");
 			backButton = document.getElementById("id_backbutton");
 			albums = new AlbumLists({
@@ -543,7 +552,7 @@
 			});
 			createAlbumPage = new CreateAlbumPage(backButton, document.getElementById("id_page"), alertContainer);
 
-			modal = new ModalImage(document.getElementById("id_modalpopup"));
+			modal = new ModalImage(document.getElementById("id_modalpopup"), document.getElementById("id_modalcontent"));
 
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
 				window.sessionStorage.removeItem('username');
@@ -553,7 +562,7 @@
 
 		};
 
-		this.refresh = function() {
+		this.refresh = function () {
 			alertContainer.textContent = "";
 			albums.reset();
 			albums.show();
