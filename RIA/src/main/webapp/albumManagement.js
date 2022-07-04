@@ -37,10 +37,10 @@
 						case 200:
 							break;
 						case 400: // bad request
-							alertContainer.textContent = message;
+							this.alert.textContent = message;
 							break;
 						case 502: // bad gateway
-							alertContainer.textContent = message;
+							this.alert.textContent = message;
 							break;
 					}
 				}
@@ -51,7 +51,15 @@
 			createAlbumPage.show(this);
 		});
 
-		this.show = () => {
+		this.show = (previous) => {
+			if (previous != null)
+				previous.clear();
+			this.saveOrderButton.style.display = "";
+			this.createAlbumButton.style.display = "";
+			this.myListContainer.style.display = "";
+			this.myContainerBody.style.display = "";
+			this.otherListContainer.style.display = "";
+			this.otherContainerBody.style.display = "";
 			this.backButton = clearBackButtonListeners();
 			this.backButton.addEventListener('click', (e) => {
 				window.sessionStorage.removeItem('username');
@@ -147,7 +155,13 @@
 		}
 
 		this.clear = () => {
-			this.pageContainer.innerHTML = "";
+			this.alert.textContent = "";
+			this.saveOrderButton.style.display = "none";
+			this.createAlbumButton.style.display = "none";
+			this.myListContainer.style.display = "none";
+			this.myContainerBody.style.display = "none";
+			this.otherListContainer.style.display = "none";
+			this.otherContainerBody.style.display = "none";
 		}
 	}
 
@@ -168,7 +182,7 @@
 			this.buttonsContainer.style.visibility = "visible";
 			this.backToAlbumsButton = clearBackButtonListeners();
 			this.backToAlbumsButton.addEventListener("click", (e) => {
-				window.location.href = "home.html";
+				albums.show(this);
 			})
 			makeCall("GET", "GetAlbumData?albumid=" + albumID, null,
 				(x) => {
@@ -247,6 +261,7 @@
 		}
 
 		this.clear = () => {
+			this.alert.textContent = "";
 			this.buttonsContainer.style.visibility = "hidden";
 			this.imagesContainer.innerHTML = "";
 		}
@@ -257,13 +272,14 @@
 		this.pageContainer = pageContainer;
 		this.alert = alertContainer;
 		this.backButton = backButton;
+		this.createOrAddDiv = null;
 
 		this.show = (previous) => {
 			previous.clear();
 			this.backButton = clearBackButtonListeners();
 			this.backButton = document.getElementById("id_backbutton");
 			this.backButton.addEventListener('click', (e) => {
-				window.location.href = "home.html";
+				albums.show(this);
 			})
 			makeCall("GET", "GetCreateAlbumData", null,
 				(x) => {
@@ -285,12 +301,14 @@
 		}
 
 		this.update = (myAlbums, myImages) => {
-			let createForm, createInput, createButton, addImageForm, addImagesButton, selectAlbum, selectImage;
+			let createForm, createInput, createButton,
+				addImageForm, addImagesButton, selectAlbum, selectImage;
 			// creation of create album form
+			this.createOrAddDiv = document.createElement("div");
 			let title1 = document.createElement("p");
 			title1.textContent = "Create an album";
 			title1.classList.add("createOrAddForm");
-			pageContainer.appendChild(title1);
+			this.createOrAddDiv.appendChild(title1);
 			createForm = document.createElement("form");
 			createForm.addEventListener('submit', preventFormDefault);
 			createForm.action = "#";
@@ -326,7 +344,8 @@
 			})
 			createForm.appendChild(createInput);
 			createForm.appendChild(createButton);
-			pageContainer.appendChild(createForm);
+			this.createOrAddDiv.appendChild(createForm)
+			pageContainer.appendChild(this.createOrAddDiv);
 
 			// if there is no need to show the add album form 
 			if ((myAlbums == null && myImages == null) || (myAlbums.length == 0 && myImages.length == 0)) {
@@ -342,7 +361,7 @@
 			let title2 = document.createElement("p");
 			title2.textContent = "Add images to your albums";
 			title2.classList.add("createOrAddForm")
-			pageContainer.appendChild(title2);
+			this.createOrAddDiv.appendChild(title2);
 			addImageForm = document.createElement("form");
 			addImageForm.addEventListener('submit', preventFormDefault);
 			addImageForm.classList.add("createOrAddForm");
@@ -389,11 +408,12 @@
 			addImageForm.appendChild(selectImage);
 			addImageForm.appendChild(selectAlbum);
 			addImageForm.appendChild(addImagesButton);
-			pageContainer.appendChild(addImageForm);
+			this.createOrAddDiv.appendChild(addImageForm);
 		}
 
 		this.clear = () => {
-			pageContainer.innerHTML = "";
+			this.alert.textContent = "";
+			this.createOrAddDiv.remove();
 		}
 	}
 
