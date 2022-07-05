@@ -55,6 +55,10 @@ function validAlbumName(name) {
 	return name.length > 0 && name.length < 32;
 }
 
+function validComment(comment) {
+	return comment.length > 0 && comment.length < 100;
+}
+
 let startElement = null;
 /* 
 			This fuction puts all row to "notselected" class, 

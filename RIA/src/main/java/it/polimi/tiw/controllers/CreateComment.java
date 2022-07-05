@@ -69,8 +69,8 @@ public class CreateComment extends HttpServlet {
 			return;
 		}
 		
-		// checks if the comment length is less than 280
-		if (comment.length() > 280) {
+		// checks if the comment length is less than 100
+		if (comment.length() > 100) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("the comment is too long");
 			return;

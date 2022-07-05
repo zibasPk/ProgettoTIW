@@ -494,9 +494,6 @@
 				this.clear();
 			})
 			this.contentDiv.appendChild(closeWindow);
-			// alert container
-			this.alertDiv = document.createElement("div");
-			this.contentDiv.appendChild(this.alertDiv);
 			// image 
 			imageSrc = document.createElement("img");
 			imageSrc.src = "." + image.path;
@@ -547,7 +544,18 @@
 			let newCommentButton = document.createElement("input");
 			newCommentButton.type = "button";
 			newCommentButton.value = "send comment";
+			newCommentForm.appendChild(newCommentButton);
+			this.contentDiv.appendChild(this.commentsDiv);
+			// alert container
+			this.alertDiv = document.createElement("div");
+			this.alertDiv.classList.add("alertmessage");
+			this.commentsDiv.appendChild(this.alertDiv);
+			this.popupContainer.appendChild(this.contentDiv);
 			newCommentButton.onclick = () => {
+				if (!validComment(newCommentInput.value)) {
+					this.alertDiv.textContent = "Comment of invalid size";
+					return;
+				}
 				makeCall('POST', "CreateComment?imageid=" + image.id, newCommentForm,
 					(x) => {
 						if (x.readyState == XMLHttpRequest.DONE) {
@@ -568,9 +576,6 @@
 					})
 
 			}
-			newCommentForm.appendChild(newCommentButton);
-			this.contentDiv.appendChild(this.commentsDiv);
-			this.popupContainer.appendChild(this.contentDiv);
 		}
 
 		this.clear = () => {
