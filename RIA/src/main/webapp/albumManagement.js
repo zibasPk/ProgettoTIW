@@ -433,7 +433,6 @@
 							}
 						}
 					});
-				//if send add image is a success remove image from select 
 			})
 			addImageForm.appendChild(selectImage);
 			addImageForm.appendChild(selectAlbum);
@@ -518,9 +517,9 @@
 			// comments div
 			this.commentsDiv = document.createElement("div");
 			this.commentsDiv.classList.add("comments");
-			//sorting comments by id
+			// sorting comments by id
 			sortComments(commentMap);
-			//creating comment nodes
+			// creating comment nodes
 			for (const [comment, author] of commentMap) {
 				commentDiv = document.createElement("div");
 				this.commentsDiv.style = "overflow-y";
@@ -570,7 +569,6 @@
 
 			}
 			newCommentForm.appendChild(newCommentButton);
-			// this.commentsDiv.appendChild(newCommentButton);
 			this.contentDiv.appendChild(this.commentsDiv);
 			this.popupContainer.appendChild(this.contentDiv);
 		}
