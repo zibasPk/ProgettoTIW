@@ -64,9 +64,13 @@
 			this.otherContainerBody.style.display = "";
 			this.backButton = clearBackButtonListeners();
 			this.backButton.addEventListener('click', (e) => {
-				window.sessionStorage.removeItem('username');
-				makeCall("POST", 'Logout', null, (x) => { });
-				window.location.href = "index.html";
+				makeCall("POST", 'Logout', null,
+					(x) => {
+						if (x.readyState == XMLHttpRequest.DONE) {
+							window.sessionStorage.removeItem('username');
+							window.location.href = "index.html";
+						}
+				 });
 			})
 			makeCall("GET", "GetHomeData", null,
 				(x) => {
@@ -158,7 +162,7 @@
 
 		this.clear = () => {
 			this.alert.textContent = "";
-			this.noAlbumAlert.textContent ="";
+			this.noAlbumAlert.textContent = "";
 			this.saveOrderButton.style.display = "none";
 			this.createAlbumButton.style.display = "none";
 			this.myListContainer.style.display = "none";
@@ -228,8 +232,7 @@
 					imageCell = document.createElement("td");
 					imgTag = document.createElement("img");
 					imgTag.src = "." + image.path;
-
-					
+					imgTag.classList.add("thumbnail");
 					imgTag.addEventListener("mouseenter", (e) => {
 						this.ticker = setTimeout(() => {
 							modal.show(this, image.id);
@@ -478,29 +481,35 @@
 
 		this.updateImage = (image) => {
 			let imageSrc, title, description;
+			// close window button
 			let closeWindow = document.createElement("span");
 			closeWindow.setAttribute("class", "closewindow");
 			closeWindow.innerHTML = "&times;";
+			closeWindow.addEventListener('click', () => {
+				this.clear();
+			})
 			this.contentDiv.appendChild(closeWindow);
+			// alert container
 			this.alertDiv = document.createElement("div");
 			this.contentDiv.appendChild(this.alertDiv);
+			// image 
 			imageSrc = document.createElement("img");
 			imageSrc.src = "." + image.path;
+			imageSrc.classList.add("bigimage");
 			this.contentDiv.appendChild(imageSrc);
+			// title
 			title = document.createElement("p");
 			title.textContent = image.title + " " + new Date(image.date).toLocaleDateString();
 			this.contentDiv.appendChild(title);
+			// description
 			description = document.createElement("p");
 			description.textContent = image.description;
 			this.contentDiv.appendChild(description);
-			closeWindow.addEventListener('click',  () => {
-				this.clear();
-			})
 		}
 
 		this.updateComments = (image, commentMap) => {
 			let commentDiv, authSpan, contentSpan;
-			//comments
+			// comments div
 			this.commentsDiv = document.createElement("div");
 			this.commentsDiv.classList.add("comments");
 			//sorting comments by id
@@ -518,20 +527,22 @@
 				commentDiv.appendChild(contentSpan);
 				this.commentsDiv.appendChild(commentDiv);
 			}
+
+			// creating comment form
 			let newCommentForm = document.createElement("form");
 			newCommentForm.action = "#";
+			this.commentsDiv.appendChild(newCommentForm);
+			//prevents default 'submit' page reload
 			newCommentForm.addEventListener('submit', preventFormDefault);
+			// comment input
 			let newCommentInput = document.createElement("input");
 			newCommentInput.name = "newComment";
 			newCommentInput.type = "text";
 			newCommentForm.appendChild(newCommentInput);
-			this.commentsDiv.appendChild(newCommentForm);
-			this.popupContainer.appendChild(this.contentDiv);
 			let newCommentButton = document.createElement("input");
 			newCommentButton.type = "button";
 			newCommentButton.value = "send comment";
 			newCommentButton.onclick = () => {
-
 				makeCall('POST', "CreateComment?imageid=" + image.id, newCommentForm,
 					(x) => {
 						if (x.readyState == XMLHttpRequest.DONE) {
@@ -552,9 +563,10 @@
 					})
 
 			}
-			this.commentsDiv.appendChild(newCommentButton);
-
+			newCommentForm.appendChild(newCommentButton);
+			// this.commentsDiv.appendChild(newCommentButton);
 			this.contentDiv.appendChild(this.commentsDiv);
+			this.popupContainer.appendChild(this.contentDiv);
 		}
 
 		this.clear = () => {
@@ -598,9 +610,12 @@
 			modal = new ModalImage(document.getElementById("id_modalpopup"), document.getElementById("id_modalcontent"));
 
 			document.getElementById("logoutbutton").addEventListener('click', (e) => {
-				window.sessionStorage.removeItem('username');
-				makeCall("POST", "Logout", null, (x) => { });
-				window.location.href = "index.html";
+				makeCall("POST", "Logout", null, (x) => {
+					if (x.readyState == XMLHttpRequest.DONE) {
+						window.sessionStorage.removeItem('username');
+						window.location.href = "index.html";
+					}
+				});
 			});
 
 		};

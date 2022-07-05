@@ -52,9 +52,16 @@ tbody .selected{
   color: red;
 }
 
-img{
+.thumbnail{
   height: 143px;
   width: 206px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px silver, 0px 0px 20px 0px #989898;
+}
+.bigimage{
+  height: 450px;
+  width: 600px;
+  object-fit: cover;
   overflow: hidden;
   box-shadow: 0 0 0 1px silver, 0px 0px 20px 0px #989898;
 }
