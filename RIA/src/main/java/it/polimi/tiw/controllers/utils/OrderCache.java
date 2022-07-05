@@ -18,6 +18,7 @@ public class OrderCache {
 
 	/**
 	 * Saves the order of the given album list in cache and DB
+	 * @return false if the order is invalid
 	 */
 	public static boolean saveOrder(User user, List<Integer> albumOrder, Connection connection) throws SQLException {
 		AlbumDAO albumService = new AlbumDAO(connection);
@@ -35,6 +36,7 @@ public class OrderCache {
 
 	/**
 	 * Adds an album to the currently saved order
+	 * 
 	 * @param user
 	 * @param albumId
 	 * @param connection
@@ -63,9 +65,10 @@ public class OrderCache {
 		List<Album> albumsInOrder = new ArrayList<>();
 		AlbumDAO albumService = new AlbumDAO(connection);
 		// if there no entry in the cache look for it in the DB
-		if (albumOrder == null) {
+		if (albumOrder == null)
 			albumOrder = albumService.getAlbumOrder(user.getId());
-		}
+		else
+			Logger.debug("an album order was found in server cache");
 		// if and order was found
 		if (albumOrder != null) {
 			if (albumOrder.size() != albumService.findOwnedAlbums(user.getId()).size()) {

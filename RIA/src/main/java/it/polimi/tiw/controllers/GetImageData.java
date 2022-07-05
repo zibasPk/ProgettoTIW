@@ -34,29 +34,31 @@ public class GetImageData extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 		Integer imageId = null;
+		
+		// gets image param and tries to parse it
 		try {
 			imageId = Integer.parseInt(req.getParameter("imageId"));
 		} catch (NumberFormatException | NullPointerException e) {
-			// only for debugging e.printStackTrace();
+			e.printStackTrace();
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().println("Incorrect param values");
 			return;
 		}
 		
+		// tries retrieving image from DB
 		Image albumImage = null;
-
 		ImageDAO imageService = new ImageDAO(connection);
-
 		try {
 			albumImage = imageService.findImage(imageId);
 		} catch (SQLException e) {
-			resp.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			e.printStackTrace();
+			resp.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			resp.getWriter().println("Error in retrieving image from databse");
 			return;
 		}
+		
+		// makes a list of comments and a list of their authors names
 		CommentDAO commentService = new CommentDAO(connection);
 		UserDAO userService = new UserDAO(connection);
 		List<Comment> comments = new ArrayList<>();
@@ -78,6 +80,7 @@ public class GetImageData extends HttpServlet {
 			return;
         }
 		
+		// sends back to client the image and both lists in json format
 		Gson gson = new GsonBuilder().setDateFormat("yyyy MMM dd").create();
 		String albumImageJson = gson.toJson(albumImage);
 		String commentsJson = gson.toJson(comments);

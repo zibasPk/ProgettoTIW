@@ -38,6 +38,7 @@ public class GetHomeData extends HttpServlet {
 		OrderCache cache = new OrderCache();
 		List<Album> myAlbums = null;
 		List<Album> otherAlbums = null;
+		// tries retrieving albums owned by user
 		try {
 			myAlbums = cache.getOrderedAlbums(user, connection);
 		} catch (SQLException e) {
@@ -46,7 +47,10 @@ public class GetHomeData extends HttpServlet {
 			resp.getWriter().println("Error in retrieving albums from databse");
 			return;
 		}
+		
 		AlbumDAO albumService = new AlbumDAO(connection);
+		
+		// tries retrieving album not owned by user
 		try {
 			otherAlbums = albumService.findNotOwnedAlbums(user.getId());
 		} catch (SQLException e) {
@@ -55,7 +59,8 @@ public class GetHomeData extends HttpServlet {
 			resp.getWriter().println("Error in retrieving albums from databse");
 			return;
 		}
-
+		
+		// sends both album lists back to client in json format
 		Gson gson = new GsonBuilder().setDateFormat("yyyy MMM dd").create();
 		String myAlbumsJson = gson.toJson(myAlbums);
 		String otherAlbumsJson = gson.toJson(otherAlbums);

@@ -33,8 +33,8 @@ public class CreateAlbum extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String albumName = StringEscapeUtils.escapeJava(req.getParameter("albumName"));
-		// String error = null;
 		User user = null;
+		
 		if (albumName == null || albumName.isEmpty()) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().println("Missing parameters");
@@ -53,7 +53,8 @@ public class CreateAlbum extends HttpServlet {
 			e.printStackTrace();
 		}
 		AlbumDAO albumService = new AlbumDAO(connection);
-
+		
+		// tries to create an album
 		try {
 			albumService.createAlbum(user.getId(), albumName);
 		} catch (SQLException e) {

@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.tinylog.Logger;
-
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.CommentDAO;
 
@@ -58,7 +56,7 @@ public class CreateComment extends HttpServlet {
 		try {
 			imageId = Integer.parseInt(request.getParameter("imageid"));
 		} catch (NumberFormatException | NullPointerException e) {
-			// only for debugging e.printStackTrace();
+			e.printStackTrace();
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Incorrect param values");
 			return;
@@ -73,7 +71,6 @@ public class CreateComment extends HttpServlet {
 		
 		// checks if the comment length is less than 280
 		if (comment.length() > 280) {
-			Logger.debug("errore commento");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("the comment is too long");
 			return;
@@ -87,8 +84,12 @@ public class CreateComment extends HttpServlet {
 		try {
 			commentService.createComment(imageId, user.getId(), comment);
 		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Error while inserting comment into DB");
 			e.printStackTrace();
 		}
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setCharacterEncoding("UTF-8");	
 	}
 	
 	public void destroy() {

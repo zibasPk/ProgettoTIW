@@ -36,19 +36,16 @@ public class GetAlbumData extends HttpServlet {
 		try {
 			albumId = Integer.parseInt(req.getParameter("albumid"));
 		} catch (NumberFormatException | NullPointerException e) {
-			// only for debugging e.printStackTrace();
+			e.printStackTrace();
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().println("Incorrect param values");
 			return;
 		}
 
-		//HttpSession session = req.getSession();
-		//User user = (User) session.getAttribute("user");
-
 		List<Image> albumImages = null;
 
 		ImageDAO imageService = new ImageDAO(connection);
-
+		
 		try {
 			albumImages = imageService.findImagesFromAlbum(albumId);
 		} catch (SQLException e) {
@@ -64,7 +61,6 @@ public class GetAlbumData extends HttpServlet {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		resp.getWriter().write(albumImagesJson);
-
 	}
 
 	@Override

@@ -53,15 +53,18 @@
 		});
 
 		this.show = (previous) => {
+			// changes welcome message
 			this.welcomeMessage.textContent = "Welcome to Your Home Page";
 			if (previous != null)
 				previous.clear();
+			// reset button displays
 			this.saveOrderButton.style.display = "";
 			this.createAlbumButton.style.display = "";
 			this.myListContainer.style.display = "";
 			this.myContainerBody.style.display = "";
 			this.otherListContainer.style.display = "";
 			this.otherContainerBody.style.display = "";
+			// update back button function
 			this.backButton = clearBackButtonListeners();
 			this.backButton.addEventListener('click', (e) => {
 				makeCall("POST", 'Logout', null,
@@ -72,6 +75,7 @@
 						}
 				 });
 			})
+			//gets data necessary for updates
 			makeCall("GET", "GetHomeData", null,
 				(x) => {
 					if (x.readyState == XMLHttpRequest.DONE) {
@@ -95,10 +99,11 @@
 					}
 				});
 		}
-
+		// updates my albums
 		this.updateMyAlbums = (myAlbums) => {
 			let elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
 			this.myContainerBody.innerHTML = ""; // empties the table body
+			// creates rows
 			myAlbums.forEach((album) => {
 				row = document.createElement("tr");
 				nameCell = document.createElement("td");
@@ -128,6 +133,7 @@
 			this.myListContainer.style.visibility = "visible";
 		}
 
+		// updates other ablums table
 		this.updateOtherAlbums = (otherAlbums) => {
 			let elem, i, row, nameCell, dateCell, linkCell, anchor, linkText;
 			this.otherContainerBody.innerHTML = ""; // empties the table body
@@ -532,7 +538,7 @@
 			let newCommentForm = document.createElement("form");
 			newCommentForm.action = "#";
 			this.commentsDiv.appendChild(newCommentForm);
-			//prevents default 'submit' page reload
+			// prevents default 'submit' page reload
 			newCommentForm.addEventListener('submit', preventFormDefault);
 			// comment input
 			let newCommentInput = document.createElement("input");
@@ -625,7 +631,7 @@
 			albums.reset();
 			albums.show();
 
-			//the following line of code makes so that the image table isn't visible at the beginning (testing phase for it)
+			//the following line of code makes so that the image table isn't visible at the beginning 
 			document.getElementById("id_albumimages").style.visibility = "hidden";
 			document.getElementById("id_buttons").style.display = "none";
 

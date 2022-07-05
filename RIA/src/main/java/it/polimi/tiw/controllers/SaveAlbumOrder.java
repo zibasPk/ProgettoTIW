@@ -47,7 +47,8 @@ public class SaveAlbumOrder extends HttpServlet {
 			resp.getWriter().println("invalid saved order");
 			return;
 		}
-
+		
+		// tries saving album order
 		try {
 			if (!OrderCache.saveOrder(user, Arrays.asList(order), connection)) {
 				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -60,6 +61,7 @@ public class SaveAlbumOrder extends HttpServlet {
 			resp.getWriter().println("Failure in database while savingorder");
 			return;
 		}
+		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	@Override

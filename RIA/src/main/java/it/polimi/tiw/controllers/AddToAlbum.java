@@ -38,7 +38,7 @@ public class AddToAlbum extends HttpServlet {
 		String imageIdStr = StringEscapeUtils.escapeJava(req.getParameter("imageId"));
 		int albumId = 0;
 		int imageId = 0;
-
+		// param validation
 		if (albumIdStr == null || albumIdStr.isEmpty() ||
 				imageIdStr == null || imageIdStr.isEmpty()) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -58,6 +58,7 @@ public class AddToAlbum extends HttpServlet {
 		AlbumDAO albumService = new AlbumDAO(connection);
 		ImageDAO imageService = new ImageDAO(connection);
 		
+		// checks if album and image exist
 		try {
 			if (!albumService.validAlbum(albumId)) {
 				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -75,6 +76,7 @@ public class AddToAlbum extends HttpServlet {
 			return;
 		}
 		
+		// tries adding image to album in DB
 		try {
 			imageService.addImageToAlbum(imageId, albumId);
 		} catch (SQLException e) {

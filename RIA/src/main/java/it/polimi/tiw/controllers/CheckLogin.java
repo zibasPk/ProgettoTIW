@@ -43,7 +43,7 @@ public class CheckLogin extends HttpServlet{
 		
 		if(!validator.validateLogin(email, password)) return;
 		
-		//makes email lowercase
+		// makes email lowercase
 		email = email.toLowerCase();
 		
 		UserDAO userService = new UserDAO(connection);
@@ -57,6 +57,7 @@ public class CheckLogin extends HttpServlet{
 		}
 		
 		if (user == null) {
+			// this account doesn't exist
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().println("Account does not exist");
 		} else {
