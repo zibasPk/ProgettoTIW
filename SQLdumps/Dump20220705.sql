@@ -1,6 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.28, for macos11 (x86_64)
+CREATE DATABASE  IF NOT EXISTS `progettotiw` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `progettotiw`;
+-- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
 --
--- Host: localhost    Database: progettotiw
+-- Host: 127.0.0.1    Database: progettotiw
 -- ------------------------------------------------------
 -- Server version	8.0.28
 
@@ -84,7 +86,9 @@ CREATE TABLE `comment` (
   `text` varchar(280) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `userID_idx` (`userID`),
-  KEY `imageID_idx` (`imageID`)
+  KEY `imageID_idx` (`imageID`),
+  CONSTRAINT `albmId2` FOREIGN KEY (`imageID`) REFERENCES `image` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `usrId2` FOREIGN KEY (`userID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -94,7 +98,6 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (1,3,2,'such a nice painting'),(2,1,1,'really nice flowers!');
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -180,6 +183,10 @@ LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES (16,'test@gmail.com','utente','base','admin'),(17,'administrator@gmail.com','admin','prof','admin');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'progettotiw'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -190,4 +197,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-07-05 16:57:41
+-- Dump completed on 2022-07-05 17:46:59
