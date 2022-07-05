@@ -1,8 +1,6 @@
-CREATE DATABASE  IF NOT EXISTS `progettotiw` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `progettotiw`;
--- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.28, for macos11 (x86_64)
 --
--- Host: 127.0.0.1    Database: progettotiw
+-- Host: localhost    Database: progettotiw
 -- ------------------------------------------------------
 -- Server version	8.0.28
 
@@ -32,7 +30,7 @@ CREATE TABLE `album` (
   PRIMARY KEY (`ID`),
   KEY `userId_idx` (`ownerID`),
   CONSTRAINT `userId` FOREIGN KEY (`ownerID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +39,7 @@ CREATE TABLE `album` (
 
 LOCK TABLES `album` WRITE;
 /*!40000 ALTER TABLE `album` DISABLE KEYS */;
-INSERT INTO `album` VALUES (1,'2021-04-20','paesaggi',1),(2,'2020-08-10','statue',3),(3,'1990-04-23','Picasso',2),(4,'1930-02-02','tour effeil 1',1),(5,'1930-03-02','tour effeil 2',1),(6,'1930-04-02','tour effeil 3',1);
+INSERT INTO `album` VALUES (10,'2022-07-05','Test Album 1 ',16),(11,'2022-07-05','Test album 2',16),(12,'2022-07-05','Test album 3',16);
 /*!40000 ALTER TABLE `album` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,8 +82,10 @@ CREATE TABLE `comment` (
   `userID` int NOT NULL,
   `imageID` int NOT NULL,
   `text` varchar(280) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`ID`),
+  KEY `userID_idx` (`userID`),
+  KEY `imageID_idx` (`imageID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (6,1,3,'so cool'),(7,1,3,'ciao'),(8,9,3,'ciao'),(9,9,3,'che bello'),(11,9,3,'fantastico'),(12,1,2,'wow so pretty'),(16,1,3,'adsajdn'),(17,1,3,'so cool'),(18,1,3,'so cool'),(19,1,3,'martone'),(20,1,3,'beta'),(21,1,3,'gamma'),(22,1,3,'ftugyhus'),(23,1,3,'milano'),(24,1,3,'milanoafbua'),(25,1,3,'mario'),(26,1,3,'mario'),(27,1,3,'oj'),(28,1,4,'nice family'),(29,1,4,'wow'),(30,1,3,'aewsredftgyh');
+INSERT INTO `comment` VALUES (1,3,2,'such a nice painting'),(2,1,1,'really nice flowers!');
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,7 +115,7 @@ CREATE TABLE `image` (
   PRIMARY KEY (`ID`),
   KEY `uploaderID_idx` (`uploaderID`),
   CONSTRAINT `uploaderID` FOREIGN KEY (`uploaderID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,7 +124,7 @@ CREATE TABLE `image` (
 
 LOCK TABLES `image` WRITE;
 /*!40000 ALTER TABLE `image` DISABLE KEYS */;
-INSERT INTO `image` VALUES (1,1,'Girasoli','/img/girasoli.jpg','2021-04-18','girasoli al tramonto'),(2,3,'Autoritratto di Picasso','/img/autopicasso.jpg','1980-04-18','Autoritratto del pittore Pablo Picasso'),(3,2,'facciata teatro la scala','/img/lascala.jpg','1980-04-18','Facciata del teatro la scala di sera'),(4,1,'foto famiglia 1','/img/famiglia.jpg','2022-05-11','una foto famiglia'),(5,1,'foto famiglia 2','/img/famiglia2.jpg','2022-05-11','una foto famiglia'),(6,1,'foto famiglia 3','/img/famiglia3.jpg','2022-05-11','una foto famiglia'),(7,1,'foto famiglia 4','/img/famiglia4.jpg','2022-05-11','una foto famiglia'),(8,1,'foto famiglia 5','/img/famiglia5.jpg','2022-05-11','una foto famiglia'),(9,1,'foto famiglia 6','/img/famiglia6.jpg','2022-05-11','una foto famiglia'),(10,1,'islanda','/img/islanda.jpg','2005-03-23','il paesaggio islandese primaverile'),(11,1,'umbria','/img/umbria.jpg','2013-04-11','il paesaggio umbro estivo'),(12,1,'dolomiti','/img/dolomiti.jpg','2019-04-11','le dolomiti d\'estate'),(13,1,'canarie','/img/canarie.jpg','2015-04-13','le fantastiche canarie'),(14,1,'canada','/img/canada.jpg','2018-03-23','un paesaggio molto freddo');
+INSERT INTO `image` VALUES (1,16,'ritratto di pablo picasso','/img/autopicasso.jpg','2021-03-20','autoritratto del pittore Pablo Picasso'),(2,16,'foto del Canada','/img/canada.jpg','2002-01-22','foto del paesaggio dello stato del Canada'),(3,16,'foto delle Canarie','/img/canarie.jpg','2010-12-31','foto del paesaggio delle Canarie'),(4,16,'foto delle Dolomiti','/img/dolomiti.jpg','2013-12-31','foto del paesaggio delle Dolimiti'),(5,16,'foto di un gatto','/img/gatto.jpg','2016-12-31','foto di un cucciolo di gatto'),(6,16,'foto di un campo di girasoli','/img/girasoli.jpg','2016-12-31','foto di un bellissimo campo di girasoli'),(7,16,'paesaggio islandese','/img/islanda.jpg','2018-08-10','immagine del paesaggio islandese'),(8,16,'teatro la scala','/img/lascala.jpg','2008-08-10','immagine del famoso teatro milanese'),(9,16,'tigre libera','/img/tigre.jpg','2000-08-10','foto di un esemplare di tigre'),(10,16,'logo di linux','/img/linuxlogo.jpg','1999-10-01','il pinguino più famoso di tutti'),(11,16,'foto della luna','/img/luna.jpg','2003-10-01','luna fotografata con telescopio digitale'),(12,16,'paesaggio urbano','/img/stradapalazzi.jpg','2016-12-31','paesaggio urbano americano'),(13,16,'paesaggio umbro','/img/umbria.jpg','2016-12-31','paesaggio umbro in estate'),(14,16,'tempio antico','/img/tempio.jpg','1998-12-31','tempio antico sperduto'),(15,17,'capodanno','/img/scintilla.jpg','2014-12-31','foto capodanno 2014'),(16,17,'cubo astratto','/img/cubo.jpg','2014-12-31','opera di arte moderna'),(17,17,'campi coltivati','/img/campi.jpg','2014-12-31','foto di campi scattata da un aereo'),(18,17,'campeggio sotto le stelle','/img/tenda.jpg','2014-12-31','foto di una tenda sotto il cielo stellato'),(19,17,'dune buggy','/img/quad.jpg','2020-10-21','ultimo modello del veicolo fuoristrada'),(20,17,'il mondo moderno','/img/semaforo.jpg','2020-10-21','foto esposta al MOMA'),(21,17,'fusione tra arte e natura','/img/statuatesta.jpg','2020-10-21','gabbiano che si poggia su una statua'),(22,17,'estate','/img/spiaggia.jpg','2021-08-10','spiaggia del sud italia'),(23,17,'cupola vista da lontano','/img/cupola.jpg','2021-08-10','cupola che spicca tra i palazzi'),(24,17,'foglie con rugiada','/img/rugiada.jpg','2019-08-10','foglie al mattino con la rugiada');
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -139,10 +139,7 @@ CREATE TABLE `image_to_album` (
   `imageID` int NOT NULL,
   `albumID` int NOT NULL,
   PRIMARY KEY (`imageID`,`albumID`),
-  KEY `userID_idx1` (`albumID`),
-  KEY `userID_iddx` (`albumID`),
-  CONSTRAINT `albumID` FOREIGN KEY (`albumID`) REFERENCES `album` (`ID`),
-  CONSTRAINT `imageID` FOREIGN KEY (`imageID`) REFERENCES `image` (`ID`)
+  KEY `userID_iddx` (`albumID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -152,7 +149,7 @@ CREATE TABLE `image_to_album` (
 
 LOCK TABLES `image_to_album` WRITE;
 /*!40000 ALTER TABLE `image_to_album` DISABLE KEYS */;
-INSERT INTO `image_to_album` VALUES (3,1),(4,1),(5,1),(6,1),(7,1),(8,1),(9,1),(10,1),(11,1),(12,1),(13,1),(14,1),(1,2),(2,3);
+INSERT INTO `image_to_album` VALUES (1,10),(2,10),(3,10),(4,10),(5,10),(6,10),(7,10),(8,10),(9,10),(10,10),(11,10),(12,11),(13,11),(14,11);
 /*!40000 ALTER TABLE `image_to_album` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,7 +168,7 @@ CREATE TABLE `user` (
   `password` varchar(45) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,13 +177,9 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'milo.brontesi@gmail.com','milo','brontesi','admin'),(2,'pietro.fraternari@gmail.com','pietro','fraternari','admin'),(3,'andrea.colombo@gmail.com','andrea','colombo','admin'),(9,'federico.milani@mail.polimi.it','federico','milani','admin'),(12,'mambata1@mambata.it','mambata','sirda','mambata');
+INSERT INTO `user` VALUES (16,'test@gmail.com','utente','base','admin'),(17,'administrator@gmail.com','admin','prof','admin');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'progettotiw'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -197,4 +190,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-29 13:15:15
+-- Dump completed on 2022-07-05 16:57:41
