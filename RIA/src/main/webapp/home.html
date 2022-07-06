@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" media="all"
+href="css/homestyle.css">
+<script src="albumManagement.js"></script>
+<script src="utils.js"></script>
+<meta charset="ISO-8859-1">
+<title>Welcome to your Album Manager</title>
+</head>
+
+<body>
+	<div class="home-message">
+		<input type="button" class="left_button" value="back" id="id_backbutton">
+		<span id="id_welcome" class="welcome"> Welcome to your home page </span>
+		<div class="logout_button">
+			<form action="#">
+				<input id="logoutbutton" type="button" value="logout">
+			</form>
+		</div>
+	</div>
+	<div id="id_alert" class="alertmessage"></div>
+	<div class="allalbums" id="id_page">
+		<table class="myalbums" id="id_myalbumslist">
+			<thead>
+				<div>
+					<p class="noalbum" id="noalbumalert"></p>
+				</div>
+				<tr>
+					<th>Your Albums</th>
+					<th>Creation Date</th>
+					<th>
+						<div class="save">
+							<form action="#">
+								<input id="id_saveorder" type="button" value="save order">
+							</form>
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody id="id_myalbumsbody">
+				<tr>
+					<td><span>ablum_name</span></td>
+					<td><span>ablum_date</span></td>
+					<td><a> Open </a></td>
+				</tr>
+			</tbody>
+		</table>
+		<input class="left_button" id="id_createalbum" type="button" value="create album">
+		<table class="otheralbums" id="id_otheralbumslist">
+			<thead>
+				<tr>
+					<th>Other Albums</th>
+					<th>Creation Date</th>
+				</tr>
+			</thead>
+			<tbody id="id_otheralbumsbody">
+				<tr>
+					<td><span>ablum_name</span></td>
+					<td><span>ablum_date</span></td>
+					<td><a> Open </a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div  id="id_modalpopup" class="modal" >
+		<div id="id_modalcontent" class="modal-content"></div>
+	</div>
+	<div id="id_albumpage">
+		<table class="albumimages" id="id_albumimages">
+			<thead>
+				<tr>
+					<td>image</td>
+					<td>image's information</td>
+				</tr>
+			</thead>
+			<tbody id=id_albumimagesbody>
+				<tr>
+					<td><span>thumbnail_image</span></td>
+					<td><span>information_about_the_image</span></td>
+				</tr>
+			</tbody>
+		</table>
+		<div id="id_buttons">
+			<input type="button" value="previous" id="id_previous"> 
+			<input type="button" value="next" id="id_next"> 
+		</div>
+	</div>
+</body>
+
+</html>
