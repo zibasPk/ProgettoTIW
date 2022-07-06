@@ -115,7 +115,7 @@ public class ImageDAO {
 	 * Creates a new row in the image_to_album table adding an image to an album
 	 */
 	public void addImageToAlbum(int imageId, int albumId) throws SQLException {
-		String query = "INSERT INTO progettotiw.image_to_album (imageID, albumID) VALUES (?, ?))";
+		String query = "INSERT INTO progettotiw.image_to_album (imageID, albumID) VALUES (?, ?)";
 		try (PreparedStatement pstatement = connection.prepareStatement(query)) {
 			pstatement.setInt(1, imageId);
 			pstatement.setInt(2, albumId);
