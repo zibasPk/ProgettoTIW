@@ -28,7 +28,6 @@ public class OrderCache {
 			if (album == null || album.getOwnerID() != user.getId())
 				return false;
 		}
-		albumService.deleteAlbumOrder(user.getId());
 		albumService.saveAlbumOrder(user.getId(), albumOrder);
 		nameToAlbumOrder.put(user.getId(), albumOrder);
 		return true;

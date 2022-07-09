@@ -142,22 +142,36 @@ public class AlbumDAO {
 	}
 
 	/**
-	 * Inserts the given album order into the DB.
-	*/
+	 * deletes old order and inserts the given album order into the DB for a certain user.
+	 */
 	public void saveAlbumOrder(int userId, List<Integer> albumOrder) throws SQLException {
-		String query = "INSERT INTO progettotiw.album_order (userID, albumID, position) VALUES (?, ?, ?)";
+		connection.setAutoCommit(false);
+		String query = "DELETE FROM progettotiw.album_order WHERE userID = ?";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setInt(1, userId);
+			pstatement.executeUpdate();
+		} catch (SQLException e) {
+			connection.rollback();
+			throw e;
+		}
+		query = "INSERT INTO progettotiw.album_order (userID, albumID, position) VALUES (?, ?, ?)";
 		for (Integer albumId : albumOrder) {
 			try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 				pstatement.setInt(1, userId);
 				pstatement.setInt(2, albumId);
 				pstatement.setInt(3, albumOrder.indexOf(albumId));
 				pstatement.executeUpdate();
+			} catch (SQLException e) {
+				connection.rollback();
+				throw e;
 			}
 		}
+		connection.commit();
 	}
-	
+
 	/**
 	 * Inserts an album in a given position
+	 * 
 	 * @throws SQLException
 	 */
 	public void addToAlbumOrder(int userId, int albumId, int position) throws SQLException {
@@ -190,9 +204,10 @@ public class AlbumDAO {
 		}
 		return order;
 	}
-	
+
 	/**
 	 * Deletes the order entry for a certain user
+	 * 
 	 * @param userId
 	 * @throws SQLException
 	 */
@@ -203,14 +218,15 @@ public class AlbumDAO {
 			pstatement.executeUpdate();
 		}
 	}
-	
+
 	/**
 	 * Creates an album in the DB
+	 * 
 	 * @param ownerId
 	 * @param albumName
 	 * @throws SQLException
 	 */
-	public void createAlbum(int ownerId,String albumName) throws SQLException {
+	public void createAlbum(int ownerId, String albumName) throws SQLException {
 		String query = "INSERT INTO progettotiw.album (ownerID, title, creation_date) VALUES (?, ?, CURRENT_DATE())";
 		try (PreparedStatement pstatement = connection.prepareStatement(query)) {
 			pstatement.setInt(1, ownerId);
