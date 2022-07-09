@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import it.polimi.tiw.beans.Album;
+import it.polimi.tiw.beans.User;
 import it.polimi.tiw.controllers.utils.ConnectionHandler;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.dao.ImageDAO;
@@ -38,6 +40,9 @@ public class AddToAlbum extends HttpServlet {
 		String imageIdStr = StringEscapeUtils.escapeJava(req.getParameter("imageId"));
 		int albumId = 0;
 		int imageId = 0;
+		
+		// gets user from session
+		User user = (User) req.getSession().getAttribute("user");
 		// param validation
 		if (albumIdStr == null || albumIdStr.isEmpty() ||
 				imageIdStr == null || imageIdStr.isEmpty()) {
@@ -59,8 +64,10 @@ public class AddToAlbum extends HttpServlet {
 		ImageDAO imageService = new ImageDAO(connection);
 		
 		// checks if album and image exist
+		Album album = null;
 		try {
-			if (!albumService.validAlbum(albumId)) {
+			album = albumService.findAlbum(albumId);
+			if (album == null) {
 				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				resp.getWriter().println("Album doesn't exist");
 				return;
@@ -73,6 +80,12 @@ public class AddToAlbum extends HttpServlet {
 		} catch (SQLException e) {
 			resp.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			resp.getWriter().println("Error while checking param existance from DB");
+			return;
+		}
+		// checks if album was created by userId
+		if (user.getId() != album.getOwnerID()) {
+			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			resp.getWriter().println("Error: user " + user.getFullName() + " doesn't own " + album.getTitle() + " album");
 			return;
 		}
 		

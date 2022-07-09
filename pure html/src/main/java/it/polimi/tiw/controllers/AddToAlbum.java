@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.tinylog.Logger;
 
+import it.polimi.tiw.beans.Album;
+import it.polimi.tiw.beans.User;
 import it.polimi.tiw.controllers.utils.ConnectionHandler;
 import it.polimi.tiw.dao.AlbumDAO;
 import it.polimi.tiw.dao.ImageDAO;
@@ -36,25 +38,29 @@ public class AddToAlbum extends HttpServlet {
 		String imageIdStr = request.getParameter("imageId");
 		int albumId = 0;
 		int imageId = 0;
-
-		if (albumIdStr == null || albumIdStr.isEmpty() ||
-				imageIdStr == null || imageIdStr.isEmpty()) {
+		// gets user from session
+		User user = (User) request.getSession().getAttribute("user");
+		
+		
+		if (albumIdStr == null || albumIdStr.isEmpty() || imageIdStr == null || imageIdStr.isEmpty()) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters");
 			return;
 		}
-		
+
 		try {
 			albumId = Integer.parseInt(albumIdStr);
 			imageId = Integer.parseInt(imageIdStr);
 		} catch (NumberFormatException e2) {
 			Logger.debug("parameters not parsable redirecting to homepage");
 		}
-		
+
 		AlbumDAO albumService = new AlbumDAO(connection);
 		ImageDAO imageService = new ImageDAO(connection);
-		
+
+		Album album = null;
 		try {
-			if (!albumService.validAlbum(albumId)) {
+			album = albumService.findAlbum(albumId);
+			if (album == null) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Album doesn't exist");
 				return;
 			}
@@ -66,7 +72,13 @@ public class AddToAlbum extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Error while checking param existance from DB");
 			return;
 		}
-		
+
+		// checks if album was created by userId
+		if (user.getId() != album.getOwnerID()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error: user " + user.getFullName() + " doesn't own " + album.getTitle() + " album");
+			return;
+		}
+
 		try {
 			imageService.addImageToAlbum(imageId, albumId);
 		} catch (SQLException e) {
