@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.CommentDAO;
+import it.polimi.tiw.dao.ImageDAO;
 
 @WebServlet("/CreateComment")
 @MultipartConfig
@@ -51,7 +52,6 @@ public class CreateComment extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		 
 		Integer imageId = null;
 		try {
 			imageId = Integer.parseInt(request.getParameter("imageid"));
@@ -76,6 +76,21 @@ public class CreateComment extends HttpServlet {
 			return;
 		}
 		
+		// checks if image with the given imageId exists
+		ImageDAO imageService = new ImageDAO(connection);
+		try {
+			if (imageService.findImage(imageId) == null) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				response.getWriter().println("Comment posted on not exiting image");
+				return;
+			}
+		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
+			response.getWriter().println("Error while checking imageId from DB");
+			e.printStackTrace();
+			return;
+		}
+		
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		
@@ -87,6 +102,7 @@ public class CreateComment extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 			response.getWriter().println("Error while inserting comment into DB");
 			e.printStackTrace();
+			return;
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setCharacterEncoding("UTF-8");	

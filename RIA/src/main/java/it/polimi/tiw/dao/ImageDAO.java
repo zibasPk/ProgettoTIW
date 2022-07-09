@@ -41,7 +41,12 @@ public class ImageDAO {
 		}
 		return images;
 	}
-
+	
+	/**
+	 * @param imageID
+	 * @return null if there is no image with the given Id
+	 * @throws SQLException
+	 */
 	public Image findImage(int imageID) throws SQLException {
 		String query = "SELECT * FROM progettotiw.image WHERE ID = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
